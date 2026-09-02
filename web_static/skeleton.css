@@ -1,0 +1,269 @@
+/* ═══════════════════════════════════════════════════
+ * skeleton.css - 骨架屏加载占位组件
+ * 用法：
+ *   <link rel="stylesheet" href="/skeleton.css">
+ *   skeleton.show('container-id', 'book-grid', 6)  // 渲染 6 个书籍卡片骨架
+ *   skeleton.hide('container-id')
+ * ═══════════════════════════════════════════════════ */
+
+.skeleton {
+  position: relative;
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* ── 通用块 ── */
+.skeleton-block {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  margin: 8px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-block::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.12) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+/* ── 书籍卡片骨架 ── */
+.skeleton-book {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+}
+
+.skeleton-book-card {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+}
+
+.skeleton-book-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.06) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.skeleton-book-cover {
+  width: 100%;
+  aspect-ratio: 2/3;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.skeleton-book-info {
+  padding: 10px 12px;
+}
+
+.skeleton-book-title {
+  height: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  width: 85%;
+}
+
+.skeleton-book-meta {
+  height: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  width: 60%;
+}
+
+/* ── 文件行骨架 ── */
+.skeleton-file-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 12px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-file-row::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.skeleton-file-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.skeleton-file-info {
+  flex: 1;
+}
+
+.skeleton-file-name {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  margin-bottom: 6px;
+  width: 60%;
+}
+
+.skeleton-file-meta {
+  height: 9px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  width: 40%;
+}
+
+.skeleton-file-action {
+  width: 70px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  flex-shrink: 0;
+}
+
+/* ── 详情页骨架 ── */
+.skeleton-detail {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.skeleton-cover {
+  width: 120px;
+  min-width: 120px;
+  aspect-ratio: 2/3;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+}
+
+.skeleton-detail-info {
+  flex: 1;
+}
+
+.skeleton-detail-title {
+  height: 22px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  width: 70%;
+}
+
+.skeleton-detail-line {
+  height: 11px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.skeleton-detail-line.short {
+  width: 40%;
+}
+
+.skeleton-detail-line.medium {
+  width: 65%;
+}
+
+.skeleton-detail-line.long {
+  width: 90%;
+}
+
+/* ── 表格行骨架 ── */
+.skeleton-table-row {
+  display: flex;
+  gap: 16px;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.skeleton-table-cell {
+  height: 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+}
+
+.skeleton-table-cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.6s ease-in-out infinite;
+}
+
+/* 移动端 */
+@media (max-width: 640px) {
+  .skeleton-book {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  .skeleton-detail {
+    flex-direction: column;
+    align-items: center;
+  }
+  .skeleton-cover {
+    width: 100px;
+    min-width: 100px;
+  }
+}

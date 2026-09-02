@@ -1,0 +1,212 @@
+/* ═══════════════════════════════════════════════════
+ * effects.css - 全局微动效合集（融入深空玻璃拟态）
+ * 包含：按钮波纹、卡片悬停 3D 倾斜、页面过渡、骨架入场、进度条流光、磁性按钮
+ * GPU 友好：仅使用 transform / opacity
+ * ═══════════════════════════════════════════════════ */
+
+/* ── 按钮波纹（点击扩散） ── */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: scale(0);
+  animation: ripple-spread 0.7s ease-out forwards;
+  z-index: 1;
+}
+@keyframes ripple-spread {
+  to { transform: scale(2.5); opacity: 0; }
+}
+
+/* ── 磁性按钮（hover 跟随指针倾斜） ── */
+.magnetic {
+  transition: transform 0.25s cubic-bezier(0.2, 0.7, 0.3, 1);
+  will-change: transform;
+}
+
+/* ── 卡片悬停 3D 倾斜 ── */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.3s;
+  will-change: transform;
+}
+.tilt-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-3deg) translateY(-4px) scale(1.015);
+}
+
+/* ── 页面切换过渡 ── */
+.section {
+  animation-duration: 0.4s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.section.active {
+  animation-name: section-in;
+}
+.section.leaving {
+  animation-name: section-out;
+}
+@keyframes section-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes section-out {
+  to { opacity: 0; transform: translateY(-8px) scale(0.99); }
+}
+
+/* ── 入场动画序列 ── */
+.stagger-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: stagger-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+@keyframes stagger-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 加载抖动（用于等待状态） ── */
+.shake-on-error {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(3px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+/* ── 成功脉冲 ── */
+.pulse-success {
+  animation: pulse-success 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+@keyframes pulse-success {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* ── 错误脉冲 ── */
+.pulse-error {
+  animation: pulse-error 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+@keyframes pulse-error {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* ── 数字滚动 ── */
+.count-up {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 悬浮阴影深度 ── */
+.lift-on-hover {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.lift-on-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── 渐变流光文字（标题） ── */
+.shine-text {
+  background: linear-gradient(90deg, #ffffff, #ffb08f, #9ad9ff, #ffffff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shine-flow 6s linear infinite;
+}
+@keyframes shine-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ── 进度条流光（已存在，此处强化） ── */
+@keyframes fill-sweep {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(340%); }
+}
+
+/* ── 模糊背景 + 聚焦效果 ── */
+.dim-bg {
+  filter: blur(2px) brightness(0.7);
+  transition: filter 0.3s;
+  pointer-events: none;
+}
+
+/* ── 列表项入场错位（用于文件列表、搜索结果） ── */
+.stagger-list > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: stagger-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+.stagger-list > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger-list > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger-list > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger-list > *:nth-child(4) { animation-delay: 0.16s; }
+.stagger-list > *:nth-child(5) { animation-delay: 0.2s; }
+.stagger-list > *:nth-child(6) { animation-delay: 0.24s; }
+.stagger-list > *:nth-child(7) { animation-delay: 0.28s; }
+.stagger-list > *:nth-child(8) { animation-delay: 0.32s; }
+.stagger-list > *:nth-child(9) { animation-delay: 0.36s; }
+.stagger-list > *:nth-child(10) { animation-delay: 0.4s; }
+.stagger-list > *:nth-child(n+11) { animation-delay: 0.44s; }
+
+/* ── 数字徽章心跳（管理员用的活跃指示） ── */
+.heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.08); }
+  20% { transform: scale(0.96); }
+}
+
+/* ── 滚动指示器 ── */
+.scroll-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 100;
+}
+.scroll-hint.show { opacity: 0.7; }
+.scroll-hint::before {
+  content: '';
+  width: 3px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  animation: scroll-wheel 1.6s ease-in-out infinite;
+}
+@keyframes scroll-wheel {
+  0% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(12px); }
+}
+
+/* ── 主题切换过渡 ── */
+.theme-transitioning, .theme-transitioning *, .theme-transitioning *::before, .theme-transitioning *::after {
+  transition: background-color 0.4s, color 0.4s, border-color 0.4s, box-shadow 0.4s !important;
+}
+
+/* ── 移动端减少动效（性能与体验平衡） ── */
+@media (prefers-reduced-motion: reduce), (max-width: 640px) {
+  .tilt-card:hover { transform: translateY(-2px) !important; }
+  .lift-on-hover:hover { transform: none !important; }
+  .stagger-list > * { animation-duration: 0.2s !important; }
+}

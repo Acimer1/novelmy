@@ -1,0 +1,4274 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>欢迎使用</title>
+<style>
+:root{
+  --bg:#0f0f1a;
+  --surface:rgba(255,255,255,0.04);
+  --surface-hover:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);
+  --text:#e0e0e0;
+  --text2:#999;
+  --text3:#666;
+  --orange:#ff6b35;
+  --orange2:#ff8555;
+  --cyan:#0ea5e9;
+  --cyan2:#38bdf8;
+  --red:#ef4444;
+  --green:#22c55e;
+  --radius:14px;
+  --radius-sm:10px;
+  --radius-xs:6px;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:
+    radial-gradient(1100px 520px at 12% -10%, rgba(255,107,53,0.10), transparent 60%),
+    radial-gradient(900px 480px at 88% -5%, rgba(14,165,233,0.10), transparent 60%),
+    linear-gradient(180deg,#0d0d1c 0%,#0b0b16 45%,#090913 100%);
+  color:var(--text);
+  min-height:100dvh;
+  line-height:1.5;
+  -webkit-tap-highlight-color:transparent;
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
+
+.container{max-width:1100px;margin:0 auto;padding:16px}
+.app-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;margin-bottom:16px;flex-wrap:wrap;gap:10px;
+}
+.app-logo{
+  font-size:1.4em;font-weight:800;white-space:nowrap;letter-spacing:.5px;
+  background:linear-gradient(135deg,#ffffff 0%,#ffd7c2 45%,#ff9d6b 100%);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.app-logo span{
+  font-weight:500;font-size:.72em;margin-left:8px;
+  background:linear-gradient(135deg,#7dd3fc,#38bdf8);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+
+.user-bar{display:flex;align-items:center;gap:12px}
+.user-avatar{
+  width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700;
+  box-shadow:0 4px 14px rgba(255,107,53,0.35);
+}
+.user-name-text{font-size:.9em;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quota-pill{
+  padding:4px 14px;border-radius:20px;font-size:.78em;font-weight:600;
+  background:linear-gradient(135deg,var(--cyan),#0284c7);color:#fff;white-space:nowrap;
+}
+.quota-pill.low{background:linear-gradient(135deg,var(--red),#dc2626)}
+/* 增加次数提示横幅 */
+.quota-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:11px 16px;margin-bottom:16px;border-radius:var(--radius-sm);
+  background:rgba(234,179,8,0.10);border:1px solid rgba(234,179,8,0.35);font-size:.9em;
+}
+.quota-banner .banner-text{color:var(--text);display:flex;align-items:center;gap:8px}
+.quota-banner .banner-text .bell{font-size:1.05em}
+/* 联系管理员弹窗 */
+.contact-mask{
+  position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(3px);
+}
+.contact-mask.show{display:flex}
+.contact-box{
+  width:min(420px,90vw);background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.contact-box h3{margin:0 0 16px;font-size:1.05em}
+.contact-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:12px 14px;margin-bottom:10px;border-radius:var(--radius-sm);
+  background:rgba(255,255,255,0.04);border:1px solid var(--border);font-size:.92em;
+}
+.contact-row .contact-val{font-family:Consolas,monospace;color:var(--cyan);word-break:break-all}
+.contact-row button{flex-shrink:0}
+.contact-note{font-size:.78em;color:var(--text3);margin:4px 0 14px}
+.btn-ghost{
+  background:transparent;border:1px solid var(--border);color:var(--text2);
+  padding:6px 16px;border-radius:20px;cursor:pointer;font-size:.8em;transition:.2s;
+}
+.btn-ghost:hover{color:#fff;border-color:var(--text2)}
+
+.nav-bar{
+  display:flex;gap:2px;margin-bottom:18px;background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.06);border-radius:var(--radius);
+  padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+  box-shadow:0 6px 24px rgba(0,0,0,0.25);
+}
+.nav-btn{
+  flex:1;min-width:80px;padding:10px 8px;border:none;background:transparent;
+  color:var(--text3);cursor:pointer;font-size:.88em;border-radius:11px;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;
+}
+.nav-btn:hover{color:var(--text2)}
+.nav-btn.on{
+  background:linear-gradient(135deg,rgba(255,107,53,0.20),rgba(255,107,53,0.10));
+  color:#fff;font-weight:600;box-shadow:inset 0 0 0 1px rgba(255,107,53,0.28);
+}
+.nav-btn .nav-icon{font-size:1.1em}
+
+.section{display:none}
+.section.active{display:block}
+.card{
+  background:linear-gradient(165deg,rgba(255,255,255,0.055),rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.09);border-radius:var(--radius);
+  padding:20px;margin-bottom:14px;transition:.2s;
+  box-shadow:0 10px 36px rgba(0,0,0,0.35);
+}
+.card:hover{border-color:rgba(255,255,255,0.14)}
+.card-header{font-size:.95em;font-weight:600;margin-bottom:14px;color:var(--text)}
+
+.inp-row{display:flex;gap:10px;margin-bottom:10px}
+.inp{
+  flex:1;padding:11px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  background:rgba(0,0,0,0.35);color:#fff;font-size:.9em;outline:none;transition:.2s;
+  min-width:0;
+}
+.inp:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,53,0.14),0 0 20px rgba(255,107,53,0.10)}
+.inp::placeholder{color:var(--text3)}
+
+.btn{
+  padding:10px 22px;border:none;border-radius:var(--radius-sm);cursor:pointer;
+  font-size:.9em;font-weight:600;transition:.2s;white-space:nowrap;
+}
+.btn-go{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;box-shadow:0 6px 20px rgba(255,107,53,0.28)}
+.btn-go:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 8px 28px rgba(255,107,53,0.42)}
+.btn-go:disabled{background:#444;color:#888;cursor:not-allowed;transform:none;filter:none;box-shadow:none}
+.btn-cyan{background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:#fff;box-shadow:0 6px 20px rgba(14,165,233,0.26)}
+.btn-cyan:hover{filter:brightness(1.08);box-shadow:0 8px 28px rgba(14,165,233,0.4)}
+.btn-cyan:disabled{background:#444;color:#888;cursor:not-allowed;box-shadow:none}
+.btn-sm{padding:7px 16px;font-size:.82em;border-radius:var(--radius-xs)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);color:var(--text2);padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:.85em;
+}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+
+.subtabs{display:flex;gap:0;margin-bottom:14px}
+.subtab{
+  padding:7px 18px;cursor:pointer;color:var(--text3);font-size:.82em;
+  border-bottom:2px solid transparent;transition:.2s;
+}
+.subtab.on{color:var(--orange);border-bottom-color:var(--orange)}
+
+.progress-wrap{display:none;margin-top:12px}
+.progress-wrap.show{display:block}
+.progress-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:3px;transition:width .4s ease}
+.progress-bar .fill.cyan{background:linear-gradient(90deg,var(--cyan),var(--cyan2))}
+.progress-label{font-size:.82em;color:var(--text2);display:flex;justify-content:space-between}
+
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.book-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;transition:.2s;position:relative;
+}
+.book-card:hover{background:var(--surface-hover);transform:translateY(-3px);box-shadow:0 12px 30px rgba(0,0,0,0.45),0 0 0 1px rgba(255,107,53,0.15)}
+.book-card-img{
+  width:100%;aspect-ratio:2/3;object-fit:cover;background:rgba(0,0,0,0.3);
+  display:flex;align-items:center;justify-content:center;font-size:2em;color:var(--text3);
+}
+.book-card-body{padding:10px 12px}
+.book-card-title{font-size:.85em;font-weight:600;margin-bottom:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.book-card-meta{font-size:.72em;color:var(--text3)}
+
+/* Book detail */
+.book-hero{display:flex;gap:20px;margin-bottom:18px}
+.book-cover{width:120px;min-width:120px;border-radius:var(--radius);aspect-ratio:2/3;object-fit:cover;background:rgba(0,0,0,0.3)}
+.book-meta h3{font-size:1.15em;margin-bottom:6px}
+.book-meta .info-line{font-size:.82em;color:var(--text2);margin-bottom:4px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tag{padding:3px 10px;border-radius:12px;font-size:.72em;font-weight:600}
+.tag-orange{background:rgba(255,107,53,0.15);color:var(--orange2)}
+.tag-cyan{background:rgba(14,165,233,0.15);color:var(--cyan2)}
+.tag-green{background:rgba(34,197,94,0.15);color:var(--green)}
+.pitch{font-size:.84em;color:var(--text3);line-height:1.7;margin-bottom:16px}
+.fmt-pick{display:flex;gap:8px;margin-bottom:14px}
+.fmt-opt{
+  padding:8px 20px;border-radius:var(--radius-xs);border:1px solid var(--border);
+  background:transparent;color:var(--text2);cursor:pointer;font-size:.84em;transition:.2s;
+}
+.fmt-opt:hover{border-color:var(--orange);color:var(--orange2)}
+.fmt-opt.sel{background:rgba(255,107,53,0.12);border-color:var(--orange);color:var(--orange2)}
+.fmt-opt.sel-cyan{background:rgba(14,165,233,0.12);border-color:var(--cyan);color:var(--cyan2)}
+.fmt-opt.cyan-hover:hover{border-color:var(--cyan);color:var(--cyan2)}
+
+.file-row{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
+  border-radius:var(--radius-sm);background:var(--surface);margin-bottom:8px;transition:.15s;
+}
+.file-row:hover{background:var(--surface-hover)}
+.file-row .info{flex:1;min-width:0}
+.file-row .info .name{font-size:.9em;font-weight:600;margin-bottom:3px}
+.file-row .info .meta{font-size:.78em;color:var(--text3)}
+.file-row .dl{
+  color:var(--orange);text-decoration:none;font-size:.82em;font-weight:600;
+  padding:8px 18px;border:1px solid rgba(255,107,53,0.3);border-radius:var(--radius-xs);transition:.2s;
+}
+.file-row .dl:hover{background:rgba(255,107,53,0.12)}
+.src-badge{
+  display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68em;font-weight:700;margin-left:6px;
+}
+.src-fanqie{background:rgba(255,107,53,0.15);color:var(--orange)}
+.src-qimao{background:rgba(14,165,233,0.15);color:var(--cyan2)}
+
+.auth-box{max-width:400px;margin:40px auto}
+.auth-box h2{
+  text-align:center;margin-bottom:24px;font-size:1.7em;font-weight:800;letter-spacing:1px;
+  background:linear-gradient(135deg,#ffffff,#ffb199);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+}
+.auth-switch{display:flex;margin-bottom:20px;background:var(--surface);border-radius:var(--radius-sm);padding:4px}
+.auth-switch-btn{flex:1;padding:10px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-radius:9px;font-size:.9em;transition:.2s}
+.auth-switch-btn.on{background:rgba(255,255,255,0.08);color:#fff;font-weight:600}
+.auth-form{display:flex;flex-direction:column;gap:12px}
+.auth-form .btn-go{padding:12px}
+.auth-msg{font-size:.84em;text-align:center;min-height:20px}
+.auth-msg.err{color:var(--red)}
+.auth-msg.ok{color:var(--green)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.82em}
+.tbl th,.tbl td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}
+.tbl th{color:var(--text3);font-weight:500}
+.quota-inp{width:54px;padding:5px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:#fff;text-align:center;font-size:.82em}
+.btn-xs{padding:5px 12px;font-size:.74em;border-radius:6px;border:none;cursor:pointer;font-weight:600}
+.btn-red{background:var(--red);color:#fff}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-state .icon{font-size:3em;margin-bottom:12px;opacity:.5}
+.empty-state p{font-size:.9em}
+
+/* ── 通用分页条 ── */
+.pager{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:16px}
+.pg-btn{min-width:32px;padding:6px 12px;border-radius:9px;border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:.82em;cursor:pointer;transition:.2s}
+.pg-btn:hover:not(:disabled){color:#fff;border-color:var(--orange);transform:translateY(-1px)}
+.pg-btn.on{background:rgba(255,107,53,.16);border-color:var(--orange);color:var(--orange2);font-weight:600;box-shadow:0 0 14px rgba(255,107,53,.15)}
+.pg-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.pg-dots{color:var(--text3);padding:0 2px}
+.pg-info{font-size:.76em;color:var(--text3);margin-left:8px;white-space:nowrap}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:#1a1a2e;border:1px solid var(--border);border-radius:var(--radius);max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:24px}
+
+.back-row{display:none;margin-bottom:10px}
+
+/* Detail page download section */
+.dl-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+@media (max-width:640px){
+  .container{padding:12px}
+  .app-header{font-size:.9em}
+  .app-logo{font-size:1.15em}
+  .nav-btn{font-size:.8em;padding:8px 6px}
+  .nav-btn .nav-icon{font-size:1em}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+  .book-hero{flex-direction:column;align-items:center;text-align:center}
+  .book-cover{width:100px;min-width:100px}
+  .inp-row{flex-direction:column}
+  .btn{width:100%}
+  .btn-sm{width:auto}
+  .card{padding:14px}
+  /* 文件行：手机端紧凑排版，避免按钮溢出 */
+  .file-row{padding:10px 12px}
+  .file-row .file-header{flex-direction:column;align-items:stretch;gap:8px}
+  .file-row .file-header .info{flex:1 1 auto;min-width:0}
+  .file-row .file-header .actions{flex-wrap:wrap;gap:6px;width:100%}
+  .file-row .file-header .actions .btn-xs,
+  .file-row .file-header .actions .dl{
+    flex:1 1 auto;text-align:center;padding:6px 8px;font-size:.78em;
+    min-width:0;white-space:nowrap;
+  }
+  .file-row .file-header .actions .dl{padding:6px 10px}
+  .file-row .name{font-size:.86em}
+  .file-row .meta{font-size:.72em}
+  .tbl{font-size:.72em}
+  .back-row{display:block}
+  .hide-mobile{display:none!important}
+}
+@media (min-width:641px){
+  .show-mobile{display:none!important}
+}
+
+/* ===== 小说分割功能 ===== */
+.file-row{cursor:pointer;flex-wrap:wrap}
+.file-row .file-header{
+  display:flex;align-items:center;justify-content:space-between;width:100%;gap:10px;
+}
+.file-row .file-header .info{flex:1;min-width:0}
+.file-row .file-header .actions{display:flex;gap:8px;flex-shrink:0}
+.split-panel{
+  width:100%;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+  display:none;
+}
+.file-row.open .split-panel{display:block}
+.split-settings{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;
+}
+.split-settings .split-item label{
+  display:block;font-size:.78em;color:var(--text3);margin-bottom:4px;
+}
+.split-settings .split-item select,
+.split-settings .split-item input{
+  width:100%;padding:8px 10px;border-radius:var(--radius-xs);
+  border:1px solid var(--border);background:rgba(0,0,0,0.3);
+  color:#fff;font-size:.82em;outline:none;
+}
+.split-settings .split-item select:focus,
+.split-settings .split-item input:focus{border-color:var(--orange)}
+.split-btn{
+  background:linear-gradient(135deg,var(--cyan),#0284c7);color:#fff;
+  border:none;padding:8px 16px;border-radius:var(--radius-xs);
+  font-size:.82em;font-weight:600;cursor:pointer;transition:.2s;
+}
+.split-btn:hover{filter:brightness(1.1)}
+.split-btn:disabled{opacity:.5;cursor:not-allowed}
+.split-progress-box{
+  margin-top:10px;padding:10px;background:rgba(0,0,0,0.3);
+  border-radius:var(--radius-xs);display:none;
+}
+.split-progress-box.active{display:block}
+.split-progress-bar{
+  width:100%;height:6px;background:rgba(255,255,255,0.1);
+  border-radius:3px;overflow:hidden;margin:6px 0;
+}
+.split-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--cyan),var(--orange));
+  width:0%;border-radius:3px;transition:width .3s;
+}
+.split-progress-text{font-size:.78em;color:var(--text3);display:flex;justify-content:space-between}
+.split-output-list{
+  margin-top:10px;max-height:200px;overflow-y:auto;
+}
+.split-output-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;background:rgba(14,165,233,0.08);
+  border:1px solid rgba(14,165,233,0.2);border-radius:var(--radius-xs);
+  margin-bottom:6px;font-size:.8em;
+}
+.split-output-item .fname{font-family:monospace;font-size:.85em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:8px}
+.split-output-item .fsize{color:var(--text3);font-size:.78em;margin-right:8px;flex-shrink:0}
+.split-output-item .fdl{
+  color:var(--cyan2);text-decoration:none;font-size:.78em;font-weight:600;
+  padding:4px 10px;border:1px solid rgba(14,165,233,0.3);border-radius:4px;flex-shrink:0;
+}
+.split-output-item .fdl:hover{background:rgba(14,165,233,0.1)}
+.split-dl-all{
+  margin-top:8px;font-size:.78em;color:var(--cyan2);text-decoration:none;
+}
+@media (max-width:640px){
+  .split-settings{grid-template-columns:1fr 1fr}
+  .split-output-item .fname{font-size:.75em}
+}
+
+/* ============ 美学增强 v2：深空玻璃拟态 ============ */
+:root{
+  --glow-orange:0 8px 28px rgba(255,107,53,.40);
+  --glow-cyan:0 8px 28px rgba(14,165,233,.40);
+  --ring-focus:0 0 0 3px rgba(255,107,53,.16), 0 0 26px rgba(255,107,53,.14);
+  --glass:rgba(255,255,255,.055);
+}
+
+/* ── 背景：光晕 + 星点 + 细网格 ── */
+body{
+  background:
+    radial-gradient(1200px 620px at 12% -12%, rgba(255,107,53,.16), transparent 55%),
+    radial-gradient(1000px 540px at 88% -6%, rgba(14,165,233,.17), transparent 55%),
+    radial-gradient(900px 520px at 50% 118%, rgba(139,92,246,.09), transparent 60%),
+    linear-gradient(180deg,#0e0e20 0%,#0a0a19 50%,#080814 100%);
+  background-attachment:fixed;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255,255,255,.55), transparent 100%),
+    radial-gradient(1px 1px at 28% 64%, rgba(255,255,255,.4), transparent 100%),
+    radial-gradient(1.6px 1.6px at 42% 12%, rgba(255,214,180,.5), transparent 100%),
+    radial-gradient(1px 1px at 58% 40%, rgba(255,255,255,.35), transparent 100%),
+    radial-gradient(1.3px 1.3px at 72% 74%, rgba(125,211,252,.5), transparent 100%),
+    radial-gradient(1px 1px at 86% 26%, rgba(255,255,255,.42), transparent 100%),
+    radial-gradient(1.5px 1.5px at 94% 62%, rgba(255,214,180,.42), transparent 100%),
+    radial-gradient(1px 1px at 64% 88%, rgba(255,255,255,.3), transparent 100%);
+  background-size:320px 320px;
+  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,.9), transparent 75%);
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.9), transparent 75%);
+}
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(255,255,255,.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.024) 1px, transparent 1px);
+  background-size:52px 52px;
+  -webkit-mask-image:radial-gradient(ellipse 75% 60% at 50% 0%, rgba(0,0,0,.55), transparent 78%);
+  mask-image:radial-gradient(ellipse 75% 60% at 50% 0%, rgba(0,0,0,.55), transparent 78%);
+}
+.container{position:relative;z-index:1}
+
+/* ── 头部 ── */
+.app-header{padding:16px 0 18px}
+.app-logo{
+  font-size:1.5em;letter-spacing:.8px;
+  filter:drop-shadow(0 2px 20px rgba(255,150,90,.30));
+  display:flex;align-items:center;gap:10px;
+}
+.app-logo span{
+  font-size:.72em;font-weight:600;letter-spacing:.5px;
+  padding:3px 12px;border-radius:20px;
+  background:linear-gradient(135deg, rgba(56,189,248,.16), rgba(14,165,233,.08));
+  border:1px solid rgba(56,189,248,.25);
+  -webkit-background-clip:padding-box;background-clip:padding-box;
+  -webkit-text-fill-color:initial;
+}
+.user-avatar{
+  box-shadow:0 4px 18px rgba(255,107,53,.4), inset 0 1px 0 rgba(255,255,255,.25);
+  border:1px solid rgba(255,255,255,.18);
+}
+.quota-pill{box-shadow:0 4px 14px rgba(14,165,233,.3);border:1px solid rgba(255,255,255,.15)}
+.btn-ghost{border-radius:22px;padding:7px 18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.btn-ghost:hover{transform:translateY(-1px)}
+
+/* ── 导航栏 ── */
+.nav-bar{
+  background:rgba(255,255,255,.05);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-radius:16px;padding:5px;
+  box-shadow:0 10px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.nav-btn{font-size:.9em;border-radius:12px}
+.nav-btn.on{
+  background:linear-gradient(135deg, rgba(255,107,53,.28), rgba(255,107,53,.12));
+  box-shadow:0 4px 18px rgba(255,107,53,.28), inset 0 0 0 1px rgba(255,107,53,.4), inset 0 1px 0 rgba(255,255,255,.1);
+}
+
+/* ── 卡片：玻璃拟态 ── */
+.card{
+  background:linear-gradient(165deg, rgba(255,255,255,.07), rgba(255,255,255,.02));
+  -webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.10);
+  box-shadow:0 14px 44px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.06);
+  position:relative;overflow:hidden;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+}
+.card:hover{transform:translateY(-2px);box-shadow:0 18px 52px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.06)}
+.card-header{font-size:1em}
+
+/* ── 输入框 ── */
+.inp{
+  background:rgba(0,0,0,.4);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:inset 0 2px 8px rgba(0,0,0,.3);
+}
+.inp:focus{border-color:var(--orange);box-shadow:var(--ring-focus), inset 0 2px 8px rgba(0,0,0,.3)}
+
+/* ── 按钮 ── */
+.btn{position:relative;overflow:hidden}
+.btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%);
+  transform:translateX(-120%);transition:transform .6s ease;pointer-events:none;
+}
+.btn:hover::after{transform:translateX(120%)}
+.btn-go{box-shadow:0 6px 24px rgba(255,107,53,.4), inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-go:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(255,107,53,.5), inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-go:active{transform:translateY(0) scale(.97)}
+.btn-cyan{box-shadow:0 6px 24px rgba(14,165,233,.35), inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-cyan:hover{transform:translateY(-2px);box-shadow:0 10px 34px rgba(14,165,233,.48), inset 0 1px 0 rgba(255,255,255,.3)}
+.btn-cyan:active{transform:translateY(0) scale(.97)}
+.btn-outline:hover{transform:translateY(-1px);box-shadow:0 0 18px rgba(255,107,53,.12)}
+
+/* ── 子标签 ── */
+.subtabs{display:flex;gap:4px;background:rgba(255,255,255,.04);border-radius:12px;padding:4px;margin-bottom:16px}
+.subtab{flex:1;text-align:center;padding:8px 10px;border-radius:9px;border:none;transition:.2s}
+.subtab:hover{color:var(--text)}
+.subtab.on{color:var(--orange);background:rgba(255,107,53,.12);border:none;box-shadow:inset 0 0 0 1px rgba(255,107,53,.25)}
+
+/* ── 进度条 ── */
+.progress-bar{height:8px;background:rgba(255,255,255,.08);box-shadow:inset 0 1px 3px rgba(0,0,0,.4)}
+.progress-bar .fill{box-shadow:0 0 14px rgba(255,107,53,.55)}
+.progress-bar .fill.cyan{box-shadow:0 0 14px rgba(14,165,233,.55)}
+.progress-label{font-weight:500}
+
+/* ── 书籍卡片 ── */
+.book-grid{gap:16px}
+.book-card{
+  background:linear-gradient(170deg, rgba(255,255,255,.065), rgba(255,255,255,.018));
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;
+  box-shadow:0 8px 26px rgba(0,0,0,.35);
+}
+.book-card:hover{
+  transform:translateY(-6px) scale(1.015);
+  box-shadow:0 18px 46px rgba(0,0,0,.5), 0 0 0 1px rgba(255,107,53,.28), 0 0 30px rgba(255,107,53,.08);
+}
+.book-card-img{transition:transform .5s cubic-bezier(.2,.7,.3,1)}
+.book-card:hover .book-card-img{transform:scale(1.08)}
+.book-card-body{padding:12px 14px}
+.book-card-title{font-size:.88em}
+.book-card-title::after{
+  content:'';display:block;width:0;height:2px;margin-top:4px;border-radius:2px;
+  background:linear-gradient(90deg,var(--orange),var(--orange2));
+  transition:width .3s ease;
+}
+.book-card:hover .book-card-title::after{width:60%}
+
+/* ── 书籍详情 ── */
+.book-cover{
+  box-shadow:0 12px 34px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.1);
+}
+.book-meta h3{font-size:1.25em}
+.tag{box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}
+.tag-orange{background:rgba(255,107,53,.16);box-shadow:0 0 14px rgba(255,107,53,.1)}
+.tag-cyan{background:rgba(14,165,233,.16);box-shadow:0 0 14px rgba(14,165,233,.1)}
+.fmt-opt{border-radius:9px}
+.fmt-opt:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(255,107,53,.15)}
+.fmt-opt.sel,.fmt-opt.sel-cyan{box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+
+/* ── 文件行 ── */
+.file-row{
+  background:var(--glass);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:12px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+}
+.file-row:hover{border-color:rgba(255,255,255,.14);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.file-row .dl{border-radius:9px;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)}
+
+/* ── 登录页 ── */
+.auth-box{max-width:420px;margin:48px auto}
+.auth-box h2{font-size:1.9em;letter-spacing:2px;filter:drop-shadow(0 2px 22px rgba(255,160,107,.3))}
+.auth-switch{border-radius:13px;box-shadow:inset 0 1px 0 rgba(255,255,255,.05)}
+.auth-switch-btn.on{background:rgba(255,255,255,.1);box-shadow:inset 0 1px 0 rgba(255,255,255,.06)}
+.auth-form .btn-go{padding:13px;border-radius:12px}
+
+/* ── 空状态 ── */
+.empty-state{position:relative}
+.empty-state .icon{filter:drop-shadow(0 6px 18px rgba(255,255,255,.15))}
+
+/* ── 弹窗 ── */
+.modal-overlay{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.modal-box{
+  background:linear-gradient(170deg,#1c1c33,#15152a);
+  -webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+  box-shadow:0 24px 70px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.08);
+  border-radius:18px;
+}
+.modal-box::before{
+  content:'';display:block;height:1px;margin-bottom:16px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.35), transparent);
+}
+
+/* ── 分割面板 ── */
+.split-panel{background:rgba(255,255,255,.025);border-radius:12px;padding:14px}
+.split-btn{border-radius:9px;box-shadow:0 4px 16px rgba(14,165,233,.3), inset 0 1px 0 rgba(255,255,255,.2)}
+.split-progress-bar{height:8px}
+.split-progress-fill{box-shadow:0 0 12px rgba(14,165,233,.5)}
+.split-output-item{border-radius:10px}
+
+/* ── 入场动效 ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(14px)}
+  to{opacity:1;transform:none}
+}
+.section.active{animation:fadeUp .4s cubic-bezier(.2,.7,.3,1)}
+.card{animation:fadeUp .38s cubic-bezier(.2,.7,.3,1)}
+.book-card{animation:fadeUp .38s cubic-bezier(.2,.7,.3,1)}
+
+/* ── 滚动条增强 ── */
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg, rgba(255,107,53,.35), rgba(14,165,233,.35));border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg, rgba(255,107,53,.5), rgba(14,165,233,.5))}
+
+/* 移动端微调 */
+@media (max-width:640px){
+  .app-logo{font-size:1.2em}
+  .card:hover{transform:none}
+  .btn:hover::after{transform:none}
+}
+
+/* ── 轻量特效（仅 transform/opacity，GPU 合成，不消耗资源） ── */
+@keyframes starBreath{from{opacity:.72}to{opacity:1}}
+body::before{animation:starBreath 9s ease-in-out infinite alternate}
+
+@keyframes fillSweep{
+  0%{transform:translateX(-100%)}
+  100%{transform:translateX(340%)}
+}
+.progress-bar .fill{position:relative;overflow:hidden}
+.progress-bar .fill::after{
+  content:'';position:absolute;inset:0;width:38%;pointer-events:none;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.5), transparent);
+  animation:fillSweep 1.6s ease-in-out infinite;
+}
+.split-progress-bar{overflow:hidden}
+.split-progress-fill{position:relative;overflow:hidden}
+.split-progress-fill::after{
+  content:'';position:absolute;inset:0;width:38%;pointer-events:none;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.38), transparent);
+  animation:fillSweep 1.6s ease-in-out infinite;
+}
+
+@keyframes logoShine{
+  0%{background-position:0% 50%}
+  100%{background-position:200% 50%}
+}
+/* @supports 保护：不支持 background-clip:text 的浏览器回退到普通颜色，避免文字透明不可见 */
+@supports ((-webkit-background-clip:text) or (background-clip:text)){
+  .app-logo{
+    background:linear-gradient(90deg, #ffffff, #ffb08f, #9ad9ff, #ffffff);
+    background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    animation:logoShine 7s linear infinite;
+  }
+}
+
+/* ── 批量链接输入框 ── */
+.url-row{align-items:stretch}
+.url-area{
+  flex:1;
+  resize:vertical;
+  min-height:72px;
+  font-family:inherit;
+  line-height:1.6;
+}
+
+/* ── 使用指南页 ── */
+.guide-wrap{max-width:860px;margin:0 auto}
+
+/* ── 指南 Hero（更显眼的入口） ── */
+.guide-hero{
+  position:relative;overflow:hidden;
+  padding:32px 36px 28px;
+  border-radius:18px;
+  background:linear-gradient(135deg, rgba(255,107,53,.18) 0%, rgba(14,165,233,.18) 100%);
+  border:1px solid rgba(255,255,255,.12);
+  box-shadow:0 16px 50px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.10);
+  margin-bottom:18px;
+  display:flex;align-items:center;gap:18px;
+  animation:fadeUp .45s cubic-bezier(.2,.7,.3,1);
+}
+.guide-hero-bg{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(380px 220px at 8% 18%, rgba(255,107,53,.35), transparent 60%),
+    radial-gradient(360px 220px at 92% 82%, rgba(14,165,233,.32), transparent 60%);
+  opacity:.7;
+}
+.guide-hero-bg::after{
+  content:'';position:absolute;inset:0;
+  background-image:radial-gradient(1.4px 1.4px at 18% 32%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.2px 1.2px at 64% 18%, rgba(255,255,255,.4), transparent),
+    radial-gradient(1.6px 1.6px at 82% 60%, rgba(255,214,180,.5), transparent),
+    radial-gradient(1px 1px at 32% 78%, rgba(125,211,252,.45), transparent),
+    radial-gradient(1.2px 1.2px at 48% 50%, rgba(255,255,255,.32), transparent);
+  background-size:100% 100%;
+  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,.8), transparent 80%);
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.8), transparent 80%);
+}
+.guide-hero-content{position:relative;z-index:1;flex:1;min-width:0}
+.guide-hero-icon{
+  position:relative;z-index:1;
+  font-size:4.4em;line-height:1;flex-shrink:0;
+  filter:drop-shadow(0 8px 26px rgba(255,150,90,.4));
+  animation:guideHeroFloat 4s ease-in-out infinite alternate;
+}
+@keyframes guideHeroFloat{
+  from{transform:translateY(-4px) rotate(-3deg)}
+  to{transform:translateY(4px) rotate(3deg)}
+}
+.guide-hero-badge{
+  display:inline-block;padding:4px 14px;border-radius:20px;
+  font-size:.74em;font-weight:600;letter-spacing:.5px;
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.18);
+  color:#fff;margin-bottom:10px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.guide-hero-title{
+  margin:0 0 8px;font-size:1.85em;font-weight:800;letter-spacing:1px;
+  background:linear-gradient(90deg, #ffffff 0%, #ffd7c2 45%, #9ad9ff 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 2px 18px rgba(255,180,140,.25));
+}
+.guide-hero-sub{
+  margin:0 0 16px;font-size:.95em;line-height:1.7;color:rgba(255,255,255,.85);
+}
+.guide-hero-sub b{font-weight:700}
+.hl-orange{color:#ffb08f;text-shadow:0 0 14px rgba(255,107,53,.4)}
+.hl-cyan{color:#9ad9ff;text-shadow:0 0 14px rgba(14,165,233,.4)}
+.guide-hero-actions{display:flex;gap:10px;flex-wrap:wrap}
+.guide-cta{
+  padding:10px 22px;font-size:.9em;border-radius:22px;
+  box-shadow:0 8px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.25);
+}
+@media (max-width:640px){
+  .guide-hero{padding:22px 20px 20px;flex-direction:column;text-align:center;gap:8px}
+  .guide-hero-icon{font-size:3.2em;order:-1}
+  .guide-hero-title{font-size:1.4em}
+  .guide-hero-sub{font-size:.86em}
+  .guide-hero-actions{justify-content:center}
+  .guide-cta{flex:1 1 auto;padding:9px 14px;font-size:.84em}
+}
+.guide-card{
+  background:linear-gradient(170deg, rgba(255,255,255,.06), rgba(255,255,255,.015));
+  border:1px solid rgba(255,255,255,.09);
+  border-radius:16px;
+  padding:20px 22px;
+  margin-bottom:16px;
+  box-shadow:0 8px 26px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.05);
+  animation:fadeUp .4s cubic-bezier(.2,.7,.3,1);
+}
+.guide-card h3{
+  display:flex;align-items:center;gap:10px;
+  margin:0 0 12px;font-size:1.05em;
+  color:var(--text);
+}
+.guide-card h3 .g-ico{
+  width:30px;height:30px;border-radius:9px;flex:none;
+  display:inline-flex;align-items:center;justify-content:center;font-size:.95em;
+  background:rgba(255,107,53,.15);box-shadow:0 0 14px rgba(255,107,53,.15);
+}
+.guide-card h3.g-cyan .g-ico{background:rgba(14,165,233,.15);box-shadow:0 0 14px rgba(14,165,233,.15)}
+.guide-card h3.g-green .g-ico{background:rgba(34,197,94,.15);box-shadow:0 0 14px rgba(34,197,94,.15)}
+.guide-card h3.g-amber .g-ico{background:rgba(245,158,11,.15);box-shadow:0 0 14px rgba(245,158,11,.15)}
+.guide-card ul{margin:0;padding-left:20px;line-height:1.9;color:var(--text2)}
+.guide-card li::marker{color:var(--orange)}
+.guide-card.g-cyan ul li::marker{color:#0ea5e9}
+.guide-card.g-green ul li::marker{color:#22c55e}
+.guide-card.g-amber ul li::marker{color:#f59e0b}
+.guide-card code{
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);
+  padding:1px 7px;border-radius:6px;font-size:.9em;color:#ffb08f;
+}
+.guide-note{
+  font-size:.8em;color:var(--text3);background:rgba(255,255,255,.03);
+  border-left:3px solid var(--orange);border-radius:8px;
+  padding:10px 14px;margin-top:12px;line-height:1.7;
+}
+</style>
+<!-- === Toast 通知组件样式（内联版本，可平滑升级到 /toast.css 路由） === -->
+<style id="toast-css">
+/* ═══════════════════════════════════════════════════
+ * toast.css - Toast 通知组件（融入深空玻璃拟态风格）
+ * 用法：在 <head> 引入 <link rel="stylesheet" href="/toast.css">
+ *      在 <body> 末尾引入 <script src="/toast.js"></script>
+ *      调用 window.toast.success('...') / .error / .warning / .info
+ * ═══════════════════════════════════════════════════ */
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: calc(100vw - 40px);
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 280px;
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.88em;
+  line-height: 1.5;
+  color: #fff;
+  background: linear-gradient(165deg, rgba(30, 30, 50, 0.92), rgba(20, 20, 35, 0.92));
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: toast-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+.toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+.toast.toast-leaving {
+  animation: toast-out 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+.toast-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95em;
+  font-weight: 700;
+  margin-top: 1px;
+}
+.toast-content { flex: 1; min-width: 0; word-break: break-word; }
+.toast-title { font-weight: 600; margin-bottom: 2px; color: #fff; }
+.toast-message { color: rgba(255, 255, 255, 0.85); font-size: 0.95em; }
+.toast-close {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  line-height: 1;
+  transition: all 0.2s;
+}
+.toast-close:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+
+.toast.toast-success { border-color: rgba(34, 197, 94, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(34, 197, 94, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+.toast.toast-success .toast-icon { background: linear-gradient(135deg, #22c55e, #16a34a); color: #fff; box-shadow: 0 0 14px rgba(34, 197, 94, 0.5); }
+.toast.toast-success::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #22c55e, #16a34a); animation: toast-progress 3s linear forwards; }
+
+.toast.toast-error { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(239, 68, 68, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+.toast.toast-error .toast-icon { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; box-shadow: 0 0 14px rgba(239, 68, 68, 0.5); }
+.toast.toast-error::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #ef4444, #dc2626); animation: toast-progress 4.5s linear forwards; }
+
+.toast.toast-warning { border-color: rgba(245, 158, 11, 0.4); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+.toast.toast-warning .toast-icon { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; box-shadow: 0 0 14px rgba(245, 158, 11, 0.5); }
+.toast.toast-warning::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #f59e0b, #d97706); animation: toast-progress 4s linear forwards; }
+
+.toast.toast-info { border-color: rgba(14, 165, 233, 0.35); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(14, 165, 233, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.08); }
+.toast.toast-info .toast-icon { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: #fff; box-shadow: 0 0 14px rgba(14, 165, 233, 0.5); }
+.toast.toast-info::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: linear-gradient(90deg, #0ea5e9, #0284c7); animation: toast-progress 3.5s linear forwards; }
+
+@keyframes toast-in { from { opacity: 0; transform: translateX(40px) scale(0.95); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes toast-out { to { opacity: 0; transform: translateX(40px) scale(0.95); } }
+@keyframes toast-progress { from { width: 100%; } to { width: 0%; } }
+
+@media (max-width: 640px) {
+  .toast-container { top: 12px; right: 12px; left: 12px; }
+  .toast { min-width: 0; max-width: 100%; }
+}
+
+.confirm-mask {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px);
+  animation: confirm-fade 0.2s ease;
+}
+.confirm-box {
+  width: min(420px, 90vw);
+  background: linear-gradient(170deg, #1c1c33, #15152a);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: confirm-pop 0.25s cubic-bezier(0.2, 0.7, 0.3, 1);
+  position: relative; overflow: hidden;
+}
+.confirm-box::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); }
+.confirm-title { font-size: 1.05em; font-weight: 600; margin: 0 0 10px; color: #fff; display: flex; align-items: center; gap: 8px; }
+.confirm-title .confirm-icon { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9em; background: linear-gradient(135deg, var(--orange, #ff6b35), #ff8555); color: #fff; box-shadow: 0 0 12px rgba(255, 107, 53, 0.4); }
+.confirm-message { font-size: 0.92em; color: rgba(255, 255, 255, 0.78); line-height: 1.6; margin: 0 0 18px; word-break: break-word; }
+.confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.confirm-btn { padding: 8px 20px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.06); color: rgba(255, 255, 255, 0.85); font-size: 0.9em; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+.confirm-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
+.confirm-btn-primary { background: linear-gradient(135deg, #ff6b35, #ff8555); border-color: rgba(255, 107, 53, 0.4); color: #fff; box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+.confirm-btn-primary:hover { filter: brightness(1.08); box-shadow: 0 6px 22px rgba(255, 107, 53, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+.confirm-btn-primary:active { transform: scale(0.97); }
+@keyframes confirm-fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes confirm-pop { from { opacity: 0; transform: scale(0.92) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+</style>
+
+<!-- === 骨架屏组件样式 === -->
+<style id="skeleton-css">
+.skeleton-book { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 14px; }
+.skeleton-book-card { background: linear-gradient(165deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; overflow: hidden; position: relative; }
+.skeleton-book-card::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.06) 50%, transparent 100%); animation: sk-shimmer 1.6s ease-in-out infinite; pointer-events: none; }
+.skeleton-book-cover { width: 100%; aspect-ratio: 2/3; background: rgba(255, 255, 255, 0.04); }
+.skeleton-book-info { padding: 10px 12px; }
+.skeleton-book-title { height: 14px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 8px; width: 85%; }
+.skeleton-book-meta { height: 10px; background: rgba(255, 255, 255, 0.06); border-radius: 4px; width: 60%; }
+.skeleton-file-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.07); border-radius: 12px; margin-bottom: 8px; position: relative; overflow: hidden; }
+.skeleton-file-row::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%); animation: sk-shimmer 1.6s ease-in-out infinite; pointer-events: none; }
+.skeleton-file-icon { width: 40px; height: 40px; border-radius: 10px; background: rgba(255, 255, 255, 0.06); flex-shrink: 0; }
+.skeleton-file-info { flex: 1; }
+.skeleton-file-name { height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 4px; margin-bottom: 6px; width: 60%; }
+.skeleton-file-meta { height: 9px; background: rgba(255, 255, 255, 0.06); border-radius: 4px; width: 40%; }
+.skeleton-file-action { width: 70px; height: 28px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); flex-shrink: 0; }
+.skeleton-detail { display: flex; gap: 20px; margin-bottom: 18px; }
+.skeleton-cover { width: 120px; min-width: 120px; aspect-ratio: 2/3; background: rgba(255, 255, 255, 0.05); border-radius: 12px; }
+.skeleton-detail-info { flex: 1; }
+.skeleton-detail-title { height: 22px; background: rgba(255, 255, 255, 0.1); border-radius: 6px; margin-bottom: 12px; width: 70%; }
+.skeleton-detail-line { height: 11px; background: rgba(255, 255, 255, 0.06); border-radius: 4px; margin-bottom: 8px; }
+.skeleton-detail-line.short { width: 40%; }
+.skeleton-detail-line.medium { width: 65%; }
+.skeleton-detail-line.long { width: 90%; }
+@keyframes sk-shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+@media (max-width: 640px) {
+  .skeleton-book { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+  .skeleton-detail { flex-direction: column; align-items: center; }
+  .skeleton-cover { width: 100px; min-width: 100px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+/* === A2 登录页美化 + A3 主题切换 + A8 页面过渡 + 浮动主题按钮 === */
+</script>
+
+<style id="theme-css">
+/* ═══════════════════ 浅色主题变量 ═══════════════════ */
+:root[data-theme="light"] {
+  --bg: #f5f5fa;
+  --bg-grad-1: rgba(255, 107, 53, 0.08);
+  --bg-grad-2: rgba(14, 165, 233, 0.08);
+  --bg-grad-3: rgba(139, 92, 246, 0.05);
+  --bg-base: linear-gradient(180deg, #fafafd 0%, #f0f0f8 50%, #e8e8f2 100%);
+  --surface: rgba(255, 255, 255, 0.7);
+  --surface-hover: rgba(255, 255, 255, 0.85);
+  --border: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.12);
+  --text: #1a1a2e;
+  --text2: #4a4a6a;
+  --text3: #8888a0;
+  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-strong: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --inp-bg: rgba(255, 255, 255, 0.8);
+  --code-bg: rgba(0, 0, 0, 0.06);
+}
+:root[data-theme="light"] body {
+  background:
+    radial-gradient(1100px 520px at 12% -10%, rgba(255, 107, 53, 0.10), transparent 60%),
+    radial-gradient(900px 480px at 88% -5%, rgba(14, 165, 233, 0.10), transparent 60%),
+    radial-gradient(900px 520px at 50% 118%, rgba(139, 92, 246, 0.06), transparent 60%),
+    linear-gradient(180deg, #fafafd 0%, #f0f0f8 50%, #e8e8f2 100%);
+  color: var(--text);
+}
+:root[data-theme="light"] body::before {
+  /* 浅色下星点改为更柔 */
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(0, 0, 0, 0.15), transparent 100%),
+    radial-gradient(1px 1px at 28% 64%, rgba(0, 0, 0, 0.1), transparent 100%),
+    radial-gradient(1.6px 1.6px at 42% 12%, rgba(255, 107, 53, 0.4), transparent 100%),
+    radial-gradient(1px 1px at 58% 40%, rgba(0, 0, 0, 0.12), transparent 100%),
+    radial-gradient(1.3px 1.3px at 72% 74%, rgba(14, 165, 233, 0.4), transparent 100%);
+}
+:root[data-theme="light"] .card {
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0.6));
+  border-color: rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 36px rgba(0, 0, 0, 0.08);
+}
+:root[data-theme="light"] .nav-bar {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.06);
+}
+:root[data-theme="light"] .inp {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text);
+}
+:root[data-theme="light"] .inp::placeholder { color: rgba(0, 0, 0, 0.4); }
+:root[data-theme="light"] .book-card,
+:root[data-theme="light"] .file-row,
+:root[data-theme="light"] .guide-card {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+:root[data-theme="light"] .file-row:hover,
+:root[data-theme="light"] .book-card:hover {
+  background: rgba(255, 255, 255, 0.9);
+}
+:root[data-theme="light"] .modal-box {
+  background: linear-gradient(170deg, #ffffff, #f5f5fa);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+:root[data-theme="light"] .pg-btn {
+  background: rgba(255, 255, 255, 0.7);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+:root[data-theme="light"] .btn-ghost {
+  border-color: rgba(0, 0, 0, 0.12);
+  color: var(--text2);
+}
+:root[data-theme="light"] .quota-pill,
+:root[data-theme="light"] .user-avatar {
+  color: #fff;
+}
+
+/* ═══════════════════ 主题切换浮动按钮 ═══════════════════ */
+.theme-toggle {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b35, #ff8555);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  cursor: pointer;
+  z-index: 998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3em;
+  box-shadow: 0 8px 24px rgba(255, 107, 53, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.3s;
+}
+.theme-toggle:hover {
+  transform: scale(1.08) rotate(15deg);
+  box-shadow: 0 12px 32px rgba(255, 107, 53, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.theme-toggle:active { transform: scale(0.95); }
+@media (max-width: 640px) {
+  .theme-toggle { bottom: 16px; right: 16px; width: 42px; height: 42px; font-size: 1.1em; }
+}
+
+/* ═══════════════════ 登录页粒子背景 ═══════════════════ */
+.particle-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: particle-float 12s linear infinite;
+  filter: blur(1px);
+}
+@keyframes particle-float {
+  0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.5; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(1.2); opacity: 0; }
+}
+
+/* ═══════════════════ 登录页 Logo 增强动效 ═══════════════════ */
+.auth-box h2.shine-text {
+  font-size: 1.9em;
+  letter-spacing: 2px;
+  filter: drop-shadow(0 2px 22px rgba(255, 160, 107, 0.3));
+}
+.auth-box .inp:focus {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.18), 0 0 30px rgba(255, 107, 53, 0.16);
+  transform: translateY(-1px);
+}
+
+/* ═══════════════════ 页面切换过渡（增强） ═══════════════════ */
+.section {
+  animation-duration: 0.42s;
+}
+.section.active { animation-name: section-in; }
+.section.leaving { animation-name: section-out; }
+</style>
+
+<!-- === 全局微动效样式 === -->
+<style id="effects-css">
+/* ═══════════════════════════════════════════════════
+ * effects.css - 全局微动效合集（融入深空玻璃拟态）
+ * 包含：按钮波纹、卡片悬停 3D 倾斜、页面过渡、骨架入场、进度条流光、磁性按钮
+ * GPU 友好：仅使用 transform / opacity
+ * ═══════════════════════════════════════════════════ */
+
+/* ── 按钮波纹（点击扩散） ── */
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.45) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: scale(0);
+  animation: ripple-spread 0.7s ease-out forwards;
+  z-index: 1;
+}
+@keyframes ripple-spread {
+  to { transform: scale(2.5); opacity: 0; }
+}
+
+/* ── 卡片悬停 3D 倾斜 ── */
+.tilt-card {
+  transform-style: preserve-3d;
+  transition: transform 0.4s cubic-bezier(0.2, 0.7, 0.3, 1), box-shadow 0.3s;
+  will-change: transform;
+}
+.tilt-card:hover {
+  transform: perspective(1000px) rotateX(2deg) rotateY(-3deg) translateY(-4px) scale(1.015);
+}
+
+/* ── 页面切换过渡 ── */
+.section {
+  animation-duration: 0.4s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+.section.active {
+  animation-name: section-in;
+}
+.section.leaving {
+  animation-name: section-out;
+}
+@keyframes section-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.99); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes section-out {
+  to { opacity: 0; transform: translateY(-8px) scale(0.99); }
+}
+
+/* ── 入场动画序列 ── */
+.stagger-in {
+  opacity: 0;
+  transform: translateY(14px);
+  animation: stagger-in 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+@keyframes stagger-in {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── 加载抖动（用于等待状态） ── */
+.shake-on-error {
+  animation: shake 0.4s cubic-bezier(0.36, 0.07, 0.19, 0.97);
+}
+@keyframes shake {
+  10%, 90% { transform: translateX(-2px); }
+  20%, 80% { transform: translateX(3px); }
+  30%, 50%, 70% { transform: translateX(-5px); }
+  40%, 60% { transform: translateX(5px); }
+}
+
+/* ── 成功脉冲 ── */
+.pulse-success {
+  animation: pulse-success 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+@keyframes pulse-success {
+  0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(34, 197, 94, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+}
+
+/* ── 错误脉冲 ── */
+.pulse-error {
+  animation: pulse-error 0.6s cubic-bezier(0.2, 0.7, 0.3, 1);
+}
+@keyframes pulse-error {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+  70% { box-shadow: 0 0 0 12px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+/* ── 数字滚动 ── */
+.count-up {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── 悬浮阴影深度 ── */
+.lift-on-hover {
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+.lift-on-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ── 渐变流光文字（标题） ── */
+.shine-text {
+  background: linear-gradient(90deg, #ffffff, #ffb08f, #9ad9ff, #ffffff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: shine-flow 6s linear infinite;
+}
+@keyframes shine-flow {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+/* ── 列表项入场错位（用于文件列表、搜索结果） ── */
+.stagger-list > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: stagger-in 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+.stagger-list > *:nth-child(1) { animation-delay: 0.04s; }
+.stagger-list > *:nth-child(2) { animation-delay: 0.08s; }
+.stagger-list > *:nth-child(3) { animation-delay: 0.12s; }
+.stagger-list > *:nth-child(4) { animation-delay: 0.16s; }
+.stagger-list > *:nth-child(5) { animation-delay: 0.2s; }
+.stagger-list > *:nth-child(6) { animation-delay: 0.24s; }
+.stagger-list > *:nth-child(7) { animation-delay: 0.28s; }
+.stagger-list > *:nth-child(8) { animation-delay: 0.32s; }
+.stagger-list > *:nth-child(9) { animation-delay: 0.36s; }
+.stagger-list > *:nth-child(10) { animation-delay: 0.4s; }
+.stagger-list > *:nth-child(n+11) { animation-delay: 0.44s; }
+
+/* ── 数字徽章心跳（管理员用的活跃指示） ── */
+.heartbeat {
+  animation: heartbeat 2s ease-in-out infinite;
+}
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  10%, 30% { transform: scale(1.08); }
+  20% { transform: scale(0.96); }
+}
+
+/* ── 滚动指示器 ── */
+.scroll-hint {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 24px;
+  height: 36px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  padding-top: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s;
+  z-index: 100;
+}
+.scroll-hint.show { opacity: 0.7; }
+.scroll-hint::before {
+  content: '';
+  width: 3px;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+  animation: scroll-wheel 1.6s ease-in-out infinite;
+}
+@keyframes scroll-wheel {
+  0% { opacity: 0; transform: translateY(0); }
+  50% { opacity: 1; }
+  100% { opacity: 0; transform: translateY(12px); }
+}
+
+/* ── 主题切换过渡 ── */
+.theme-transitioning, .theme-transitioning *, .theme-transitioning *::before, .theme-transitioning *::after {
+  transition: background-color 0.4s, color 0.4s, border-color 0.4s, box-shadow 0.4s !important;
+}
+
+/* ── 移动端减少动效（性能与体验平衡） ── */
+@media (prefers-reduced-motion: reduce), (max-width: 640px) {
+  .tilt-card:hover { transform: translateY(-2px) !important; }
+  .lift-on-hover:hover { transform: none !important; }
+  .stagger-list > * { animation-duration: 0.2s !important; }
+}
+</style>
+
+<!-- === 全局微动效 JS === -->
+<script>
+/* ═══════════════════════════════════════════════════
+ * effects.js - 全局微动效
+ *  - 按钮波纹（自动绑定 .btn 类）
+ *  - 卡片 3D 倾斜（自动绑定 .tilt-card）
+ *  - 数字 count-up
+ *  - 滚动指示器
+ *  - 错误抖动
+ * ═══════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+
+  // ── 按钮波纹 ──
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn, .btn-sm, .btn-xs, .btn-go, .btn-cyan, .btn-outline, .btn-ghost, .btn-red, .split-btn, .fmt-opt, .nav-btn, .subtab, .pg-btn, .confirm-btn');
+    if (!btn) return;
+    if (btn._rippling) return;
+    btn._rippling = true;
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height) * 1.2;
+    const ripple = document.createElement('span');
+    ripple.className = 'ripple';
+    ripple.style.width = ripple.style.height = size + 'px';
+    ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+    ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+    if (getComputedStyle(btn).position === 'static') btn.style.position = 'relative';
+    if (getComputedStyle(btn).overflow !== 'hidden') btn.style.overflow = 'hidden';
+    btn.appendChild(ripple);
+    setTimeout(() => { ripple.remove(); btn._rippling = false; }, 700);
+  });
+
+  // ── 卡片 3D 倾斜 ── */
+  function attachTilt(el) {
+    if (el.dataset.tilt === '1') return;
+    el.dataset.tilt = '1';
+    const max = 4;
+    el.addEventListener('mousemove', (e) => {
+      const r = el.getBoundingClientRect();
+      const x = (e.clientX - r.left) / r.width - 0.5;
+      const y = (e.clientY - r.top) / r.height - 0.5;
+      el.style.transform = `perspective(1000px) rotateX(${-y * max}deg) rotateY(${x * max}deg) translateY(-2px) scale(1.01)`;
+    });
+    el.addEventListener('mouseleave', () => {
+      el.style.transform = '';
+    });
+  }
+
+  function scanTilt() {
+    document.querySelectorAll('.tilt-card').forEach(attachTilt);
+  }
+
+  // 定时扫描新增卡片
+  setInterval(scanTilt, 1000);
+
+  // ── 数字 count-up ──
+  function countUp(el, target, duration) {
+    duration = duration || 1200;
+    const start = parseFloat(el.textContent.replace(/,/g, '')) || 0;
+    const t0 = performance.now();
+    function tick(t) {
+      const p = Math.min(1, (t - t0) / duration);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const val = start + (target - start) * eased;
+      el.textContent = Math.floor(val).toLocaleString();
+      if (p < 1) requestAnimationFrame(tick);
+      else el.textContent = target.toLocaleString();
+    }
+    requestAnimationFrame(tick);
+  }
+
+  global.countUp = countUp;
+  global.scanTilt = scanTilt;
+
+  // ── 滚动指示器（首屏提示） ──
+  function setupScrollHint() {
+    if (document.querySelector('.scroll-hint')) return;
+    const hint = document.createElement('div');
+    hint.className = 'scroll-hint';
+    document.body.appendChild(hint);
+    function check() {
+      if (window.scrollY > 80) hint.classList.remove('show');
+      else if (document.body.scrollHeight > window.innerHeight + 200) hint.classList.add('show');
+      else hint.classList.remove('show');
+    }
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('resize', check);
+    setTimeout(check, 500);
+  }
+  setTimeout(setupScrollHint, 1500);
+
+  // ── 错误抖动辅助 ──
+  global.shakeElement = function (el) {
+    if (!el) return;
+    el.classList.remove('shake-on-error');
+    void el.offsetWidth;
+    el.classList.add('shake-on-error');
+    setTimeout(() => el.classList.remove('shake-on-error'), 500);
+  };
+
+  // ── 成功/错误脉冲 ──
+  global.pulseSuccess = function (el) {
+    if (!el) return;
+    el.classList.remove('pulse-success');
+    void el.offsetWidth;
+    el.classList.add('pulse-success');
+    setTimeout(() => el.classList.remove('pulse-success'), 700);
+  };
+  global.pulseError = function (el) {
+    if (!el) return;
+    el.classList.remove('pulse-error');
+    void el.offsetWidth;
+    el.classList.add('pulse-error');
+    setTimeout(() => el.classList.remove('pulse-error'), 700);
+  };
+})(window);
+</script>
+
+<!-- === 主题切换 + 粒子背景 + 标签切换过渡 === -->
+<script>
+/* ═══════════════════════════════════════════════════
+ * theme.js + particles.js + tab transition
+ * ═══════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  // ── 主题：读取/保存/应用 ──
+  const KEY = 'fnd_theme';
+  function getTheme() { return localStorage.getItem(KEY) || 'dark'; }
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem(KEY, theme);
+    const btn = document.querySelector('.theme-toggle');
+    if (btn) btn.textContent = theme === 'dark' ? '☀️' : '🌙';
+  }
+  function toggleTheme() {
+    const cur = getTheme();
+    document.documentElement.classList.add('theme-transitioning');
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+    setTimeout(() => document.documentElement.classList.remove('theme-transitioning'), 500);
+  }
+  window.toggleTheme = toggleTheme;
+  // 立即应用主题避免闪烁
+  applyTheme(getTheme());
+
+  // ── 粒子背景（仅登录页） ──
+  function renderParticles() {
+    if (document.querySelector('.particle-bg')) return;
+    const bg = document.createElement('div');
+    bg.className = 'particle-bg';
+    const colors = ['#ff6b35', '#0ea5e9', '#9ad9ff', '#ffb08f', '#a78bfa', '#f59e0b'];
+    const count = window.innerWidth < 640 ? 18 : 36;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 3 + Math.random() * 6;
+      p.style.width = p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.top = Math.random() * 100 + '%';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.setProperty('--dx', (Math.random() - 0.5) * 200 + 'px');
+      p.style.setProperty('--dy', (Math.random() - 0.5) * 200 + 'px');
+      p.style.animationDelay = Math.random() * 12 + 's';
+      p.style.animationDuration = (10 + Math.random() * 8) + 's';
+      bg.appendChild(p);
+    }
+    document.body.appendChild(bg);
+  }
+
+  // ── 浮动主题按钮 ──
+  function renderThemeToggle() {
+    if (document.querySelector('.theme-toggle')) return;
+    const btn = document.createElement('button');
+    btn.className = 'theme-toggle';
+    btn.title = '切换主题';
+    btn.setAttribute('aria-label', '切换主题');
+    btn.textContent = getTheme() === 'dark' ? '☀️' : '🌙';
+    btn.addEventListener('click', toggleTheme);
+    document.body.appendChild(btn);
+  }
+
+  // 首次加载即初始化
+  renderThemeToggle();
+
+  // 检测登录页（无 user 时）显示粒子
+  window._showParticles = renderParticles;
+  window._hideParticles = function () {
+    const bg = document.querySelector('.particle-bg');
+    if (bg) bg.remove();
+  };
+})();
+
+/* ── 标签切换：增强过渡 ── */
+(function () {
+  // 包装 switchTab 让其有 leaving 阶段
+  const origSwitch = window.switchTab;
+  if (!origSwitch) {
+    // 第一次执行时尚未定义，等到 boot 后再 hook
+    document.addEventListener('DOMContentLoaded', () => {
+      hookSwitchTab();
+    });
+  } else {
+    hookSwitchTab();
+  }
+  function hookSwitchTab() {
+    const orig = window.switchTab;
+    if (orig._hooked) return;
+    window.switchTab = function (t) {
+      const cur = document.querySelector('.section.active');
+      if (cur) {
+        cur.classList.add('leaving');
+        setTimeout(() => cur.classList.remove('leaving'), 400);
+      }
+      setTimeout(() => orig.call(this, t), 50);
+    };
+    window.switchTab._hooked = true;
+  }
+})();
+</script>
+
+<!-- === 业务核心：UTILS / AUTH / FANQIE / QIMAO / FILES / ADMIN / BOOT === -->
+<script>
+/* ====== UTILS ====== */
+const eH=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+const stripHtml=s=>{const d=document.createElement('div');d.innerHTML=s;return d.textContent||''}
+async function api(url,o={}){
+  o.credentials='same-origin';
+  if(o.body&&typeof o.body==='object'){o.headers={'Content-Type':'application/json',...o.headers};o.body=JSON.stringify(o.body)}
+  /* 冲突路由改写：仅当页面自身挂在 /novel 前缀下（rem-proxy 反代部署）才改写，避免直连时 404 */
+  if(typeof url==='string' && url.indexOf('/api/admin/users')===0 && location.pathname.startsWith('/novel')){url='/novel'+url}
+  const r=await fetch(url,o);return r
+}
+
+/* ====== PAGINATION（通用分页条） ====== */
+let pgSeq=0;
+// opts: {total, page, per_page, onPage}；挂到指定容器；totalPages<=1 时清空隐藏
+function renderPagination(el,opts){
+  if(!el)return;
+  el._pgOpts=opts;
+  const totalPages=Math.max(1,Math.ceil((opts.total||0)/(opts.per_page||20)));
+  const page=Math.max(1,Math.min(opts.page||1,totalPages));
+  if(totalPages<=1){el.innerHTML='';return}
+  if(!el.id)el.id='pg'+(++pgSeq);
+  const id=el.id;
+  const pgBtn=p=>`<button class="pg-btn ${p===page?'on':''}" onclick="pgGo('${id}',${p})">${p}</button>`;
+  const dots='<span class="pg-dots">…</span>';
+  const win=2,arr=[];
+  for(let p=1;p<=totalPages;p++){
+    if(p===1||p===totalPages||Math.abs(p-page)<=win)arr.push(p);
+    else if(arr[arr.length-1]!==0)arr.push(0);
+  }
+  el.innerHTML=
+    '<div class="pager">'+
+    `<button class="pg-btn" ${page<=1?'disabled':''} onclick="pgGo('${id}',${page-1})">‹ 上一页</button>`+
+    arr.map(p=>p===0?dots:pgBtn(p)).join('')+
+    `<button class="pg-btn" ${page>=totalPages?'disabled':''} onclick="pgGo('${id}',${page+1})">下一页 ›</button>`+
+    `<span class="pg-info">共 ${opts.total} 条 · ${totalPages} 页</span>`+
+    '</div>';
+}
+function pgGo(id,p){
+  const el=document.getElementById(id);
+  if(el&&el._pgOpts&&el._pgOpts.onPage)el._pgOpts.onPage(p);
+}
+function parseTags(ptags){
+  /* 兼容数组和逗号分隔字符串 */
+  if(!ptags)return[];
+  if(Array.isArray(ptags))return ptags.filter(Boolean);
+  if(typeof ptags==='string')return ptags.split(',').map(s=>s.trim()).filter(Boolean);
+  return[];
+}
+
+/* ====== STATE ====== */
+let U=null,am='login',pT=null,rT=null;
+let tab='fanqie';
+/* Fanqie state */
+let fsub='link';           // 'link'|'search'|'detail'
+let fBook=null,fFmt='txt';
+let fSearchResults=[];
+/* Qimao state */
+let qsub='link';           // 'link'|'search'
+let qBook=null,qFmt='txt',qBusy=false;
+let qSearchResults=[];
+/* Pagination state */
+const PAG={
+  fPage:1,fPer:20,fTotal:0,fLastQ:'',    // 番茄搜索
+  qPage:1,qPer:20,qTotal:0,qLastQ:'',    // 七猫搜索
+  aPage:1,aPer:20,aTotal:0,aLastQ:'',    // 管理员用户
+  filePage:1,filePer:10,fileTotal:0,     // 我的下载（每页 10 个）
+};
+
+/* ====== BOOT ====== */
+(async function init(){
+  try{const r=await api('/api/auth/me');const d=await r.json();if(d.logged_in){U=d.user;if(window._hideParticles)window._hideParticles();render()}else renderAuth()}catch(e){renderAuth()}
+})();
+
+/* ========================= AUTH ========================= */
+function renderAuth(){
+  U=null;
+  if(window._showParticles)window._showParticles();
+  document.getElementById('app').innerHTML=`
+<div class="auth-box card stagger-in">
+  <h2 class="shine-text">👋 欢迎使用</h2>
+  <div class="auth-switch">
+    <button class="auth-switch-btn ${am==='login'?'on':''}" onclick="am='login';renderAuth()">登录</button>
+    <button class="auth-switch-btn ${am==='register'?'on':''}" onclick="am='register';renderAuth()">注册</button>
+  </div>
+  <div class="auth-form">
+    <input class="inp" id="aName" placeholder="用户名" autocomplete="off">
+    <input class="inp" id="aPass" type="password" placeholder="密码" autocomplete="new-password">
+    <button class="btn btn-go" onclick="doAuth()">${am==='login'?'登 录':'注 册'}</button>
+    <div class="auth-msg" id="authMsg"></div>
+    ${am==='register'?'<p style="font-size:.78em;color:var(--text3);text-align:center">新用户默认0次下载，联系管理员分配次数</p>':''}
+  </div>
+</div>`;
+}
+async function doAuth(){
+  const u=document.getElementById('aName').value.trim(),p=document.getElementById('aPass').value;
+  const m=document.getElementById('authMsg');m.className='auth-msg';
+  if(!u||!p){m.textContent='用户名和密码不能为空';m.classList.add('err');return}
+  try{
+    const r=await api(`/api/auth/${am==='login'?'login':'register'}`,{method:'POST',body:{username:u,password:p}});
+    const d=await r.json();
+    if(!r.ok){m.textContent=d.error||'失败';m.classList.add('err')}
+    else if(am==='register'){m.textContent='注册成功，自动登录中...';m.classList.add('ok');am='login';setTimeout(doAuth,400)}
+    else{U=d.user;if(window._hideParticles)window._hideParticles();render()}
+  }catch(e){m.textContent='网络错误';m.classList.add('err')}
+}
+async function doLogout(){
+  await api('/api/auth/logout',{method:'POST'});
+  U=null;tab='fanqie';fsub='link';fBook=null;qBook=null;if(rT){clearInterval(rT);rT=null}
+  renderAuth();
+}
+
+/* ========================= DISPATCH ========================= */
+function render(){
+  /* 管理员也走 renderUser，让管理员可以下载小说；管理面板由 subtab 切换进入 */
+  renderUser();
+}
+
+/* ========================= USER SHELL ========================= */
+function renderUser(){
+  if(rT)clearInterval(rT);
+  const isAdmin = U.is_admin;
+  document.getElementById('app').innerHTML=`
+<div class="app-header">
+  <div class="app-logo">👋 欢迎使用<span>${isAdmin?'管理 · 番茄 · 七猫':'番茄 · 七猫'}</span></div>
+  <div class="user-bar">
+    <div class="user-avatar">${U.username[0].toUpperCase()}</div>
+    <span class="user-name-text hide-mobile">${eH(U.username)}</span>
+    <span class="quota-pill ${isAdmin?'admin-infinity':''}" id="qPill" title="${isAdmin?'管理员无限次':'剩余下载次数'}">${isAdmin?'∞ 无限':U.download_quota+' 次'}</span>
+    ${isAdmin?'<button class="btn-ghost admin-panel-btn" onclick="openAdminPanel()" title="打开管理面板">👑 管理</button>':''}
+    <button class="btn-ghost" onclick="doLogout()">退出</button>
+  </div>
+</div>
+
+${isAdmin?`
+<!-- 管理员徽章横幅 -->
+<div class="admin-banner">
+  <span class="banner-text"><span class="bell">👑</span> 管理员模式已激活 · 享受 <b>无限下载</b>，可管理所有用户</span>
+  <button class="btn btn-sm btn-go" onclick="openAdminPanel()">📊 打开管理面板</button>
+</div>
+`:`
+<div class="quota-banner">
+  <span class="banner-text"><span class="bell">📢</span> 下载次数不够用？增加次数请联系管理员</span>
+  <button class="btn btn-sm btn-go" onclick="showContact()">👤 联系管理员</button>
+</div>
+`}
+
+<div class="nav-bar">
+  <button class="nav-btn ${tab==='fanqie'?'on':''}" onclick="switchTab('fanqie')"><span class="nav-icon">🍅</span><span>番茄</span></button>
+  <button class="nav-btn ${tab==='qimao'?'on':''}" onclick="switchTab('qimao')"><span class="nav-icon">🐱</span><span>七猫</span></button>
+  <button class="nav-btn ${tab==='files'?'on':''}" onclick="switchTab('files')"><span class="nav-icon">📂</span><span>文件</span></button>
+  <button class="nav-btn ${tab==='guide'?'on':''} guide-nav-btn" id="guideNavBtn" onclick="switchTab('guide')"><span class="nav-icon">📖</span><span>指南</span><span class="nav-badge-text" style="display:none">新</span></button>
+</div>
+
+<!-- 新手引导横条：未读指南时在主屏顶部显示一条高亮引导 -->
+<div class="guide-cta-strip" id="guideCtaStrip" style="display:none">
+  <div class="guide-cta-inner">
+    <div class="guide-cta-icon">📖</div>
+    <div class="guide-cta-text">
+      <div class="guide-cta-title">第一次使用？3 分钟读懂本工具</div>
+      <div class="guide-cta-sub">下载次数 · 批量导入 · 文件分割 · 常见坑</div>
+    </div>
+    <button class="btn btn-go btn-sm guide-cta-btn" onclick="switchTab('guide')">立即查看</button>
+    <button class="guide-cta-close" title="不再提示" onclick="dismissGuideStrip(event)">×</button>
+  </div>
+</div>
+
+<div id="section-fanqie" class="section ${tab==='fanqie'?'active':''}"></div>
+<div id="section-qimao" class="section ${tab==='qimao'?'active':''}"></div>
+<div id="section-files" class="section ${tab==='files'?'active':''}"></div>
+<div id="section-guide" class="section ${tab==='guide'?'active':''}"></div>
+
+<!-- 管理员面板弹窗（仅管理员可见） -->
+<div class="admin-panel-mask" id="adminPanelMask" onclick="if(event.target===this)closeAdminPanel()">
+  <div class="admin-panel-box">
+    <div class="admin-panel-head">
+      <div class="admin-panel-title">👑 管理员控制台</div>
+      <button class="admin-panel-close" onclick="closeAdminPanel()">×</button>
+    </div>
+    <div id="adminPanelContent"></div>
+  </div>
+</div>
+
+<div class="contact-mask" id="contactMask" onclick="if(event.target===this)closeContact()">
+  <div class="contact-box">
+    <h3>👤 联系管理员</h3>
+    <div class="contact-row">
+      <span>QQ</span>
+      <span class="contact-val">3637438435</span>
+      <button class="btn-xs btn-go" onclick="copyContact('3637438435',this)">复制</button>
+    </div>
+    <div class="contact-row">
+      <span>微信</span>
+      <span class="contact-val">acimer</span>
+      <button class="btn-xs btn-go" onclick="copyContact('acimer',this)">复制</button>
+    </div>
+    <p class="contact-note">加好友时请备注"小说下载"，管理员通过后会为你增加下载次数~</p>
+    <button class="btn btn-ghost" style="width:100%" onclick="closeContact()">关闭</button>
+  </div>
+</div>`;
+
+  switchTab(tab);
+  rT=setInterval(()=>{if(U&&!U.is_admin)refreshQuota()},20000);
+  /* 首登引导弹窗：仅在用户已登录且未看过时显示 */
+  if(typeof FirstLoginWelcome!=='undefined'){
+    FirstLoginWelcome.refreshBadge();  // 渲染指南 tab 红点
+    FirstLoginWelcome.refreshStrip();  // 渲染主屏引导横条
+    setTimeout(()=>FirstLoginWelcome.show(), 350);  // 短延迟让首屏先渲染
+  }
+}
+
+/* 联系管理员弹窗 */
+function showContact(){document.getElementById('contactMask').classList.add('show')}
+
+/* 新手引导横条：点 × 关闭（永久不再提示，但红点还在） */
+function dismissGuideStrip(e){
+  if(e){e.stopPropagation();e.preventDefault();}
+  if(typeof FirstLoginWelcome!=='undefined') FirstLoginWelcome.dismissStrip();
+}
+
+/* 复制页面 URL（文件 tab "复制页面链接"按钮用） */
+async function copyPageUrl(btn){
+  const url = location.href;
+  const ok = () => {
+    if(!btn) return;
+    const old = btn.textContent;
+    btn.textContent = '✅ 已复制，请到浏览器粘贴打开';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = old; btn.disabled = false; }, 2200);
+  };
+  try{
+    if(navigator.clipboard && window.isSecureContext){
+      await navigator.clipboard.writeText(url); ok();
+    } else {
+      const ta = document.createElement('textarea');
+      ta.value = url; ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch(e) {}
+      document.body.removeChild(ta);
+      ok();
+    }
+  }catch(e){ ok(); }
+}
+function closeContact(){document.getElementById('contactMask').classList.remove('show')}
+async function copyContact(text,btn){
+  const ok=()=>{const old=btn.textContent;btn.textContent='✅ 已复制';setTimeout(()=>{btn.textContent=old},1600)};
+  try{
+    if(navigator.clipboard&&window.isSecureContext){await navigator.clipboard.writeText(text);ok()}
+    else{
+      const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy')}catch(e){}
+      document.body.removeChild(ta);ok();
+    }
+  }catch(e){ok()}
+}
+
+function switchTab(t){
+  tab=t;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const btns=document.querySelectorAll('.nav-btn');
+  const idx={'fanqie':0,'qimao':1,'files':2,'guide':3}[t];
+  if(btns[idx])btns[idx].classList.add('on');
+  const sec=document.getElementById('section-'+t);
+  if(sec)sec.classList.add('active');
+  if(t==='fanqie')renderFanqie();
+  else if(t==='qimao')renderQimao();
+  else if(t==='guide'){
+    renderGuide();
+    /* 用户点开指南 tab → 标记已读、移除红点 */
+    if(typeof FirstLoginWelcome!=='undefined' && FirstLoginWelcome.markGuideRead) FirstLoginWelcome.markGuideRead();
+  }
+  else renderFiles();
+}
+
+async function refreshQuota(){
+  try{const r=await api('/api/info');const d=await r.json();if(U){U.download_quota=d.quota;updateQuotaUI()}}catch(e){}
+}
+function updateQuotaUI(){
+  const p=document.getElementById('qPill');
+  if(!p)return;
+  if(U && U.is_admin){
+    p.textContent='∞ 无限';
+    p.classList.add('admin-infinity');
+    p.classList.remove('low');
+    return;
+  }
+  const q=U.download_quota;
+  p.textContent=`${q} 次`;
+  p.classList.remove('admin-infinity');
+  p.classList.toggle('low',q<=2);
+}
+
+/* ========================= FANQIE TAB ========================= */
+function renderFanqie(){
+  const s=document.getElementById('section-fanqie');
+  if(!s)return;
+
+  /* 详情页 */
+  if(fsub==='detail'&&fBook){renderFanqieDetail();return}
+
+  /* 搜索/链接 视图 */
+  s.innerHTML=`
+<div class="tab-hint" onclick="switchTab('guide')">
+  <span class="tab-hint-icon">💡</span>
+  <span class="tab-hint-text">不知道怎么用？<b>点击查看使用指南</b></span>
+  <span class="tab-hint-arrow">›</span>
+</div>
+<div class="subtabs">
+  <div class="subtab ${fsub==='link'?'on':''}" onclick="fsub='link';fBook=null;renderFanqie()">🔗 链接下载</div>
+  <div class="subtab ${fsub==='search'?'on':''}" onclick="fsub='search';fBook=null;renderFanqie()">🔍 搜索下载</div>
+</div>
+${fsub==='link'?`
+<div class="card">
+  <div class="inp-row url-row">
+    <textarea class="inp url-area" id="fUrl" rows="3" placeholder="粘贴番茄小说链接，支持短链接&#10;可一次粘贴多行，每行一个链接或 ID，将逐个下载"></textarea>
+    <button class="btn btn-go" id="fDlBtn" onclick="fLinkDownload()">开始下载</button>
+  </div>
+  <div class="progress-wrap" id="fProg">
+    <div class="progress-bar"><div class="fill" id="fFill" style="width:0%"></div></div>
+    <div class="progress-label"><span id="fLabel">准备中...</span></div>
+  </div>
+</div>`
+:`<div class="card">
+  <div id="fSearchHist" class="search-history" style="display:none"></div>
+  <div class="inp-row">
+    <input class="inp" id="fSearchInput" placeholder="输入书名关键词" onkeydown="if(event.key==='Enter')fSearch()" onfocus="SearchHistory.render('fSearchHist',fSearchHistoryPick)">
+    <button class="btn btn-go" id="fSearchBtn" onclick="fSearch()">搜索</button>
+  </div>
+  <div id="fResults"></div>
+</div>`}`;
+}
+
+/* -- Fanqie search -- */
+function fSearchHistoryPick(q) {
+  const inp = document.getElementById('fSearchInput');
+  if (inp) { inp.value = q; inp.blur(); fSearch(); }
+  const hist = document.getElementById('fSearchHist');
+  if (hist) hist.style.display = 'none';
+}
+async function fSearch(){
+  const q=document.getElementById('fSearchInput').value.trim();if(!q)return;
+  SearchHistory.add(q);
+  if(q!==PAG.fLastQ){PAG.fPage=1;PAG.fLastQ=q}
+  const btn=document.getElementById('fSearchBtn'),c=document.getElementById('fResults');
+  btn.disabled=true;btn.textContent='搜索中...';c.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>搜索中...</p></div>';
+  try{
+    const r=await api(`/api/search?q=${encodeURIComponent(q)}&page=${PAG.fPage}&per_page=${PAG.fPer}`);const d=await r.json();
+    if(d.error){c.innerHTML=`<div class="empty-state"><p style="color:var(--red)">${eH(d.error)}</p></div>`;return}
+    fSearchResults=d.items||[];
+    PAG.fTotal=d.total||fSearchResults.length;
+    if(!fSearchResults.length){c.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>无搜索结果</p></div>';return}
+    c.innerHTML='<div class="book-grid stagger-list">'+fSearchResults.map((b,i)=>`
+<div class="book-card tilt-card" onclick="fShowDetail(${i})">
+  ${b.cover_url?`<img class="book-card-img" src="${eH(b.cover_url)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="book-card-img">📖</div>`}
+  <div class="book-card-body">
+    <div class="book-card-title">${eH(b.book_name||b.title||'未知')}</div>
+    <div class="book-card-meta">${eH(b.author||'')}${b.word_count?' · '+(b.word_count>10000?(b.word_count/10000).toFixed(1)+'万字':b.word_count+'字'):''}</div>
+  </div>
+  <div style="position:absolute;top:6px;right:6px;z-index:2"></div>
+</div>`).join('')+'</div><div id="fPager"></div>';
+    renderPagination(document.getElementById('fPager'),{total:PAG.fTotal,page:PAG.fPage,per_page:PAG.fPer,onPage:p=>{PAG.fPage=p;fSearch()}});
+  }catch(e){c.innerHTML='<div class="empty-state"><p style="color:var(--red)">搜索失败</p></div>'}
+  finally{btn.disabled=false;btn.textContent='搜索'}
+}
+
+/* -- Fanqie show detail -- */
+async function fShowDetail(i){
+  const b=fSearchResults[i];if(!b)return;
+  const bookId=b.book_id||b.id;
+  /* 先显示loading */
+  const s=document.getElementById('section-fanqie');
+  s.innerHTML='<div class="card"><div class="empty-state"><div class="icon">⏳</div><p>加载书籍详情...</p></div></div>';
+  fsub='detail';
+
+  try{
+    const r=await api('/api/book_detail?book_id='+encodeURIComponent(bookId));
+    const d=await r.json();
+    if(d.error){s.innerHTML=`<div class="card"><div class="empty-state"><p style="color:var(--red)">${eH(d.error)}</p><button class="btn btn-outline" onclick="fBackToSearch()" style="margin-top:12px">← 返回</button></div></div>`;return}
+    fBook=d;fFmt='txt';
+    renderFanqieDetail();
+  }catch(e){
+    s.innerHTML='<div class="card"><div class="empty-state"><p style="color:var(--red)">获取详情失败</p><button class="btn btn-outline" onclick="fBackToSearch()" style="margin-top:12px">← 返回</button></div></div>';
+  }
+}
+
+function fBackToSearch(){
+  fBook=null;fsub='search';renderFanqie();
+}
+
+/* -- Fanqie detail page -- */
+function renderFanqieDetail(){
+  const s=document.getElementById('section-fanqie');
+  if(!s||!fBook)return;
+  const b=fBook;
+  const isOver=b.status&&(b.status.includes('完结')||b.status.includes('完本'));
+  const wc=b.word_count?(b.word_count>10000?(b.word_count/10000).toFixed(1)+'万字':b.word_count+'字'):'';
+  const chCount=b.chapter_count||'';
+  const cat=b.category||'';
+
+  s.innerHTML=`
+<div class="card">
+  <button class="back-row btn-ghost" onclick="fBackToSearch()">← 返回搜索结果</button>
+  <div class="book-hero">
+    ${b.cover_url?`<img class="book-cover" src="${eH(b.cover_url)}" onerror="this.style.display='none'">`:''}
+    <div class="book-meta">
+      <h3>${eH(b.book_name||b.title||'未知书名')}</h3>
+      <div class="info-line">作者: ${eH(b.author||'未知')}</div>
+      <div class="info-line">${wc}${chCount?' · '+chCount+'章':''}${cat?' · '+eH(cat):''}</div>
+      <div class="tags">
+        <span class="tag ${isOver?'tag-green':'tag-orange'}">${isOver?'已完结':'连载中'}</span>
+      </div>
+    </div>
+  </div>
+  <div class="pitch">${(b.description||b.abstract||'暂无简介').slice(0,500)}</div>
+  <div class="dl-section">
+    <div style="font-size:.82em;color:var(--text3);margin-bottom:8px">选择下载格式</div>
+    <div class="fmt-pick">
+      <button class="fmt-opt ${fFmt==='txt'?'sel':''}" onclick="fFmt='txt';renderFanqieDetail()">📄 TXT</button>
+      <button class="fmt-opt ${fFmt==='epub'?'sel':''}" onclick="fFmt='epub';renderFanqieDetail()">📗 EPUB</button>
+    </div>
+    <button class="btn btn-go" id="fDlBtn" onclick="fStartDownload()">开始下载 ${fFmt.toUpperCase()}</button>
+    <div class="progress-wrap" id="fProg">
+      <div class="progress-bar"><div class="fill" id="fFill" style="width:0%"></div></div>
+      <div class="progress-label"><span id="fLabel">准备中...</span></div>
+    </div>
+  </div>
+</div>`;
+}
+
+/* -- Fanqie download (from detail or link) -- */
+// 等待番茄下载任务完成（返回 'ok'|'fail'）
+// 找不到 job 时继续轮询（避免任务刚创建还没进列表就被误判完成）；
+// 轮询超时仍未出现则视为完成（后端已占位写库兜底，不会丢记录）
+async function fWaitJob(jobId,bookName){
+  for(let k=0;k<150;k++){
+    await new Promise(r=>setTimeout(r,2000));
+    try{
+      const jr=await api('/api/jobs');const jd=await jr.json();const items=jd.items||[];
+      const job=items.find(j=>j.id===jobId)||items.find(j=>j.book_name===bookName);
+      if(job&&job.status==='done')return 'ok';
+      if(job&&(job.status==='failed'||job.status==='error'))return 'fail';
+    }catch(e){}
+  }
+  return 'ok';
+}
+
+async function fLinkDownload(){
+  const urlEl=document.getElementById('fUrl');
+  const text=urlEl?urlEl.value.trim():'';
+  if(!text){toast.warning('请输入小说链接');return}
+  const links=text.split('\n').map(s=>s.trim()).filter(Boolean);
+  const _isAdmin = U && U.is_admin;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
+  if(!_isAdmin && links.length>U.download_quota){toast.warning(`共 ${links.length} 条，但下载次数仅剩 ${U.download_quota} 次，请先联系管理员补充`);return}
+  const btn=document.getElementById('fDlBtn');
+  const prog=document.getElementById('fProg'),fill=document.getElementById('fFill'),label=document.getElementById('fLabel');
+  if(btn){btn.disabled=true;btn.textContent='批量下载中...'}
+  prog.classList.add('show');fill.style.width='2%';
+  let ok=0,fail=0,firstErr='';
+  label.textContent=`共 ${links.length} 条，开始逐条下载...`;
+  for(let i=0;i<links.length;i++){
+    const url=links[i];
+    label.textContent=`正在下载 (${i+1}/${links.length})：${url.length>42?url.slice(0,42)+'…':url}`;
+    fill.style.width=(2+(i*70/links.length))+'%';
+    try{
+      const r=await api('/api/download',{method:'POST',body:{url:url,format:fFmt}});
+      const d=await r.json();
+      if(d.error){fail++;if(!firstErr)firstErr=d.error;label.textContent=`✗ (${i+1}/${links.length}) ${d.error}`}
+      else{
+        if(d.quota!==undefined){U.download_quota=d.quota;updateQuotaUI()}
+        let resOk=false;
+        if(d.status==='done'||!d.job_id){resOk=true}
+        else{
+          const res=await fWaitJob(d.job_id,d.book_name);
+          resOk=(res==='ok');
+        }
+        if(resOk){
+          await fRecordDownload(d);
+          ok++;label.textContent=`✓ (${i+1}/${links.length}) ${d.book_name||'下载成功'}`
+        }
+        else{fail++;if(!firstErr)firstErr='下载任务失败';label.textContent=`✗ (${i+1}/${links.length}) 任务失败`}
+      }
+    }catch(e){fail++;if(!firstErr)firstErr='网络错误或超时'}
+  }
+  fill.style.width='100%';
+  label.textContent=`✅ 批量完成！成功 ${ok} 本，失败 ${fail} 本${fail&&firstErr?`（首错：${firstErr}）`:''}`;
+  if(btn){btn.disabled=false;btn.textContent='开始下载'}
+  setTimeout(()=>{const p=document.getElementById('fProg');if(p)p.classList.remove('show');if(btn)btn.textContent='开始下载 '+fFmt.toUpperCase();refreshQuota()},5000);
+}
+
+async function fStartDownload(){
+  if(!fBook)return;
+  const _isAdmin = U && U.is_admin;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
+  if(!await confirmDialog({title:'下载确认',message:`下载《${fBook.book_name||fBook.title||'未知'}》(${fFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`,okText:'开始下载'}))return;
+  await fDoDownload(fBook.book_id||fBook.id,null);
+}
+
+let fPending=null;
+async function fDoDownload(bookId,url){
+  if(pT){clearInterval(pT);pT=null}
+  const btn=document.getElementById('fDlBtn');
+  const prog=document.getElementById('fProg'),fill=document.getElementById('fFill'),label=document.getElementById('fLabel');
+  prog.classList.add('show');fill.style.width='5%';label.textContent='创建下载任务...';
+  if(btn){btn.disabled=true;btn.textContent='下载中...'}
+  fPending=null;
+
+  try{
+    const body=bookId?{book_id:bookId,format:fFmt}:{url:url,format:fFmt};
+    const r=await api('/api/download',{method:'POST',body});const d=await r.json();
+    if(d.error){label.textContent='✗ '+d.error;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()};return}
+    if(d.quota!==undefined){U.download_quota=d.quota;updateQuotaUI()}
+    fPending={book_name:d.book_name,author:d.author,book_id:d.book_id,file_name:d.book_name+' - '+d.author+'.'+fFmt};
+    if(d.status==='done'){fFinishDownload();return}
+    const jid=d.job_id;fill.style.width='10%';label.textContent='下载中... 0%';
+    pT=setInterval(async()=>{
+      try{
+        const jr=await api('/api/jobs');const jd=await jr.json();const items=jd.items||[];
+        const job=items.find(j=>j.id===jid)||items.find(j=>j.book_id===d.book_id);
+        if(!job){fFinishDownload();return}
+        if(job.status==='done'){fFinishDownload();return}
+        if(job.status==='failed'||job.status==='error'){label.textContent='✗ '+(job.message||'下载失败');clearInterval(pT);pT=null;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()};return}
+        const pct=Math.floor(job.progress||0);fill.style.width=pct+'%';label.textContent='下载中... '+pct+'%';
+      }catch(e){}
+    },2000);
+    setTimeout(()=>{if(pT){clearInterval(pT);pT=null;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}}},600000);
+  }catch(e){label.textContent='✗ 网络错误';if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}}
+}
+
+// 下载成功后写库（幂等；失败静默，后端 api_download 已占位写库兜底）
+async function fRecordDownload(d){
+  if(!d||!d.book_name)return;
+  const fn=d.file_name||(d.book_name+(d.author?' - '+d.author:'')+'.'+fFmt);
+  try{await api('/api/finish_download',{method:'POST',body:{book_name:d.book_name,author:d.author||'',book_id:d.book_id||'',file_name:fn}})}catch(e){}
+}
+
+async function fFinishDownload(){
+  const fill=document.getElementById('fFill'),label=document.getElementById('fLabel'),btn=document.getElementById('fDlBtn');
+  if(fill)fill.style.width='100%';
+  if(label)label.textContent='✓ 下载完成: '+ (fPending?fPending.book_name:'');
+  if(pT){clearInterval(pT);pT=null}
+  if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}
+  if(fPending){await fRecordDownload(fPending)}
+  setTimeout(()=>{const p=document.getElementById('fProg');if(p)p.classList.remove('show');refreshQuota()},2000);
+  fPending=null;
+}
+
+/* ========================= QIMAO TAB ========================= */
+function renderQimao(){
+  const s=document.getElementById('section-qimao');if(!s)return;
+  /* 详情页 */
+  if(qBook){renderQimaoDetail();return}
+  /* 链接/搜索 视图 */
+  s.innerHTML=`
+<div class="tab-hint" onclick="switchTab('guide')">
+  <span class="tab-hint-icon">💡</span>
+  <span class="tab-hint-text">不知道怎么用？<b>点击查看使用指南</b></span>
+  <span class="tab-hint-arrow">›</span>
+</div>
+<div class="subtabs">
+  <div class="subtab ${qsub==='link'?'on':''}" onclick="qsub='link';renderQimao()">🔗 链接下载</div>
+  <div class="subtab ${qsub==='search'?'on':''}" onclick="qsub='search';renderQimao()">🔍 搜索下载</div>
+</div>
+${qsub==='link'?`
+<div class="card">
+  <div class="inp-row url-row">
+    <textarea class="inp url-area" id="qUrl" rows="3" placeholder="粘贴七猫链接或书籍 ID，支持短链接&#10;可一次粘贴多行，每行一个链接或 ID，将逐个下载"></textarea>
+    <button class="btn btn-cyan" id="qUrlBtn" onclick="qLinkDownload()">开始下载</button>
+  </div>
+  <div class="progress-wrap" id="qUrlProg">
+    <div class="progress-bar"><div class="fill cyan" id="qUrlFill" style="width:0%"></div></div>
+    <div class="progress-label"><span id="qUrlLabel">准备中...</span></div>
+  </div>
+</div>`
+:`<div class="card">
+  <div class="inp-row">
+    <input class="inp" id="qSearchInp" placeholder="搜索七猫小说..." onkeydown="if(event.key==='Enter')qSearch()">
+    <button class="btn btn-cyan" id="qSearchBtn" onclick="qSearch()">搜索</button>
+  </div>
+  <div id="qResults"></div>
+</div>`}`;
+}
+
+/* -- Qimao link download (支持多行批量) -- */
+async function qLinkDownload(){
+  const urlEl=document.getElementById('qUrl');
+  const text=urlEl?urlEl.value.trim():'';
+  if(!text){toast.warning('请输入小说链接');return}
+  const links=text.split('\n').map(s=>s.trim()).filter(Boolean);
+  const _isAdmin = U && U.is_admin;
+  if(qBusy)return;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
+  if(!_isAdmin && links.length>U.download_quota){toast.warning(`共 ${links.length} 条，但下载次数仅剩 ${U.download_quota} 次，请先联系管理员补充`);return}
+  const btn=document.getElementById('qUrlBtn');
+  const prog=document.getElementById('qUrlProg'),fill=document.getElementById('qUrlFill'),label=document.getElementById('qUrlLabel');
+  qBusy=true;prog.classList.add('show');fill.style.width='2%';
+  btn.disabled=true;btn.textContent='批量下载中...';
+  let ok=0,fail=0,firstErr='';
+  label.textContent=`共 ${links.length} 条，开始逐条下载...`;
+  for(let i=0;i<links.length;i++){
+    const url=links[i];
+    label.textContent=`正在下载 (${i+1}/${links.length})：${url.length>42?url.slice(0,42)+'…':url}`;
+    fill.style.width=(2+(i*70/links.length))+'%';
+    try{
+      const r=await api('/api/qimao/download',{method:'POST',body:{url:url,format:qFmt}});
+      const d=await r.json();
+      if(d.error){fail++;if(!firstErr)firstErr=d.error;label.textContent=`✗ (${i+1}/${links.length}) ${d.error}`}
+      else{ok++;U.download_quota=d.quota;updateQuotaUI();label.textContent=`✓ (${i+1}/${links.length}) ${d.file_name||'下载成功'}`}
+    }catch(e){fail++;if(!firstErr)firstErr='网络错误或超时'}
+  }
+  fill.style.width='100%';
+  label.textContent=`✅ 批量完成！成功 ${ok} 本，失败 ${fail} 本${fail&&firstErr?`（首错：${firstErr}）`:''}`;
+  btn.disabled=false;btn.textContent='开始下载';
+  qBusy=false;
+  setTimeout(()=>{prog.classList.remove('show');if(btn)btn.textContent='开始下载'},6000);
+}
+
+async function qSearch(){
+  const q=document.getElementById('qSearchInp').value.trim();if(!q)return;
+  if(q!==PAG.qLastQ){PAG.qPage=1;PAG.qLastQ=q}
+  const btn=document.getElementById('qSearchBtn'),c=document.getElementById('qResults');
+  btn.disabled=true;btn.textContent='搜索中...';c.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>搜索中...</p></div>';
+  try{
+    const r=await api(`/api/qimao/search?q=${encodeURIComponent(q)}&page=${PAG.qPage}&per_page=${PAG.qPer}`);const d=await r.json();
+    if(d.error){c.innerHTML=`<div class="empty-state"><p style="color:var(--red)">${eH(d.error)}</p></div>`;return}
+    qSearchResults=d.items||[];
+    PAG.qTotal=d.total||qSearchResults.length;
+    if(!qSearchResults.length){c.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>无搜索结果</p></div>';return}
+    c.innerHTML='<div class="book-grid stagger-list">'+qSearchResults.map((b,i)=>`
+<div class="book-card tilt-card" onclick="qShowDetail(${i})">
+  ${b.image_link?`<img class="book-card-img" src="${eH(b.image_link)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="book-card-img">📖</div>`}
+  <div class="book-card-body">
+    <div class="book-card-title">${eH(b.title||'未知')}</div>
+    <div class="book-card-meta">${eH(b.author||'')}${b.words_num?' · '+(b.words_num>10000?(b.words_num/10000).toFixed(1)+'万字':b.words_num+'字'):''}</div>
+  </div>
+</div>`).join('')+'</div><div id="qPager"></div>';
+    renderPagination(document.getElementById('qPager'),{total:PAG.qTotal,page:PAG.qPage,per_page:PAG.qPer,onPage:p=>{PAG.qPage=p;qSearch()}});
+  }catch(e){c.innerHTML='<div class="empty-state"><p style="color:var(--red)">搜索失败</p></div>'}
+  finally{btn.disabled=false;btn.textContent='搜索'}
+}
+
+function qShowDetail(i){
+  qBook=qSearchResults[i];if(!qBook)return;qFmt='txt';
+  renderQimaoDetail();
+}
+function qBack(){
+  qBook=null;renderQimao();
+}
+
+function renderQimaoDetail(){
+  const s=document.getElementById('section-qimao');if(!s)return;
+  if(!qBook){renderQimao();return}
+  const b=qBook;
+  const ptags=parseTags(b.ptags);
+  const tags=ptags.map(t=>`<span class="tag tag-cyan">${eH(t)}</span>`).join('');
+  const isOver=b.is_over==='1';
+  const wc=b.words_num?(b.words_num>10000?(b.words_num/10000).toFixed(1)+'万字':b.words_num+'字'):'';
+
+  s.innerHTML=`
+<div class="card">
+  <button class="back-row btn-ghost" onclick="qBack()">← 返回搜索结果</button>
+  <div class="book-hero">
+    ${b.image_link?`<img class="book-cover" src="${eH(b.image_link)}" onerror="this.style.display='none'">`:''}
+    <div class="book-meta">
+      <h3>${eH(b.title||'未知书名')}</h3>
+      <div class="info-line">作者: ${eH(b.author||'未知')} · ${wc}</div>
+      <div class="tags">
+        ${tags}
+        <span class="tag ${isOver?'tag-green':'tag-orange'}">${isOver?'已完结':'连载中'}</span>
+        ${b.score?`<span class="tag tag-orange">${eH(String(b.score))}分</span>`:''}
+      </div>
+      <div class="info-line hide-mobile">ID: ${b.id}</div>
+    </div>
+  </div>
+  <div class="pitch">${stripHtml(b.intro||'').slice(0,500)||'暂无简介'}</div>
+  <div class="dl-section">
+    <div style="font-size:.82em;color:var(--text3);margin-bottom:8px">选择下载格式</div>
+    <div class="fmt-pick">
+      <button class="fmt-opt cyan-hover ${qFmt==='txt'?'sel-cyan':''}" onclick="qFmt='txt';renderQimaoDetail()">📄 TXT</button>
+      <button class="fmt-opt cyan-hover ${qFmt==='epub'?'sel-cyan':''}" onclick="qFmt='epub';renderQimaoDetail()">📗 EPUB</button>
+    </div>
+    <button class="btn btn-cyan" id="qDlBtn" onclick="qDownload()">开始下载 ${qFmt.toUpperCase()}</button>
+    <div class="progress-wrap" id="qProg">
+      <div class="progress-bar"><div class="fill cyan" id="qFill" style="width:0%"></div></div>
+      <div class="progress-label"><span id="qLabel">准备中...</span></div>
+    </div>
+  </div>
+</div>`;
+}
+
+async function qDownload(){
+  if(!qBook||qBusy)return;
+  const _isAdmin = U && U.is_admin;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
+  if(!await confirmDialog({title:'下载确认',message:`下载《${qBook.title||'未知'}》(${qFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`,okText:'开始下载'}))return;
+
+  qBusy=true;const b=qBook;
+  const prog=document.getElementById('qProg'),fill=document.getElementById('qFill'),label=document.getElementById('qLabel'),btn=document.getElementById('qDlBtn');
+  prog.classList.add('show');fill.style.width='2%';label.textContent='正在连接...';
+  btn.disabled=true;btn.textContent='下载中...';
+
+  try{
+    const r=await api('/api/qimao/download',{method:'POST',body:{book_id:b.id,book_name:b.title,author:b.author,format:qFmt}});
+    const d=await r.json();
+    if(d.error){label.textContent='✗ '+d.error;btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase();qBusy=false;return}
+    fill.style.width='100%';label.textContent=`✓ 完成! ${d.file_name} (${(d.file_size/1024).toFixed(1)}KB)`;
+    U.download_quota=d.quota;updateQuotaUI();btn.textContent='下载完成 ✓';
+  }catch(e){label.textContent='✗ 网络错误或超时';btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase()}
+  finally{qBusy=false;setTimeout(()=>{prog.classList.remove('show');if(btn)btn.textContent='开始下载 '+qFmt.toUpperCase()},6000)}
+}
+
+/* ========================= 小说分割功能 ========================= */
+// 分割任务状态（按文件名存储）
+const splitTasks={};
+// 主服务的 token（同源共享 localStorage）
+function _splitToken(){return localStorage.getItem('token')||''}
+
+// 调用主服务分割 API
+async function splitApi(url,opts={}){
+  const token=_splitToken();
+  const headers={'Content-Type':'application/json',...(opts.headers||{})};
+  if(token)headers['Authorization']='Bearer '+token;
+  const r=await fetch(url,{...opts,headers,body:opts.body?JSON.stringify(opts.body):undefined});
+  return r;
+}
+
+// 切换文件展开状态
+function toggleFileRow(bookName){
+  const row=document.getElementById('file-row-'+encodeURIComponent(bookName));
+  if(!row)return;
+  row.classList.toggle('open');
+}
+
+// 开始分割
+async function startSplit(bookName){
+  const sizeInput=document.getElementById('split-size-'+encodeURIComponent(bookName));
+  const btn=document.getElementById('split-btn-'+encodeURIComponent(bookName));
+  const progBox=document.getElementById('split-prog-'+encodeURIComponent(bookName));
+  const outList=document.getElementById('split-output-'+encodeURIComponent(bookName));
+  const progFill=document.getElementById('split-fill-'+encodeURIComponent(bookName));
+  const progText=document.getElementById('split-text-'+encodeURIComponent(bookName));
+
+  const chunkMB=parseFloat(sizeInput.value);
+
+  if(!chunkMB||chunkMB<0.5||chunkMB>50){toast.warning('请输入有效的分块大小（0.5~50 MB）');return}
+  const _isAdmin = U && U.is_admin;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，无法分割，请联系管理员');return}
+  if(!await confirmDialog({title:'分割确认',message:`分割《${bookName}》${_isAdmin?'(管理员模式不消耗次数)':'将消耗 1 次下载次数'}，是否继续？`,okText:'开始分割'}))return;
+
+  btn.disabled=true;
+  btn.textContent='分割中...';
+  progBox.classList.add('active');
+  outList.innerHTML='';
+  progFill.style.width='0%';
+  progText.textContent='准备中...';
+
+  try{
+    const r=await splitApi('/api/novels/split',{
+      method:'POST',
+      body:{filename:bookName+'.txt',chunkSizeMB:chunkMB}
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.error||'启动失败')}
+    const d=await r.json();
+    splitTasks[bookName]=d.taskId;
+    if(typeof d.quota==='number'){U.download_quota=d.quota;updateQuotaUI()}
+    _pollSplit(bookName);
+  }catch(e){
+    progText.textContent='❌ '+e.message;
+    btn.disabled=false;
+    btn.textContent='✂ 开始分割';
+  }
+}
+
+// 轮询分割进度
+function _pollSplit(bookName){
+  const taskId=splitTasks[bookName];
+  if(!taskId)return;
+  const outList=document.getElementById('split-output-'+encodeURIComponent(bookName));
+  const progFill=document.getElementById('split-fill-'+encodeURIComponent(bookName));
+  const progText=document.getElementById('split-text-'+encodeURIComponent(bookName));
+  const btn=document.getElementById('split-btn-'+encodeURIComponent(bookName));
+
+  const bookNameForUrl=bookName; // 不含.txt
+
+  const poll=async ()=>{
+    try{
+      const r=await splitApi('/api/novels/split/'+taskId);
+      if(!r.ok)return;
+      const d=await r.json();
+      progFill.style.width=d.progress+'%';
+
+      if(d.status==='running'){
+        progText.textContent=`分割中... 已生成 ${d.chunkCount} 块`;
+      }else if(d.status==='done'){
+        progText.textContent=`✅ 完成！共 ${d.outputFiles.length} 个文件`;
+        btn.disabled=false;
+        btn.textContent='✂ 重新分割';
+        refreshQuota(); // 分割已消耗 1 次下载次数，刷新显示
+        // 输出文件列表
+        if(d.outputFiles&&d.outputFiles.length){
+          outList.innerHTML=d.outputFiles.map(f=>`
+            <div class="split-output-item">
+              <span class="fname">${eH(f.name)}</span>
+              <span class="fsize">${f.sizeText}</span>
+              <a class="fdl" href="/api/novels/download/${encodeURIComponent(bookNameForUrl)}/${encodeURIComponent(f.name)}?token=${encodeURIComponent(_splitToken())}" download>下载</a>
+            </div>
+          `).join('');
+        }
+        return; // 停止轮询
+      }else if(d.status==='error'){
+        progText.textContent='❌ '+d.error;
+        btn.disabled=false;
+        btn.textContent='✂ 重新分割';
+        return;
+      }
+      setTimeout(poll,800);
+    }catch(e){
+      progText.textContent='❌ '+e.message;
+      btn.disabled=false;
+      btn.textContent='✂ 重新分割';
+    }
+  };
+  poll();
+}
+
+/* ========================= GUIDE TAB ========================= */
+function renderGuide(){
+  const s=document.getElementById('section-guide');if(!s)return;
+  const isUnread = typeof FirstLoginWelcome!=='undefined' && !FirstLoginWelcome.isGuideRead();
+  /* 渲染时显示"已读"反馈：去掉 hero 顶部的新手标识 */
+  s.innerHTML=`
+<div class="guide-wrap">
+  <div class="guide-hero ${isUnread?'guide-hero-unread':''}">
+    <div class="guide-hero-bg"></div>
+    <div class="guide-hero-content">
+      <div class="guide-hero-badge">${isUnread?'⭐ 新手必看 · 3 分钟读懂全部功能':'📖 使用指南'}</div>
+      <h1 class="guide-hero-title">3 分钟快速上手</h1>
+      <p class="guide-hero-sub">支持 <b class="hl-orange">🍅 番茄小说</b> · <b class="hl-cyan">🐱 七猫小说</b><br>链接下载 / 搜索下载 / 文件分割 / 收藏管理一应俱全</p>
+      <!-- 步骤进度条 -->
+      <div class="guide-steps" aria-label="阅读进度">
+        <div class="gs-step" data-step="1"><span class="gs-num">1</span><span class="gs-label">番茄下载</span></div>
+        <div class="gs-line"></div>
+        <div class="gs-step" data-step="2"><span class="gs-num">2</span><span class="gs-label">七猫下载</span></div>
+        <div class="gs-line"></div>
+        <div class="gs-step" data-step="3"><span class="gs-num">3</span><span class="gs-label">批量导入</span></div>
+        <div class="gs-line"></div>
+        <div class="gs-step" data-step="4"><span class="gs-num">4</span><span class="gs-label">文件分割</span></div>
+        <div class="gs-line"></div>
+        <div class="gs-step" data-step="5"><span class="gs-num">5</span><span class="gs-label">常见问题</span></div>
+      </div>
+      <div class="guide-hero-actions">
+        <button class="btn btn-go guide-cta" onclick="switchTab('fanqie')">🚀 立即开始下载</button>
+        <button class="btn btn-cyan guide-cta" onclick="switchTab('files')">📂 查看已下载</button>
+        ${isUnread?`<button class="btn btn-ghost guide-cta" onclick="if(typeof FirstLoginWelcome!=='undefined'){FirstLoginWelcome.markGuideRead();}">✓ 我已了解</button>`:''}
+      </div>
+    </div>
+    <div class="guide-hero-icon">📚</div>
+  </div>
+
+  ${isUnread?
+    `<div class="guide-welcome" style="padding:18px 22px;border-radius:16px;background:linear-gradient(135deg,rgba(255,107,53,.14),rgba(14,165,233,.10));border:1px solid rgba(255,107,53,.3);margin-bottom:18px;box-shadow:0 8px 26px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.06);animation:fadeUp .4s cubic-bezier(.2,.7,.3,1)">
+      <div style="font-size:1em;font-weight:600;color:#ffb08f;margin-bottom:6px">👋 欢迎来到使用指南</div>
+      <div style="font-size:.9em;color:rgba(255,255,255,.82);line-height:1.7">
+        这里浓缩了<b>最常用功能</b>的玩法，建议从前往后顺序阅读。每段都有<b>具体操作步骤</b>，跟着做就能上手。读完你就能解锁番茄/七猫下载的全部姿势喵～
+      </div>
+    </div>`
+  :''}
+
+  <!-- 锚点目录（移动端可折叠为顶部 TOC） -->
+  <div class="guide-toc card" id="guideToc">
+    <div class="guide-toc-title">📑 目录</div>
+    <a class="guide-toc-item" href="#sec-1" data-target="sec-1">1️⃣ 番茄小说下载</a>
+    <a class="guide-toc-item" href="#sec-2" data-target="sec-2">2️⃣ 七猫小说下载</a>
+    <a class="guide-toc-item" href="#sec-3" data-target="sec-3">3️⃣ 批量导入</a>
+    <a class="guide-toc-item" href="#sec-4" data-target="sec-4">4️⃣ 文件与分割</a>
+    <a class="guide-toc-item" href="#sec-5" data-target="sec-5">5️⃣ 常见问题</a>
+  </div>
+
+  <div class="guide-card" id="sec-1" data-anchor="1">
+    <h3><span class="g-ico">🍅</span> 番茄小说下载</h3>
+    <ul>
+      <li>进入「番茄」标签页，选择 <code>🔗 链接下载</code>，粘贴小说链接（支持短链接，自动解析）后点击「开始下载」</li>
+      <li>不知道链接？切换到 <code>🔍 搜索下载</code>，输入书名关键词搜索，点击封面进入详情页再下载</li>
+      <li>支持 TXT / EPUB 两种格式，每下载一本书消耗 <b style="color:var(--amber)">1 次</b>下载次数</li>
+    </ul>
+  </div>
+
+  <div class="guide-card g-cyan" id="sec-2" data-anchor="2">
+    <h3 class="g-cyan"><span class="g-ico">🐱</span> 七猫小说下载</h3>
+    <ul>
+      <li>进入「七猫」标签页，选择 <code>🔗 链接下载</code>，粘贴七猫链接或 <code>书籍 ID</code>（纯数字）后点击「开始下载」</li>
+      <li>支持分享链接（如 <code>app-share.wtzw.com</code>）、<code>qimao.com</code> / <code>wtzw.com</code> 站内链接，短链接自动转长链接</li>
+      <li>不知道链接？切换到 <code>🔍 搜索下载</code>，输入书名关键词搜索下载</li>
+      <li>支持 TXT / EPUB 两种格式，每下载一本书消耗 <b style="color:var(--amber)">1 次</b>下载次数</li>
+    </ul>
+  </div>
+
+  <div class="guide-card g-green" id="sec-3" data-anchor="3">
+    <h3 class="g-green"><span class="g-ico">⚡</span> 批量导入（一次下载多本）</h3>
+    <ul>
+      <li>在链接下载的输入框中，可 <code>一次粘贴多行</code>，每行放一个链接或书籍 ID</li>
+      <li>点击「开始下载」后会 <code>逐个串行下载</code>，页面会显示当前进度（第 N / 总条数）</li>
+      <li>有多少行就消耗多少次下载次数，请确保剩余次数充足</li>
+    </ul>
+  </div>
+
+  <div class="guide-card g-amber" id="sec-4" data-anchor="4">
+    <h3 class="g-amber"><span class="g-ico">📂</span> 文件与分割</h3>
+    <ul>
+      <li>下载好的小说都在「文件」标签页，点击文件行可展开分割面板</li>
+      <li>仅支持 <code>TXT 格式</code> 分割，每块大小可在 <code>0.5 ~ 50 MB</code> 之间自由调整</li>
+      <li>一次分割最多生成 <b style="color:var(--amber)">10 个</b>文件；若超出会提示调大分割大小</li>
+      <li>每次分割消耗 <b style="color:var(--amber)">1 次</b>下载次数，分割前会二次确认</li>
+      <li>分割完成后会列出各分片，点击「下载」逐个保存</li>
+    </ul>
+    <div class="guide-note">💡 分割消耗下载次数后，若剩余次数不足 1 次将无法继续分割，请联系管理员补充。</div>
+  </div>
+
+  <div class="guide-card" id="sec-5" data-anchor="5">
+    <h3><span class="g-ico">❓</span> 常见问题</h3>
+    <ul>
+      <li><b>下载次数用完了？</b> 登录页注册的新用户默认为 0 次，请联系管理员分配下载次数</li>
+      <li><b>链接解析失败？</b> 确认链接来自番茄/七猫官网分享，纯数字可直接当作书籍 ID 使用</li>
+      <li><b>找不到刚下载的文件？</b> 切到「文件」标签页即可看到全部下载记录，无需刷新页面</li>
+    </ul>
+  </div>
+</div>`;
+
+  // 启动步骤进度条联动（滚动时高亮当前阅读的步骤）
+  setTimeout(()=>initGuideSteps(), 50);
+}
+
+/* 步骤进度条：滚动时高亮当前阅读到的小节 */
+function initGuideSteps(){
+  const steps = document.querySelectorAll('.guide-steps .gs-step');
+  if(!steps.length) return;
+  const cards = Array.from(document.querySelectorAll('.guide-card[data-anchor]'));
+  function update(){
+    let active = 1;
+    const offset = window.innerHeight * 0.35;
+    for(const c of cards){
+      const r = c.getBoundingClientRect();
+      if(r.top - offset <= 0) active = parseInt(c.dataset.anchor, 10);
+    }
+    steps.forEach(s=>{
+      const n = parseInt(s.dataset.step, 10);
+      s.classList.toggle('done', n < active);
+      s.classList.toggle('on',  n === active);
+    });
+  }
+  window.addEventListener('scroll', update, { passive:true });
+  window.addEventListener('resize', update);
+  update();
+  // 步骤点击：平滑滚到对应小节
+  steps.forEach(s=>{
+    s.addEventListener('click', ()=>{
+      const n = s.dataset.step;
+      const target = document.getElementById('sec-'+n);
+      if(target) target.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+  // 目录点击：阻止默认 + 平滑滚动
+  document.querySelectorAll('.guide-toc-item').forEach(a=>{
+    a.addEventListener('click', e=>{
+      e.preventDefault();
+      const t = document.getElementById(a.dataset.target);
+      if(t) t.scrollIntoView({ behavior:'smooth', block:'start' });
+    });
+  });
+}
+
+/* ========================= FILES TAB ========================= */
+async function renderFiles(){
+  const s=document.getElementById('section-files');if(!s)return;
+  s.innerHTML=`
+<div class="browser-warn">
+  <div class="bw-icon">⚠️</div>
+  <div class="bw-content">
+    <div class="bw-title">请勿使用微信打开本页面</div>
+    <div class="bw-desc">微信内置浏览器会拦截文件下载，请复制链接到 <b>手机浏览器</b>（如 Safari / Chrome / Edge / 小米浏览器等）打开后再使用本工具</div>
+    <button class="bw-copy btn btn-sm btn-go" onclick="copyPageUrl(this)">📋 复制页面链接</button>
+  </div>
+</div>
+<div class="card"><div class="empty-state"><div class="icon">📂</div><p>加载中...</p></div></div>`;
+  try{
+    const r=await api(`/api/files?page=${PAG.filePage}&per_page=${PAG.filePer}`);const d=await r.json();const files=d.files||[];
+    PAG.fileTotal=d.total||files.length;
+    if(!PAG.fileTotal){s.innerHTML='<div class="card"><div class="empty-state"><div class="icon">📭</div><p>暂无下载记录</p><p style="font-size:.78em">去番茄或七猫下载小说吧~</p></div></div>';return}
+    s.innerHTML=`<div class="card"><div class="stagger-list">`+files.map(f=>{
+      const isQ=f.source==='qimao';
+      const dlUrl=isQ?`/api/qimao/file/${encodeURIComponent(f.book_name)}`:`/api/file/${encodeURIComponent(f.book_name)}`;
+      const sz=f.size?(f.size>1048576?(f.size/1048576).toFixed(1)+'MB':(f.size/1024).toFixed(1)+'KB'):'未知';
+      const bn=f.book_name;const bnEnc=encodeURIComponent(bn);
+      const fname=f.file_name||bn;
+      return`
+<div class="file-row" id="file-row-${bnEnc}">
+  <div class="file-header" onclick="toggleFileRow('${eH(bn)}')">
+    <div class="info" style="flex:1">
+      <div class="name">${eH(bn)} <span class="src-badge ${isQ?'src-qimao':'src-fanqie'}">${isQ?'七猫':'番茄'}</span></div>
+      <div class="meta">${eH(f.author||'')} · ${sz} · ${f.mtime||''}</div>
+    </div>
+    <div class="actions">
+      <a class="dl" href="${dlUrl}" download onclick="event.stopPropagation()">⬇ 下载</a>
+    </div>
+  </div>
+  <div class="split-panel">
+    <div class="split-settings">
+      <div class="split-item">
+        <label>每块大小（MB）</label>
+        <select id="split-size-${bnEnc}">
+          <option value="0.5">0.5 MB</option>
+          <option value="1">1 MB</option>
+          <option value="2">2 MB</option>
+          <option value="3" selected>3 MB</option>
+          <option value="5">5 MB</option>
+          <option value="10">10 MB</option>
+          <option value="20">20 MB</option>
+        </select>
+      </div>
+    </div>
+    <button class="split-btn" id="split-btn-${bnEnc}" onclick="event.stopPropagation();startSplit('${eH(bn)}')">✂ 开始分割</button>
+    <div style="font-size:.72em;color:var(--text3);margin-top:8px;line-height:1.5">
+      ⚙ 仅支持 TXT 分割 · 每次分割消耗 <b style="color:var(--amber)">1 次</b>下载次数 · 最多生成 <b style="color:var(--amber)">10 个</b>文件，超出请调大分割大小
+    </div>
+    <div class="split-progress-box" id="split-prog-${bnEnc}">
+      <div class="split-progress-text">
+        <span id="split-text-${bnEnc}">准备中...</span>
+        <span id="split-percent-${bnEnc}">0%</span>
+      </div>
+      <div class="split-progress-bar">
+        <div class="split-progress-fill" id="split-fill-${bnEnc}"></div>
+      </div>
+      <div class="split-output-list" id="split-output-${bnEnc}"></div>
+    </div>
+  </div>
+</div>`;
+    }).join('')+'</div><div id="filePager" style="margin-top:12px"></div></div>';
+    renderPagination(document.getElementById('filePager'),{total:PAG.fileTotal,page:PAG.filePage,per_page:PAG.filePer,onPage:p=>{PAG.filePage=p;renderFiles()}});
+  }catch(e){s.innerHTML='<div class="card"><div class="empty-state"><p style="color:var(--red)">加载失败</p></div></div>'}
+}
+
+/* ========================= ADMIN ========================= */
+/* 管理员面板：现在管理员走和普通用户一样的下载 tab 入口，
+ * 「管理面板」由弹窗提供，openAdminPanel() 打开，closeAdminPanel() 关闭 */
+function openAdminPanel(){
+  const mask = document.getElementById('adminPanelMask');
+  if(!mask) return;
+  // 每次打开时都重新渲染（数据可能已过期）
+  renderAdminPanel();
+  mask.classList.add('show');
+}
+function closeAdminPanel(){
+  const mask = document.getElementById('adminPanelMask');
+  if(mask) mask.classList.remove('show');
+}
+/* 在弹窗内渲染管理面板内容（仪表盘/用户管理/公告/备份） */
+function renderAdminPanel(){
+  const box = document.getElementById('adminPanelContent');
+  if(!box) return;
+  box.innerHTML = `
+<div class="admin-subtabs">
+  <div class="admin-subtab on" data-sub="dash">📊 仪表盘</div>
+  <div class="admin-subtab" data-sub="users">👥 用户管理</div>
+  <div class="admin-subtab" data-sub="announce">📢 公告</div>
+  <div class="admin-subtab" data-sub="backup">💾 备份</div>
+</div>
+<div id="adminPanelDash"></div>
+<div id="adminPanelUsers" style="display:none"></div>
+<div id="adminPanelAnnounce" style="display:none"></div>
+<div id="adminPanelBackup" style="display:none"></div>`;
+  // 注入与原 renderAdmin 一致的内容
+  document.getElementById('adminPanelDash').innerHTML = document.getElementById('adminDashBody')
+    ? document.getElementById('adminDashBody').innerHTML
+    : '';
+  document.getElementById('adminPanelUsers').innerHTML = document.getElementById('adminUserBody')
+    ? document.getElementById('adminUserBody').innerHTML
+    : '';
+  // 公告与备份走原函数
+  document.getElementById('adminPanelAnnounce').innerHTML = `
+<div class="card"><div class="card-header">📢 公告管理</div>
+  <div style="font-size:.86em;color:var(--text2);margin-bottom:10px">在这里发布的公告会显示在所有用户的首页顶部</div>
+  <button class="btn btn-go" onclick="adminAnnounceEdit()">✏ 编辑公告</button>
+</div>`;
+  document.getElementById('adminPanelBackup').innerHTML = `
+<div class="card"><div class="card-header">💾 数据备份</div>
+  <div style="font-size:.86em;color:var(--text2);margin-bottom:10px">下载完整数据库备份（包含所有用户、下载记录）</div>
+  <button class="btn btn-go" onclick="window.open('/api/admin/backup','_blank')">⬇ 立即下载备份</button>
+</div>`;
+  // 子 tab 切换
+  box.querySelectorAll('.admin-subtab').forEach(el=>{
+    el.onclick = () => {
+      box.querySelectorAll('.admin-subtab').forEach(x=>x.classList.remove('on'));
+      el.classList.add('on');
+      const sub = el.dataset.sub;
+      ['Dash','Users','Announce','Backup'].forEach(s=>{
+        const e = document.getElementById('adminPanel'+s);
+        if(e) e.style.display = (s.toLowerCase()===sub)?'block':'none';
+      });
+      // 切到用户管理时刷新一次
+      if(sub==='users' && typeof aLoadUsers==='function') aLoadUsers();
+    };
+  });
+  // 初次加载仪表盘与用户管理数据
+  if(typeof renderAdminDashboard==='function') renderAdminDashboard();
+  if(typeof aLoadUsers==='function') aLoadUsers();
+}
+
+/* 保留旧 renderAdmin 函数（兼容旧调用，但实际走弹窗路径） */
+function renderAdmin(){
+  document.getElementById('app').innerHTML=`
+<div class="app-header">
+  <div class="app-logo">👋 欢迎使用<span>管理面板</span></div>
+  <div class="user-bar">
+    <span>👑 ${eH(U.username)}</span>
+    <button class="btn-ghost" onclick="doLogout()">退出</button>
+  </div>
+</div>
+<div class="subtabs">
+  <div class="subtab on" onclick="document.querySelectorAll('#app .subtab').forEach(x=>x.classList.remove('on'));this.classList.add('on');document.getElementById('adminDashBody').style.display='block';document.getElementById('adminUserBody').style.display='none'">📊 仪表盘</div>
+  <div class="subtab" onclick="document.querySelectorAll('#app .subtab').forEach(x=>x.classList.remove('on'));this.classList.add('on');document.getElementById('adminDashBody').style.display='none';document.getElementById('adminUserBody').style.display='block'">👥 用户管理</div>
+  <div class="subtab" onclick="adminAnnounceEdit()">📢 公告</div>
+  <div class="subtab" onclick="window.open('/api/admin/backup','_blank')">💾 备份</div>
+</div>
+<div id="adminDashBody"></div>
+<div id="adminUserBody" style="display:none">
+<div class="card">
+  <div class="card-header">新增用户</div>
+  <div class="inp-row">
+    <input class="inp" id="auName" placeholder="用户名">
+    <input class="inp" id="auPass" placeholder="密码" type="text">
+    <input class="inp" id="auQuota" placeholder="次数" type="number" value="10" style="max-width:90px">
+    <button class="btn btn-cyan" onclick="aGenRandom()" title="随机生成账号和密码">🎲 随机</button>
+    <button class="btn btn-go" onclick="aAddUser()">创建</button>
+  </div>
+  <div id="aGenBox" style="display:none;margin-top:10px;padding:12px 14px;border-radius:var(--radius-sm);background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.25);font-size:.86em">
+    <div id="aGenText" style="font-family:Consolas,monospace;line-height:1.8;color:var(--text)"></div>
+    <button class="btn btn-sm btn-cyan" onclick="aCopyCreds(this)" style="margin-top:8px">📋 一键复制账号密码</button>
+  </div>
+  <div style="color:var(--green);font-size:.82em;display:none" id="aMsg"></div>
+</div>
+<div class="card">
+  <div class="card-header">用户管理</div>
+  <div class="inp-row" style="margin-bottom:12px">
+    <input class="inp" id="aSearch" placeholder="🔍 搜索用户名..." autocomplete="off" oninput="aLoadUsers()" style="flex:1">
+    <span id="aSearchCount" style="font-size:.82em;color:var(--text3);white-space:nowrap"></span>
+  </div>
+  <div id="aUsers"></div>
+  <div id="aPager" style="margin-top:12px"></div>
+</div></div>`;
+  aLoadUsers();
+  renderAdminDashboard();
+  /* 管理员首登也弹引导（同普通用户），引导去看指南 */
+  if(typeof FirstLoginWelcome!=='undefined'){
+    FirstLoginWelcome.refreshBadge();
+    setTimeout(()=>FirstLoginWelcome.show(), 350);
+  }
+}
+async function aLoadUsers(){
+  const q=(document.getElementById('aSearch')?document.getElementById('aSearch').value:'').trim();
+  if(q!==PAG.aLastQ){PAG.aPage=1;PAG.aLastQ=q}
+  const url=`/api/admin/users?page=${PAG.aPage}&per_page=${PAG.aPer}`+(q?'&q='+encodeURIComponent(q):'');
+  try{
+    const r=await api(url);const d=await r.json();
+    const cnt=document.getElementById('aSearchCount');
+    if(cnt)cnt.textContent=q?`匹配 ${d.total} 个账号`:`共 ${d.total} 个账号`;
+    const target=document.getElementById('aUsers')||document.getElementById('adminUserBody');
+    /* 计算全员配额总览（仅当前页） */
+    const users = d.users || [];
+    const totalRemain = users.reduce((a,u)=>a + (u.is_admin?0:(u.download_quota||0)), 0);
+    const totalUsed   = users.reduce((a,u)=>a + (u.download_count||0), 0);
+    const lowUsers    = users.filter(u=>!u.is_admin && !u.is_disabled && (u.download_quota||0)<=2).length;
+    const zeroUsers   = users.filter(u=>!u.is_admin && !u.is_disabled && (u.download_quota||0)===0).length;
+    if(target) target.innerHTML=`
+<!-- 配额总览卡：本页用户的剩余/已用/低额/用完 -->
+<div class="quota-overview">
+  <div class="qo-tile">
+    <div class="qo-icon">💰</div>
+    <div class="qo-body">
+      <div class="qo-num" id="qoRemain">${totalRemain.toLocaleString()}</div>
+      <div class="qo-label">本页剩余次数</div>
+    </div>
+  </div>
+  <div class="qo-tile">
+    <div class="qo-icon">📥</div>
+    <div class="qo-body">
+      <div class="qo-num">${totalUsed.toLocaleString()}</div>
+      <div class="qo-label">本页累计已下载</div>
+    </div>
+  </div>
+  <div class="qo-tile ${lowUsers?'warn':''}">
+    <div class="qo-icon">⚠️</div>
+    <div class="qo-body">
+      <div class="qo-num">${lowUsers}</div>
+      <div class="qo-label">剩余 ≤ 2 次</div>
+    </div>
+  </div>
+  <div class="qo-tile ${zeroUsers?'danger':''}">
+    <div class="qo-icon">🚫</div>
+    <div class="qo-body">
+      <div class="qo-num">${zeroUsers}</div>
+      <div class="qo-label">已用完</div>
+    </div>
+  </div>
+</div>
+<div style="overflow-x:auto">
+<table class="tbl tbl-quota">
+<thead><tr><th>用户名</th><th>角色</th><th>状态</th><th>可用次数</th><th>操作</th></tr></thead>
+<tbody>${users.map(u=>{
+  const isAdmin = u.is_admin;
+  const isDisabled = u.is_disabled;
+  const remain = u.download_quota || 0;
+  const used   = u.download_count || 0;
+  const total  = remain + used;  // 累计获得
+  const pct    = total > 0 ? Math.round(remain / total * 100) : 0;
+  /* 状态判定：管理员=∞、禁用=灰色、低额=黄、用完=红、充裕=绿 */
+  let stateCls = 'good', stateText = '充裕';
+  if(isAdmin)        { stateCls = 'admin'; stateText = '∞ 无限'; }
+  else if(isDisabled) { stateCls = 'gray';  stateText = '— 已停用'; }
+  else if(remain === 0){ stateCls = 'danger'; stateText = '已用完'; }
+  else if(remain <= 2) { stateCls = 'warn'; stateText = '紧张'; }
+  else if(remain <= 5) { stateCls = 'mid';  stateText = '偏低'; }
+  return `<tr>
+    <td>${eH(u.username)}</td>
+    <td><span class="tag ${isAdmin?'tag-orange':'tag-cyan'}">${isAdmin?'管理员':'用户'}</span></td>
+    <td><span class="tag ${isDisabled?'tag-orange':'tag-green'}">${isDisabled?'已禁用':'正常'}</span></td>
+    <td>
+      <div class="quota-cell">
+        <div class="quota-head">
+          <div class="quota-main">
+            <span class="quota-remain ${stateCls}">${isAdmin?'∞':remain}</span>
+            <span class="quota-unit">${isAdmin?'':'次 可用'}</span>
+          </div>
+          <span class="quota-state quota-state-${stateCls}">${stateText}</span>
+        </div>
+        ${isAdmin?'':`<div class="quota-bar" title="已用 ${used} / 累计 ${total}">
+          <div class="quota-bar-fill quota-bar-${stateCls}" style="width:${pct}%"></div>
+        </div>
+        <div class="quota-foot">
+          <span>📥 已用 <b>${used}</b></span>
+          <span class="quota-mid">∑ 累计 <b>${total.toLocaleString()}</b></span>
+          <span>剩 ${pct}%</span>
+        </div>`}
+      </div>
+    </td>
+    <td style="white-space:nowrap">${isAdmin?'—':`
+      <input class="quota-inp" type="number" value="5" id="qD${u.id}">
+      <button class="btn-xs btn-go" onclick="aQuota(${u.id})" title="加次数">+</button>
+      <button class="btn-xs" style="background:#555" onclick="aQuota(${u.id},1)" title="减次数">-</button>
+      <button class="btn-xs ${isDisabled?'btn-go':'btn-red'}" onclick="aToggle(${u.id},${isDisabled?'0':'1'})">${isDisabled?'启用':'禁用'}</button>
+      <button class="btn-xs btn-red" onclick="aDel(${u.id},'${eH(u.username)}')">删除</button>
+    `}</td>
+  </tr>`;
+}).join('')||'<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:18px">暂无匹配账号</td></tr>'}</tbody></table></div>`;
+    const pgEl=document.getElementById('aPager');
+    if(pgEl)renderPagination(pgEl,{total:d.total,page:PAG.aPage,per_page:PAG.aPer,onPage:p=>{PAG.aPage=p;aLoadUsers()}});
+  }catch(e){}
+}
+/* 随机生成账号密码 */
+function aGenRandom(){
+  const unameChars='abcdefghjkmnpqrstuvwxyz23456789';
+  const pwdChars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789!@#$%&*';
+  const rnd=n=>{const b=new Uint8Array(n);crypto.getRandomValues(b);return b};
+  const uname='user'+Array.from(rnd(6),v=>unameChars[v%unameChars.length]).join('');
+  const pwd=Array.from(rnd(10),v=>pwdChars[v%pwdChars.length]).join('');
+  document.getElementById('auName').value=uname;
+  document.getElementById('auPass').value=pwd;
+  document.getElementById('aGenText').innerHTML='👤 用户名: <b style="color:#7dd3fc">'+eH(uname)+'</b><br>🔑 密码: <b style="color:#7dd3fc">'+eH(pwd)+'</b>';
+  document.getElementById('aGenBox').style.display='block';
+}
+function aCopyCreds(btn){
+  const u=document.getElementById('auName').value.trim(),p=document.getElementById('auPass').value;
+  if(!u||!p){toast.warning('请先生成或填写账号密码');return}
+  const text='用户名: '+u+'\n密码: '+p;
+  if(navigator.clipboard&&window.isSecureContext){
+    navigator.clipboard.writeText(text).then(()=>aCopyOk(btn)).catch(()=>aCopyFallback(text,btn));
+  }else aCopyFallback(text,btn);
+}
+function aCopyFallback(text,btn){
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+  document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy')}catch(e){}
+  document.body.removeChild(ta);
+  aCopyOk(btn);
+}
+function aCopyOk(btn){
+  const old=btn.textContent;btn.textContent='✅ 已复制';
+  setTimeout(()=>{btn.textContent=old},1600);
+}
+async function aAddUser(){
+  const n=document.getElementById('auName').value.trim(),p=document.getElementById('auPass').value,q=parseInt(document.getElementById('auQuota').value)||10;
+  if(!n||!p)return;
+  try{const r=await api('/api/admin/users',{method:'POST',body:{username:n,password:p,quota:q}});if(!r.ok){const d=await r.json();toast.error(d.error||'创建失败');return}
+    document.getElementById('aMsg').style.display='block';document.getElementById('aMsg').textContent='创建成功!';
+    document.getElementById('auName').value='';document.getElementById('auPass').value='';aLoadUsers();
+    setTimeout(()=>{document.getElementById('aMsg').style.display='none'},2000);
+  }catch(e){}
+}
+async function aQuota(uid,neg){
+  const el=document.getElementById('qD'+uid);let d=parseInt(el.value)||5;if(neg)d=-d;
+  try{await api('/api/admin/users/'+uid+'/quota',{method:'POST',body:{delta:d}});aLoadUsers()}catch(e){}
+}
+async function aToggle(uid,dis){
+  try{await api(`/api/admin/users/${uid}/${dis?'disable':'enable'}`,{method:'POST'});aLoadUsers()}catch(e){}
+}
+async function aDel(uid,name){
+  if(!await confirmDialog({title:'删除用户',message:`确认删除用户 ${name}？所有下载记录将一并删除`,okText:'删除',danger:true}))return;
+  try{await api('/api/admin/users/'+uid,{method:'DELETE'});aLoadUsers();toast.success('已删除')}catch(e){toast.error('删除失败')}
+}
+</script>
+
+<!-- === Toast 通知 + 确认弹窗组件 === -->
+<script>
+/* ═══════════════════════════════════════════════════
+ * toast.js - Toast 通知 + 确认弹窗组件
+ * ═══════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+  const escapeHtml = (s) => { const d = document.createElement('div'); d.textContent = s == null ? '' : String(s); return d.innerHTML; };
+  let container = null;
+  function getContainer() {
+    if (!container) {
+      container = document.createElement('div');
+      container.className = 'toast-container';
+      document.body.appendChild(container);
+    }
+    return container;
+  }
+  const VARIANTS = {
+    success: { icon: '✓', title: '成功' },
+    error: { icon: '✕', title: '错误' },
+    warning: { icon: '⚠', title: '注意' },
+    info: { icon: 'ℹ', title: '提示' },
+  };
+  function show(opts) {
+    if (typeof opts === 'string') opts = { message: opts };
+    const type = VARIANTS[opts.type] ? opts.type : 'info';
+    const variant = VARIANTS[type];
+    const title = opts.title != null ? opts.title : variant.title;
+    const message = opts.message != null ? opts.message : '';
+    const duration = opts.duration != null ? opts.duration : (type === 'error' ? 4500 : 3500);
+    const closable = opts.closable !== false;
+    const el = document.createElement('div');
+    el.className = `toast toast-${type}`;
+    el.setAttribute('role', 'alert');
+    el.innerHTML = `
+      <div class="toast-icon">${variant.icon}</div>
+      <div class="toast-content">
+        <div class="toast-title">${escapeHtml(title)}</div>
+        ${message ? `<div class="toast-message">${escapeHtml(message)}</div>` : ''}
+      </div>
+      ${closable ? '<button class="toast-close" aria-label="关闭">×</button>' : ''}
+    `;
+    let timer = null;
+    const close = () => {
+      if (timer) { clearTimeout(timer); timer = null; }
+      el.classList.add('toast-leaving');
+      setTimeout(() => el.remove(), 300);
+    };
+    if (closable) el.querySelector('.toast-close').addEventListener('click', close);
+    if (duration > 0) timer = setTimeout(close, duration);
+    el.addEventListener('mouseenter', () => { if (timer) { clearTimeout(timer); timer = null; } });
+    el.addEventListener('mouseleave', () => { if (duration > 0 && !timer) timer = setTimeout(close, 1500); });
+    getContainer().appendChild(el);
+    return { close };
+  }
+  function makeShortcut(type) {
+    return (msg, opts) => {
+      if (typeof msg === 'string') return show(Object.assign({ type, message: msg }, opts || {}));
+      return show(Object.assign({ type }, msg));
+    };
+  }
+  const toast = { show, success: makeShortcut('success'), error: makeShortcut('error'), warning: makeShortcut('warning'), info: makeShortcut('info') };
+  function confirmDialog(titleOrOpts, message, onOk, onCancel) {
+    let opts;
+    if (typeof titleOrOpts === 'string') opts = { title: titleOrOpts, message, onOk, onCancel };
+    else opts = Object.assign({}, titleOrOpts);
+    const title = opts.title || '确认';
+    const msg = opts.message || '';
+    const okText = opts.okText || '确定';
+    const cancelText = opts.cancelText || '取消';
+    const danger = opts.danger === true;
+    const handleOk = opts.onOk;
+    const handleCancel = opts.onCancel;
+    return new Promise((resolve) => {
+      const mask = document.createElement('div');
+      mask.className = 'confirm-mask';
+      mask.innerHTML = `
+        <div class="confirm-box" role="dialog" aria-modal="true">
+          <h3 class="confirm-title"><span class="confirm-icon">?</span>${escapeHtml(title)}</h3>
+          <div class="confirm-message">${escapeHtml(msg)}</div>
+          <div class="confirm-actions">
+            <button class="confirm-btn" data-act="cancel">${escapeHtml(cancelText)}</button>
+            <button class="confirm-btn ${danger ? '' : 'confirm-btn-primary'}" data-act="ok" ${danger ? 'style="background:linear-gradient(135deg,#ef4444,#dc2626);border-color:rgba(239,68,68,.4);box-shadow:0 4px 16px rgba(239,68,68,.3),inset 0 1px 0 rgba(255,255,255,.2);color:#fff;"' : ''}>${escapeHtml(okText)}</button>
+          </div>
+        </div>
+      `;
+      const close = (result) => {
+        mask.style.animation = 'confirm-fade 0.18s ease forwards';
+        const box = mask.querySelector('.confirm-box');
+        box.style.animation = 'confirm-pop 0.18s cubic-bezier(0.4,0,0.6,1) reverse forwards';
+        setTimeout(() => {
+          mask.remove();
+          resolve(result);
+          if (result && handleOk) { try { handleOk(); } catch (e) { console.error(e); } }
+          else if (!result && handleCancel) { try { handleCancel(); } catch (e) { console.error(e); } }
+        }, 180);
+      };
+      mask.addEventListener('click', (e) => { if (e.target === mask) close(false); });
+      mask.querySelector('[data-act="ok"]').addEventListener('click', () => close(true));
+      mask.querySelector('[data-act="cancel"]').addEventListener('click', () => close(false));
+      document.addEventListener('keydown', function escHandler(e) {
+        if (e.key === 'Escape') { document.removeEventListener('keydown', escHandler); close(false); }
+        if (e.key === 'Enter') { document.removeEventListener('keydown', escHandler); close(true); }
+      });
+      document.body.appendChild(mask);
+      setTimeout(() => { const okBtn = mask.querySelector('[data-act="ok"]'); if (okBtn) okBtn.focus(); }, 50);
+    });
+  }
+  global.toast = toast;
+  global.confirmDialog = confirmDialog;
+})(window);
+</script>
+
+<!-- === 骨架屏组件 === -->
+<script>
+/* ═══════════════════════════════════════════════════
+ * skeleton.js - 骨架屏加载占位组件
+ * ═══════════════════════════════════════════════════ */
+(function (global) {
+  'use strict';
+  function el(html) { const t = document.createElement('template'); t.innerHTML = html.trim(); return t.content.firstChild; }
+  function $(id) { return typeof id === 'string' ? document.getElementById(id) : id; }
+  function clear(c) { if (c) c.innerHTML = ''; }
+  function bookGrid(containerId, count) {
+    count = count || 6; const c = $(containerId); if (!c) return; clear(c);
+    const grid = el('<div class="skeleton-book"></div>');
+    for (let i = 0; i < count; i++) {
+      grid.appendChild(el(`
+        <div class="skeleton-book-card">
+          <div class="skeleton-book-cover"></div>
+          <div class="skeleton-book-info">
+            <div class="skeleton-book-title"></div>
+            <div class="skeleton-book-meta"></div>
+          </div>
+        </div>
+      `));
+    }
+    c.appendChild(grid);
+  }
+  function fileList(containerId, count) {
+    count = count || 5; const c = $(containerId); if (!c) return; clear(c);
+    for (let i = 0; i < count; i++) {
+      c.appendChild(el(`
+        <div class="skeleton-file-row">
+          <div class="skeleton-file-icon"></div>
+          <div class="skeleton-file-info">
+            <div class="skeleton-file-name"></div>
+            <div class="skeleton-file-meta"></div>
+          </div>
+          <div class="skeleton-file-action"></div>
+        </div>
+      `));
+    }
+  }
+  function detail(containerId) {
+    const c = $(containerId); if (!c) return; clear(c);
+    c.appendChild(el(`
+      <div class="skeleton-detail">
+        <div class="skeleton-cover"></div>
+        <div class="skeleton-detail-info">
+          <div class="skeleton-detail-title"></div>
+          <div class="skeleton-detail-line short"></div>
+          <div class="skeleton-detail-line medium"></div>
+          <div class="skeleton-detail-line long"></div>
+        </div>
+      </div>
+    `));
+  }
+  function text(containerId, lines) {
+    lines = lines || 3; const c = $(containerId); if (!c) return; clear(c);
+    for (let i = 0; i < lines; i++) c.appendChild(el('<div class="skeleton-block" style="height:12px;background:rgba(255,255,255,0.08);border-radius:6px;margin:8px 0"></div>'));
+  }
+  function tableRow(containerId, rows, cols) {
+    rows = rows || 5; cols = cols || 4; const c = $(containerId); if (!c) return; clear(c);
+    for (let i = 0; i < rows; i++) {
+      const row = el('<div class="skeleton-table-row" style="display:flex;gap:16px;padding:12px 8px;border-bottom:1px solid rgba(255,255,255,0.06)"></div>');
+      for (let j = 0; j < cols; j++) {
+        const cell = el('<div style="height:12px;background:rgba(255,255,255,0.08);border-radius:4px;flex:1;width:' + (60 + Math.random() * 30) + '%"></div>');
+        row.appendChild(cell);
+      }
+      c.appendChild(row);
+    }
+  }
+  function hide(containerId) { const c = $(containerId); if (c) clear(c); }
+  global.skeleton = { bookGrid, fileList, detail, text, tableRow, hide };
+})(window);
+</script>
+
+<!-- ═══════════════════════════════════════════════════
+     模块 B/C/D/G 新增样式（管理面板/通知）
+     ═══════════════════════════════════════════════════ -->
+<style>
+
+/* ─── 文件预览 modal（保留给管理员编辑公告用） ─── */
+.preview-mask{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:150;display:none;align-items:center;justify-content:center;padding:30px;backdrop-filter:blur(6px)}
+.preview-mask.show{display:flex;animation:fadeIn .25s}
+.preview-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);width:min(720px,95vw);max-height:88vh;display:flex;flex-direction:column;overflow:hidden}
+.preview-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.preview-head .pv-title{flex:1;font-weight:600;font-size:1em;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.preview-body{padding:18px;overflow-y:auto;flex:1;font-size:.9em;line-height:1.85;color:var(--text2);white-space:pre-wrap;word-break:break-all;font-family:Consolas,monospace}
+.preview-body::-webkit-scrollbar{width:6px}
+.preview-body::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.preview-foot{padding:12px 18px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:.78em;color:var(--text3)}
+
+/* ─── 公告/通知（横幅，保留给管理员发布的系统公告） ─── */
+.announce{position:relative;padding:14px 18px 14px 46px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(255,107,53,.02));border:1px solid rgba(255,107,53,.2);margin-bottom:12px;display:none}
+.announce.show{display:block;animation:slideDown .4s}
+.announce::before{content:'📢';position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:1.3em}
+.announce .ann-close{position:absolute;top:8px;right:10px;background:none;border:none;color:var(--text3);cursor:pointer;font-size:1.1em;line-height:1;padding:4px 8px;border-radius:6px}
+.announce .ann-close:hover{background:rgba(255,255,255,.08);color:var(--text)}
+.announce .ann-title{font-weight:600;font-size:.95em;margin-bottom:4px;color:var(--orange2)}
+.announce .ann-body{font-size:.86em;color:var(--text2);line-height:1.7}
+@keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── 首次登录引导弹窗 ─── */
+.welcome-mask{
+  position:fixed;inset:0;z-index:200;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  padding:20px;
+  animation:welcome-fade .25s ease;
+}
+.welcome-box{
+  width:min(520px,92vw);
+  background:linear-gradient(170deg,#1c1c33,#15152a);
+  border:1px solid rgba(255,255,255,.14);
+  border-radius:20px;
+  padding:0;
+  box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.1);
+  position:relative;overflow:hidden;
+  animation:welcome-pop .35s cubic-bezier(.2,.7,.3,1);
+}
+.welcome-box::before{
+  content:'';position:absolute;top:0;left:6%;right:6%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);
+}
+.welcome-bg{
+  position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background:
+    radial-gradient(420px 240px at 12% 18%,rgba(255,107,53,.35),transparent 60%),
+    radial-gradient(400px 240px at 90% 86%,rgba(14,165,233,.32),transparent 60%);
+}
+.welcome-bg::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(1.4px 1.4px at 18% 32%,rgba(255,255,255,.55),transparent),
+    radial-gradient(1.2px 1.2px at 64% 18%,rgba(255,255,255,.4),transparent),
+    radial-gradient(1.6px 1.6px at 82% 60%,rgba(255,214,180,.5),transparent),
+    radial-gradient(1px 1px at 32% 78%,rgba(125,211,252,.45),transparent);
+  background-size:100% 100%;
+  -webkit-mask-image:linear-gradient(180deg,rgba(0,0,0,.8),transparent 80%);
+  mask-image:linear-gradient(180deg,rgba(0,0,0,.8),transparent 80%);
+}
+.welcome-content{position:relative;z-index:1;padding:28px 30px 24px}
+.welcome-head{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.welcome-icon{
+  font-size:3em;line-height:1;flex-shrink:0;
+  filter:drop-shadow(0 8px 26px rgba(255,150,90,.4));
+  animation:welcome-float 3.5s ease-in-out infinite alternate;
+}
+@keyframes welcome-float{
+  from{transform:translateY(-3px) rotate(-3deg)}
+  to{transform:translateY(3px) rotate(3deg)}
+}
+.welcome-title{
+  margin:0 0 4px;font-size:1.55em;font-weight:800;letter-spacing:1px;
+  background:linear-gradient(90deg,#ffffff 0%,#ffd7c2 45%,#9ad9ff 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 2px 16px rgba(255,180,140,.25));
+}
+.welcome-badge{
+  display:inline-block;padding:3px 10px;border-radius:14px;
+  font-size:.68em;font-weight:600;letter-spacing:.5px;
+  background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.18);color:#fff;
+}
+.welcome-body{font-size:.95em;line-height:1.75;color:rgba(255,255,255,.85);margin:0 0 18px}
+.welcome-body b{color:#ffb08f;font-weight:600}
+.welcome-tip{
+  background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.25);
+  border-radius:12px;padding:10px 14px;margin-bottom:18px;
+  font-size:.84em;color:rgba(255,255,255,.78);line-height:1.7;
+}
+.welcome-tip b{color:#7dd3fc}
+.welcome-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.welcome-btn{
+  padding:10px 22px;border-radius:22px;font-size:.9em;font-weight:600;cursor:pointer;
+  border:1px solid rgba(255,255,255,.12);transition:all .2s;
+}
+.welcome-btn-primary{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;border-color:rgba(255,107,53,.4);
+  box-shadow:0 6px 22px rgba(255,107,53,.35),inset 0 1px 0 rgba(255,255,255,.25);
+}
+.welcome-btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 10px 30px rgba(255,107,53,.5),inset 0 1px 0 rgba(255,255,255,.25)}
+.welcome-btn-ghost{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85)}
+.welcome-btn-ghost:hover{background:rgba(255,255,255,.12);color:#fff}
+.welcome-footnote{
+  font-size:.74em;color:rgba(255,255,255,.45);text-align:center;margin-top:14px;
+}
+@keyframes welcome-fade{from{opacity:0}to{opacity:1}}
+@keyframes welcome-pop{
+  from{opacity:0;transform:scale(.92) translateY(12px)}
+  to{opacity:1;transform:scale(1) translateY(0)}
+}
+@media (max-width:640px){
+  .welcome-content{padding:22px 20px 18px}
+  .welcome-head{flex-direction:column;align-items:flex-start;gap:8px}
+  .welcome-title{font-size:1.3em}
+  .welcome-icon{font-size:2.4em}
+  .welcome-actions{flex-direction:column-reverse}
+  .welcome-btn{width:100%;text-align:center}
+}
+
+/* ─── 指南 tab 未读红点 ─── */
+.nav-btn{position:relative}
+.nav-badge{
+  position:absolute;top:4px;right:8px;
+  min-width:8px;height:8px;border-radius:50%;
+  background:linear-gradient(135deg,#ef4444,#dc2626);
+  box-shadow:0 0 10px rgba(239,68,68,.7),0 0 0 2px rgba(15,15,26,.95);
+  animation:nav-badge-pulse 1.6s ease-in-out infinite;
+  pointer-events:none;
+}
+.nav-badge-text{
+  position:absolute;top:2px;right:4px;
+  min-width:16px;height:16px;border-radius:8px;
+  background:linear-gradient(135deg,#ef4444,#dc2626);color:#fff;
+  font-size:.66em;font-weight:700;line-height:16px;text-align:center;padding:0 5px;
+  box-shadow:0 0 10px rgba(239,68,68,.6),0 0 0 1.5px rgba(15,15,26,.95);
+  animation:nav-badge-pulse 1.6s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes nav-badge-pulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 10px rgba(239,68,68,.7),0 0 0 2px rgba(15,15,26,.95)}
+  50%{transform:scale(1.15);box-shadow:0 0 16px rgba(239,68,68,.9),0 0 0 2px rgba(15,15,26,.95)}
+}
+
+/* ─── 搜索历史标签 ─── */
+.search-history{padding:10px 14px;border-radius:var(--radius-sm);background:rgba(0,0,0,0.2);border:1px solid var(--border);margin-bottom:10px;font-size:.84em}
+.search-history .sh-title{color:var(--text3);font-size:.78em;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.search-history .sh-list{display:flex;flex-wrap:wrap;gap:6px}
+.search-history .sh-tag{padding:4px 10px;border-radius:14px;background:var(--surface);border:1px solid var(--border);color:var(--text2);cursor:pointer;transition:.2s;font-size:.82em}
+.search-history .sh-tag:hover{border-color:var(--orange);color:var(--orange2)}
+
+/* ─── 头像上传 ─── */
+.avatar-uploader{width:90px;height:90px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));display:flex;align-items:center;justify-content:center;font-size:2.2em;color:#fff;font-weight:700;cursor:pointer;overflow:hidden;position:relative;border:3px solid var(--border);transition:.3s}
+.avatar-uploader:hover{border-color:var(--orange);transform:scale(1.04)}
+.avatar-uploader img{width:100%;height:100%;object-fit:cover}
+.avatar-uploader .av-mask{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font-size:.6em;color:#fff;opacity:0;transition:.2s}
+.avatar-uploader:hover .av-mask{opacity:1}
+
+/* ─── 仪表盘管理 ─── */
+.dash-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px}
+.dash-tile{padding:18px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(14,165,233,.06));border:1px solid var(--border);position:relative;overflow:hidden;transition:.3s}
+.dash-tile:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+.dash-tile .dt-icon{font-size:1.8em;margin-bottom:6px}
+.dash-tile .dt-num{font-size:2em;font-weight:800;color:var(--text);font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.dash-tile .dt-label{font-size:.78em;color:var(--text3);margin-top:2px}
+.dash-tile.green{background:linear-gradient(135deg,rgba(34,197,94,.10),rgba(34,197,94,.04))}
+.dash-tile.purple{background:linear-gradient(135deg,rgba(168,85,247,.10),rgba(168,85,247,.04))}
+.dash-tile.amber{background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(245,158,11,.04))}
+.dash-tile.red{background:linear-gradient(135deg,rgba(239,68,68,.10),rgba(239,68,68,.04))}
+
+/* ─── 主题切换按钮（浮动） ─── */
+.theme-toggle{position:fixed;right:18px;bottom:18px;width:44px;height:44px;border-radius:50%;background:var(--surface);border:1px solid var(--border);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1.3em;z-index:90;backdrop-filter:blur(8px);transition:.3s;box-shadow:0 4px 16px rgba(0,0,0,.3)}
+.theme-toggle:hover{transform:scale(1.1) rotate(20deg);border-color:var(--orange)}
+
+/* ─── 移动端适配（5 个按钮） ─── */
+@media (max-width:640px){
+  .nav-bar{font-size:.82em;gap:3px}
+  .nav-btn{padding:8px 4px;font-size:.82em;flex:1}
+  .nav-btn .nav-icon{font-size:1em}
+  .nav-btn span:not(.nav-icon){display:inline}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 指南页增强：步骤进度 + 目录 + 引导横条 + 未读高亮
+ * ═══════════════════════════════════════════════════ */
+
+/* 指南 tab 未读时的呼吸高亮 */
+@keyframes guidePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(255,107,53,0)}
+  50%{box-shadow:0 0 0 6px rgba(255,107,53,0.18)}
+}
+.guide-nav-pulse{animation:guidePulse 2.2s ease-in-out infinite}
+.guide-nav-pulse.on{
+  background:linear-gradient(135deg, rgba(255,107,53,.32), rgba(255,107,53,.18))!important;
+  box-shadow:0 4px 18px rgba(255,107,53,.4), inset 0 0 0 1px rgba(255,107,53,.5);
+}
+
+/* 主屏新手引导横条 */
+.guide-cta-strip{
+  display:flex;align-items:stretch;
+  margin-bottom:14px;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(255,107,53,.16),rgba(14,165,233,.10));
+  border:1px solid rgba(255,107,53,.35);
+  box-shadow:0 8px 28px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.08);
+  overflow:hidden;
+  position:relative;
+  animation:guideStripIn .5s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes guideStripIn{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:none}
+}
+.guide-cta-strip::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,var(--orange),var(--cyan));
+  box-shadow:0 0 14px rgba(255,107,53,.6);
+}
+.guide-cta-inner{
+  display:flex;align-items:center;gap:14px;
+  padding:12px 16px 12px 20px;flex:1;min-width:0;
+}
+.guide-cta-icon{font-size:1.8em;flex-shrink:0;filter:drop-shadow(0 4px 12px rgba(255,150,90,.4))}
+.guide-cta-text{flex:1;min-width:0}
+.guide-cta-title{font-size:.95em;font-weight:600;color:#ffb08f;margin-bottom:2px}
+.guide-cta-sub{font-size:.78em;color:var(--text2);line-height:1.5}
+.guide-cta-btn{flex-shrink:0;padding:7px 16px;font-size:.84em}
+.guide-cta-close{
+  flex-shrink:0;background:transparent;border:none;color:var(--text3);
+  font-size:1.4em;cursor:pointer;padding:0 8px;line-height:1;align-self:flex-start;
+  margin-top:2px;
+  transition:.2s;
+}
+.guide-cta-close:hover{color:#fff;transform:scale(1.15)}
+@media (max-width:640px){
+  .guide-cta-strip{margin-bottom:10px;border-radius:12px}
+  .guide-cta-inner{padding:10px 12px 10px 16px;gap:10px}
+  .guide-cta-icon{font-size:1.5em}
+  .guide-cta-title{font-size:.88em}
+  .guide-cta-sub{font-size:.72em}
+  .guide-cta-btn{padding:6px 12px;font-size:.78em}
+  .guide-cta-close{padding:0 4px;font-size:1.2em}
+}
+
+/* 步骤进度条 */
+.guide-steps{
+  display:flex;align-items:center;gap:6px;margin:14px 0 16px;flex-wrap:wrap;
+}
+.gs-step{
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  padding:4px 10px 4px 4px;border-radius:18px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+  font-size:.78em;color:var(--text2);transition:.25s;
+  user-select:none;
+}
+.gs-step:hover{border-color:var(--orange);color:#fff}
+.gs-num{
+  width:22px;height:22px;border-radius:50%;
+  display:inline-flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:.9em;background:rgba(255,255,255,.1);
+  transition:.25s;flex-shrink:0;
+}
+.gs-step.done{background:rgba(34,197,94,.12);border-color:rgba(34,197,94,.4);color:var(--green)}
+.gs-step.done .gs-num{background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;box-shadow:0 0 10px rgba(34,197,94,.5)}
+.gs-step.done .gs-num::before{content:'✓'}
+.gs-step.done .gs-num{font-size:0}
+.gs-step.on{
+  background:linear-gradient(135deg, rgba(255,107,53,.28), rgba(255,107,53,.14));
+  border-color:var(--orange);color:#fff;font-weight:600;
+  box-shadow:0 0 18px rgba(255,107,53,.28);
+}
+.gs-step.on .gs-num{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;box-shadow:0 0 12px rgba(255,107,53,.5);
+}
+.gs-line{
+  flex:1;min-width:12px;height:2px;border-radius:1px;
+  background:linear-gradient(90deg,rgba(255,255,255,.1),rgba(255,255,255,.05));
+  transition:.4s;
+}
+.gs-step.done + .gs-line{background:linear-gradient(90deg,var(--green),rgba(34,197,94,.3))}
+@media (max-width:640px){
+  .guide-steps{gap:3px;margin:10px 0 12px}
+  .gs-step{padding:3px 8px 3px 3px;font-size:.72em}
+  .gs-num{width:18px;height:18px;font-size:.85em}
+  .gs-label{display:none}
+  .gs-line{min-width:6px}
+}
+
+/* 目录卡片 */
+.guide-toc{
+  padding:14px 16px;margin-bottom:14px;
+  display:flex;flex-wrap:wrap;align-items:center;gap:8px;
+}
+.guide-toc-title{
+  font-size:.86em;font-weight:600;color:#ffb08f;
+  margin-right:4px;flex-shrink:0;
+}
+.guide-toc-item{
+  font-size:.82em;padding:5px 12px;border-radius:16px;
+  background:rgba(255,255,255,.04);border:1px solid var(--border);
+  color:var(--text2);text-decoration:none;transition:.2s;
+  white-space:nowrap;
+}
+.guide-toc-item:hover{
+  background:rgba(255,107,53,.12);border-color:var(--orange);
+  color:var(--orange2);transform:translateY(-1px);
+}
+@media (max-width:640px){
+  .guide-toc{padding:10px 12px;gap:6px}
+  .guide-toc-title{width:100%;font-size:.8em;margin-bottom:2px}
+  .guide-toc-item{font-size:.74em;padding:4px 10px;flex:1 1 calc(50% - 6px);text-align:center}
+}
+
+/* 指南 hero 未读时增加更强烈的视觉 */
+.guide-hero-unread{
+  border-color:rgba(255,107,53,.45);
+  box-shadow:
+    0 16px 50px rgba(0,0,0,.45),
+    0 0 60px rgba(255,107,53,.18),
+    inset 0 1px 0 rgba(255,255,255,.10);
+  animation:heroUnreadPulse 2.8s ease-in-out infinite;
+}
+@keyframes heroUnreadPulse{
+  0%,100%{box-shadow:0 16px 50px rgba(0,0,0,.45), 0 0 60px rgba(255,107,53,.18), inset 0 1px 0 rgba(255,255,255,.10)}
+  50%{box-shadow:0 16px 50px rgba(0,0,0,.45), 0 0 90px rgba(255,107,53,.30), inset 0 1px 0 rgba(255,255,255,.10)}
+}
+.guide-hero-unread .guide-hero-badge{
+  background:linear-gradient(135deg,#ff6b35,#ff8555);
+  color:#fff;border:none;font-weight:700;
+  box-shadow:0 4px 14px rgba(255,107,53,.5), inset 0 1px 0 rgba(255,255,255,.3);
+  animation:badgeShine 2.5s ease-in-out infinite;
+}
+@keyframes badgeShine{
+  0%,100%{box-shadow:0 4px 14px rgba(255,107,53,.5), inset 0 1px 0 rgba(255,255,255,.3)}
+  50%{box-shadow:0 4px 22px rgba(255,107,53,.8), inset 0 1px 0 rgba(255,255,255,.4)}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 全面移动端适配（断点：480 / 640 / 900 / 1100）
+ * ═══════════════════════════════════════════════════ */
+
+/* ── 中等屏幕（平板 641-900px）微调 ── */
+@media (max-width:900px){
+  .container{max-width:100%}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  .book-hero{gap:16px}
+  .book-cover{width:110px;min-width:110px}
+}
+@media (max-width:820px){
+  /* subtab 在中等屏单行更紧凑 */
+  .subtab{padding:7px 12px;font-size:.78em}
+}
+
+/* ── 小屏基础（≤640px）补充移动端规则 ── */
+@media (max-width:640px){
+  /* 全局更紧的 padding/字号 */
+  .container{padding:10px}
+  body{font-size:15px}
+
+  /* 头部：用户名/退出按钮在小屏可隐藏，避免挤 */
+  .user-name-text{display:none}
+  .user-bar{gap:8px}
+  .quota-pill{padding:4px 10px;font-size:.74em}
+  .app-header{padding:10px 0 12px;margin-bottom:12px}
+  .app-logo{font-size:1.1em;gap:6px}
+  .app-logo span{font-size:.68em;padding:2px 8px;letter-spacing:0}
+
+  /* 导航栏：4 个按钮均分，最小化内边距，确保可点 */
+  .nav-bar{padding:4px 3px;gap:2px;margin-bottom:12px}
+  .nav-btn{
+    min-height:44px;padding:6px 2px;font-size:.78em;
+    flex-direction:column;gap:2px;border-radius:10px;
+  }
+  .nav-btn .nav-icon{font-size:1.15em;line-height:1}
+  .nav-btn span:not(.nav-icon){font-size:.86em}
+
+  /* 卡片：更紧的内边距 */
+  .card{padding:14px;margin-bottom:12px}
+  .card-header{font-size:.92em;margin-bottom:10px}
+
+  /* 按钮：最小可点 44px */
+  .btn,.btn-go,.btn-cyan,.btn-outline,.btn-ghost{
+    min-height:44px;padding:11px 18px;
+  }
+  .btn-sm{min-height:36px;padding:7px 14px}
+  .btn-xs{min-height:32px;padding:5px 10px}
+  .fmt-opt{min-height:40px;padding:8px 14px}
+
+  /* 输入框：增大触控区域 */
+  .inp{padding:12px 14px;font-size:16px}  /* 16px 避免 iOS 自动放大 */
+  .inp-row{gap:8px;margin-bottom:10px}
+  textarea.inp{font-size:16px}
+
+  /* 子标签 */
+  .subtabs{margin-bottom:12px}
+  .subtab{padding:8px 10px;font-size:.78em}
+
+  /* 书籍网格：更密更小卡片 */
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px}
+  .book-card{border-radius:12px}
+  .book-card-body{padding:8px 10px}
+  .book-card-title{font-size:.82em}
+  .book-card-meta{font-size:.68em}
+
+  /* 书籍详情：竖排，封面居中 */
+  .book-hero{flex-direction:column;align-items:center;text-align:center;gap:12px}
+  .book-cover{width:120px;min-width:120px}
+  .book-meta{width:100%}
+  .book-meta h3{font-size:1.1em}
+  .pitch{font-size:.82em;line-height:1.6}
+  .dl-section{margin-top:14px;padding-top:14px}
+
+  /* 进度条 */
+  .progress-wrap{margin-top:10px}
+  .progress-label{font-size:.76em}
+
+  /* 搜索历史 */
+  .search-history{padding:8px 12px;font-size:.8em}
+
+  /* 文件列表 */
+  .file-row{padding:10px 12px;margin-bottom:8px}
+  .file-row .name{font-size:.86em}
+  .file-row .meta{font-size:.72em;line-height:1.4}
+  .file-row .file-header{flex-direction:column;align-items:stretch;gap:8px}
+  .file-row .file-header .info{flex:1 1 auto;min-width:0}
+  .file-row .file-header .actions{flex-wrap:wrap;gap:6px;width:100%}
+  .file-row .file-header .actions .btn-xs,
+  .file-row .file-header .actions .dl{
+    flex:1 1 auto;text-align:center;padding:8px 6px;font-size:.78em;
+    min-width:0;white-space:nowrap;
+  }
+  .file-row .file-header .actions .dl{padding:8px 10px}
+
+  /* 分割面板：单列 */
+  .split-panel{padding:12px;margin-top:10px}
+  .split-settings{grid-template-columns:1fr;gap:10px}
+  .split-settings .split-item label{font-size:.76em}
+  .split-settings .split-item select,
+  .split-settings .split-item input{font-size:16px;padding:10px 12px;min-height:44px}
+  .split-btn{min-height:42px;padding:10px 18px;font-size:.86em;width:100%}
+  .split-output-item{padding:8px;font-size:.78em;flex-wrap:wrap;gap:6px}
+  .split-output-item .fname{width:100%;margin-right:0;font-size:.78em}
+  .split-output-item .fsize{font-size:.72em}
+  .split-output-item .fdl{padding:5px 10px;font-size:.76em}
+
+  /* 公告横幅：竖排 */
+  .quota-banner{padding:10px 12px;font-size:.84em;gap:8px;flex-direction:column;align-items:stretch}
+  .quota-banner .banner-text{font-size:.92em}
+  .quota-banner .btn{width:100%}
+
+  /* 联系管理员弹窗 */
+  .contact-box{padding:18px}
+  .contact-box h3{font-size:1em;margin-bottom:12px}
+  .contact-row{padding:10px 12px;font-size:.86em;gap:6px}
+  .contact-row .contact-val{font-size:.84em;min-width:0;word-break:break-all}
+  .contact-row .btn-xs{padding:6px 10px}
+
+  /* 模态框 */
+  .modal-overlay{padding:14px;align-items:flex-end}
+  .modal-box{padding:18px;border-radius:14px 14px 0 0;max-height:85vh}
+
+  /* 仪表盘：单列 */
+  .dash-grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .dash-tile{padding:14px}
+  .dash-tile .dt-num{font-size:1.6em}
+  .dash-tile .dt-label{font-size:.72em}
+  .dash-tile .dt-icon{font-size:1.4em}
+
+  /* 用户管理表：更小字号 + 横向滚动 */
+  .tbl{font-size:.72em;display:block;overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}
+  .tbl th,.tbl td{padding:8px 6px}
+  .quota-inp{width:48px;font-size:.78em;padding:4px}
+
+  /* 空状态 */
+  .empty-state{padding:30px 14px}
+  .empty-state .icon{font-size:2.4em}
+  .empty-state p{font-size:.86em}
+
+  /* 主题切换按钮：避免遮挡内容 */
+  .theme-toggle{bottom:14px;right:14px;width:40px;height:40px;font-size:1.1em}
+
+  /* 滚动指示器 */
+  .scroll-hint{bottom:18px;width:20px;height:30px}
+
+  /* 欢迎弹窗 */
+  .welcome-content{padding:20px 18px 16px}
+  .welcome-head{flex-direction:column;align-items:flex-start;gap:6px}
+  .welcome-title{font-size:1.2em}
+  .welcome-icon{font-size:2.2em}
+  .welcome-actions{flex-direction:column-reverse;gap:8px}
+  .welcome-btn{width:100%;min-height:42px;text-align:center;padding:10px 18px}
+  .welcome-box{border-radius:14px;max-width:92vw}
+
+  /* Toast */
+  .toast-container{top:10px;right:10px;left:10px}
+  .toast{min-width:0;max-width:100%;font-size:.86em;padding:10px 14px}
+
+  /* 确认弹窗 */
+  .confirm-box{width:min(92vw,420px);padding:18px 18px 16px;border-radius:14px}
+  .confirm-actions{flex-direction:column-reverse;gap:8px}
+  .confirm-btn{width:100%;min-height:42px}
+}
+
+/* ── 超小屏（≤360px）：iPhone SE 一代 / 早期安卓 ── */
+@media (max-width:360px){
+  body{font-size:14px}
+  .container{padding:8px}
+  .app-logo{font-size:1em}
+  .nav-btn{font-size:.72em;padding:5px 1px}
+  .nav-btn .nav-icon{font-size:1em}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(105px,1fr));gap:8px}
+  .card{padding:12px}
+  .btn{padding:10px 14px;font-size:.84em}
+  .guide-hero{padding:18px 16px 16px}
+  .guide-hero-icon{font-size:2.6em}
+  .guide-hero-title{font-size:1.2em}
+  .guide-hero-sub{font-size:.8em}
+  .gs-step{padding:2px 6px 2px 2px}
+  .gs-num{width:16px;height:16px;font-size:.78em}
+  .dash-grid{grid-template-columns:1fr}
+  .tbl{font-size:.68em}
+}
+
+/* ── 横屏 / 大屏 1100px+ ── */
+@media (min-width:1100px){
+  .container{padding:24px}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+}
+
+/* ── 触控优化：去除点击高亮 + 平滑滚动 ── */
+*{
+  -webkit-tap-highlight-color:transparent;
+}
+html{scroll-behavior:smooth}
+button,.nav-btn,.gs-step,.book-card,.file-row,.guide-toc-item{cursor:pointer}
+button{min-height:36px}
+.nav-btn,.gs-step,.book-card{transition:transform .2s,box-shadow .2s}
+
+/* ── 折叠屏 / 极宽屏 1400px+ ── */
+@media (min-width:1400px){
+  .container{max-width:1240px}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 番茄/七猫 tab 顶部提示条：「不知道怎么用？点击查看指南」
+ * ═══════════════════════════════════════════════════ */
+.tab-hint{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;margin-bottom:12px;
+  border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(14,165,233,.08));
+  border:1px solid rgba(255,107,53,.22);
+  cursor:pointer;
+  font-size:.88em;color:var(--text2);
+  transition:.25s;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  user-select:none;
+}
+.tab-hint:hover{
+  border-color:rgba(255,107,53,.45);
+  background:linear-gradient(135deg,rgba(255,107,53,.16),rgba(14,165,233,.12));
+  transform:translateY(-1px);
+  box-shadow:0 6px 20px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.tab-hint:active{transform:translateY(0) scale(.99)}
+.tab-hint-icon{
+  font-size:1.15em;flex-shrink:0;
+  filter:drop-shadow(0 2px 8px rgba(255,150,90,.35));
+}
+.tab-hint-text{flex:1;min-width:0;line-height:1.5}
+.tab-hint-text b{
+  color:#ffb08f;font-weight:600;
+  border-bottom:1px dashed rgba(255,176,143,.4);
+  padding-bottom:1px;
+}
+.tab-hint-arrow{
+  font-size:1.4em;color:var(--text3);flex-shrink:0;
+  transition:.25s;
+}
+.tab-hint:hover .tab-hint-arrow{color:var(--orange);transform:translateX(3px)}
+@media (max-width:640px){
+  .tab-hint{padding:10px 12px;font-size:.82em;gap:8px;margin-bottom:10px;border-radius:10px}
+  .tab-hint-icon{font-size:1.05em}
+  .tab-hint-arrow{font-size:1.2em}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 文件 tab 顶部「请勿使用微信打开」警示卡片
+ * ═══════════════════════════════════════════════════ */
+.browser-warn{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:16px 18px;margin-bottom:14px;
+  border-radius:14px;
+  background:linear-gradient(135deg,rgba(245,158,11,.12),rgba(239,68,68,.08));
+  border:1px solid rgba(245,158,11,.35);
+  box-shadow:0 6px 22px rgba(245,158,11,.10), inset 0 1px 0 rgba(255,255,255,.05);
+  position:relative;overflow:hidden;
+  animation:bwIn .5s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes bwIn{
+  from{opacity:0;transform:translateY(-6px)}
+  to{opacity:1;transform:none}
+}
+.browser-warn::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:4px;
+  background:linear-gradient(180deg,#f59e0b,#ef4444);
+  box-shadow:0 0 14px rgba(245,158,11,.5);
+}
+.bw-icon{
+  font-size:1.7em;flex-shrink:0;line-height:1.1;
+  filter:drop-shadow(0 4px 12px rgba(245,158,11,.4));
+  margin-top:1px;
+}
+.bw-content{flex:1;min-width:0}
+.bw-title{
+  font-size:1em;font-weight:700;color:#fbbf24;
+  margin-bottom:6px;letter-spacing:.3px;
+}
+.bw-desc{
+  font-size:.84em;color:rgba(255,255,255,.82);line-height:1.7;
+  margin-bottom:10px;
+}
+.bw-desc b{color:#fed7aa;font-weight:600}
+.bw-copy{
+  padding:6px 14px!important;font-size:.8em!important;
+  min-height:34px!important;border-radius:18px!important;
+  box-shadow:0 4px 14px rgba(255,107,53,.3), inset 0 1px 0 rgba(255,255,255,.2)!important;
+}
+@media (max-width:640px){
+  .browser-warn{padding:12px 14px;gap:10px;margin-bottom:12px;border-radius:12px}
+  .bw-icon{font-size:1.4em}
+  .bw-title{font-size:.92em}
+  .bw-desc{font-size:.78em;margin-bottom:8px;line-height:1.6}
+  .bw-copy{width:100%;text-align:center}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 管理员 · 用户管理 · 配额总览卡（4 个统计）
+ * ═══════════════════════════════════════════════════ */
+.quota-overview{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+  margin-bottom:14px;
+}
+.qo-tile{
+  display:flex;align-items:center;gap:12px;
+  padding:12px 14px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(255,107,53,.10),rgba(14,165,233,.06));
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04);
+  transition:.2s;position:relative;overflow:hidden;
+}
+.qo-tile:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.3)}
+.qo-tile.warn{
+  background:linear-gradient(135deg,rgba(245,158,11,.14),rgba(245,158,11,.04));
+  border-color:rgba(245,158,11,.35);
+}
+.qo-tile.danger{
+  background:linear-gradient(135deg,rgba(239,68,68,.16),rgba(239,68,68,.04));
+  border-color:rgba(239,68,68,.4);
+}
+.qo-icon{font-size:1.6em;flex-shrink:0;line-height:1;filter:drop-shadow(0 2px 8px rgba(255,150,90,.3))}
+.qo-body{flex:1;min-width:0}
+.qo-num{
+  font-size:1.5em;font-weight:800;line-height:1.1;color:var(--text);
+  font-variant-numeric:tabular-nums;letter-spacing:.3px;
+}
+.qo-tile.warn   .qo-num{color:#fbbf24}
+.qo-tile.danger .qo-num{color:#fca5a5}
+.qo-label{font-size:.72em;color:var(--text3);margin-top:2px;line-height:1.3}
+@media (max-width:640px){
+  .quota-overview{grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px}
+  .qo-tile{padding:10px 12px;gap:8px}
+  .qo-icon{font-size:1.3em}
+  .qo-num{font-size:1.2em}
+  .qo-label{font-size:.68em}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 管理员 · 用户表格 · 配额可视化（数字 + 进度条 + 状态）
+ * ═══════════════════════════════════════════════════ */
+.tbl-quota td:nth-child(4){min-width:240px;padding:10px 12px}
+.quota-cell{display:flex;flex-direction:column;gap:5px;min-width:0}
+.quota-head{
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+}
+.quota-main{display:flex;align-items:baseline;gap:4px;min-width:0}
+.quota-remain{
+  font-size:1.3em;font-weight:800;line-height:1;
+  font-variant-numeric:tabular-nums;letter-spacing:.3px;
+  text-shadow:0 0 14px currentColor;
+}
+.quota-remain.good   {color:#22c55e}
+.quota-remain.mid    {color:#facc15}
+.quota-remain.warn   {color:#fb923c}
+.quota-remain.danger {color:#f87171;text-shadow:0 0 14px rgba(239,68,68,.5)}
+.quota-remain.admin  {
+  color:#7dd3fc;font-size:1.4em;
+  text-shadow:0 0 14px rgba(125,211,252,.5);
+}
+.quota-remain.gray   {color:var(--text3);text-shadow:none}
+.quota-unit{font-size:.72em;color:var(--text3);white-space:nowrap}
+/* 状态徽章 */
+.quota-state{
+  font-size:.66em;font-weight:700;padding:2px 8px;border-radius:8px;
+  white-space:nowrap;letter-spacing:.3px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08);
+}
+.quota-state-good   {background:rgba(34,197,94,.16);color:#4ade80;border:1px solid rgba(34,197,94,.35)}
+.quota-state-mid    {background:rgba(250,204,21,.16);color:#fde047;border:1px solid rgba(250,204,21,.35)}
+.quota-state-warn   {background:rgba(251,146,60,.16);color:#fdba74;border:1px solid rgba(251,146,60,.35)}
+.quota-state-danger {background:rgba(239,68,68,.18);color:#fca5a5;border:1px solid rgba(239,68,68,.4)}
+.quota-state-admin  {background:rgba(125,211,252,.18);color:#7dd3fc;border:1px solid rgba(125,211,252,.4)}
+.quota-state-gray   {background:rgba(255,255,255,.06);color:var(--text3);border:1px solid rgba(255,255,255,.12)}
+/* 进度条 */
+.quota-bar{
+  position:relative;width:100%;height:6px;border-radius:3px;
+  background:rgba(255,255,255,.08);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.35);
+  overflow:hidden;
+}
+.quota-bar-fill{
+  height:100%;border-radius:3px;
+  transition:width .5s cubic-bezier(.2,.7,.3,1);
+  box-shadow:0 0 10px currentColor;
+}
+.quota-bar-good   {background:linear-gradient(90deg,#22c55e,#16a34a);color:#22c55e}
+.quota-bar-mid    {background:linear-gradient(90deg,#facc15,#eab308);color:#facc15}
+.quota-bar-warn   {background:linear-gradient(90deg,#fb923c,#f97316);color:#fb923c}
+.quota-bar-danger {background:linear-gradient(90deg,#f87171,#ef4444);color:#f87171}
+/* 进度条扫光（轻量特效） */
+.quota-bar-fill::after{
+  content:'';position:absolute;inset:0;width:36%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent);
+  animation:fillSweep 2.2s ease-in-out infinite;
+  pointer-events:none;
+}
+/* 底部元数据：已用 / 累计 / 剩余百分比 */
+.quota-foot{
+  display:flex;justify-content:space-between;gap:8px;
+  font-size:.7em;color:var(--text3);line-height:1.3;
+}
+.quota-foot b{color:var(--text);font-weight:600;font-variant-numeric:tabular-nums}
+.quota-mid{color:var(--text2)!important}
+
+@media (max-width:640px){
+  .tbl-quota td:nth-child(4){min-width:0;padding:8px 6px}
+  .quota-remain{font-size:1.1em}
+  .quota-state{font-size:.6em;padding:2px 6px}
+  .quota-foot{font-size:.66em;flex-wrap:wrap;gap:4px}
+  .quota-unit{font-size:.68em}
+}
+
+/* ═══════════════════════════════════════════════════
+ * 管理员：无限下载专属样式
+ * ═══════════════════════════════════════════════════ */
+.quota-pill.admin-infinity{
+  background:linear-gradient(135deg,#7dd3fc,#0284c7)!important;
+  box-shadow:0 4px 14px rgba(125,211,252,.45), inset 0 1px 0 rgba(255,255,255,.3);
+  position:relative;
+  animation:adminInfinityPulse 2.5s ease-in-out infinite;
+}
+@keyframes adminInfinityPulse{
+  0%,100%{box-shadow:0 4px 14px rgba(125,211,252,.45), inset 0 1px 0 rgba(255,255,255,.3)}
+  50%{box-shadow:0 4px 22px rgba(125,211,252,.7), inset 0 1px 0 rgba(255,255,255,.4)}
+}
+
+.admin-panel-btn{
+  background:linear-gradient(135deg,rgba(125,211,252,.18),rgba(56,189,248,.10))!important;
+  border-color:rgba(125,211,252,.4)!important;
+  color:#7dd3fc!important;
+}
+.admin-panel-btn:hover{
+  background:linear-gradient(135deg,rgba(125,211,252,.28),rgba(56,189,248,.16))!important;
+  border-color:#7dd3fc!important;
+  color:#fff!important;
+}
+
+/* 管理员横幅 */
+.admin-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:11px 16px;margin-bottom:16px;border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,rgba(125,211,252,.12),rgba(255,107,53,.08));
+  border:1px solid rgba(125,211,252,.4);
+  font-size:.9em;
+  box-shadow:0 4px 18px rgba(125,211,252,.10), inset 0 1px 0 rgba(255,255,255,.06);
+}
+.admin-banner .banner-text{color:var(--text);display:flex;align-items:center;gap:8px}
+.admin-banner .banner-text .bell{font-size:1.05em}
+.admin-banner b{color:#7dd3fc;font-weight:700}
+
+/* ═══════════════════════════════════════════════════
+ * 管理员面板弹窗
+ * ═══════════════════════════════════════════════════ */
+.admin-panel-mask{
+  position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.65);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  padding:20px;
+}
+.admin-panel-mask.show{display:flex}
+.admin-panel-box{
+  width:min(960px,96vw);max-height:88vh;overflow-y:auto;
+  background:linear-gradient(170deg,#1c1c33,#15152a);
+  border:1px solid rgba(125,211,252,.25);
+  border-radius:18px;
+  box-shadow:0 28px 80px rgba(0,0,0,.6), 0 0 60px rgba(125,211,252,.12), inset 0 1px 0 rgba(255,255,255,.08);
+  position:relative;overflow:hidden;
+  animation:adminPanelIn .35s cubic-bezier(.2,.7,.3,1);
+}
+@keyframes adminPanelIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
+.admin-panel-box::before{
+  content:'';position:absolute;top:0;left:6%;right:6%;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(125,211,252,.5),transparent);
+}
+.admin-panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:18px 22px 14px;
+  border-bottom:1px solid rgba(125,211,252,.18);
+  position:sticky;top:0;z-index:1;
+  background:linear-gradient(180deg,rgba(28,28,51,.95),rgba(28,28,51,.85));
+  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+}
+.admin-panel-title{
+  font-size:1.05em;font-weight:700;letter-spacing:.5px;
+  background:linear-gradient(135deg,#ffffff,#7dd3fc 50%,#ffb08f);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+}
+.admin-panel-close{
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  color:var(--text2);width:32px;height:32px;border-radius:50%;
+  cursor:pointer;font-size:1.2em;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:.2s;
+}
+.admin-panel-close:hover{background:rgba(239,68,68,.2);color:#fca5a5;border-color:rgba(239,68,68,.4);transform:rotate(90deg)}
+.admin-subtabs{
+  display:flex;gap:4px;padding:14px 22px 0;flex-wrap:wrap;
+}
+.admin-subtab{
+  padding:7px 16px;border-radius:10px 10px 0 0;cursor:pointer;
+  font-size:.86em;color:var(--text3);transition:.2s;
+  background:rgba(255,255,255,.03);
+  border:1px solid transparent;border-bottom:none;
+}
+.admin-subtab:hover{color:var(--text)}
+.admin-subtab.on{
+  color:#7dd3fc;background:rgba(125,211,252,.12);
+  border-color:rgba(125,211,252,.3);
+  box-shadow:0 -2px 12px rgba(125,211,252,.15);
+  font-weight:600;
+}
+#adminPanelContent{padding:0 22px 22px}
+@media (max-width:640px){
+  .admin-panel-mask{padding:0;align-items:flex-end}
+  .admin-panel-box{width:100%;max-height:92vh;border-radius:18px 18px 0 0}
+  .admin-panel-head{padding:14px 16px 10px}
+  .admin-panel-title{font-size:.95em}
+  .admin-subtabs{padding:10px 14px 0;gap:3px}
+  .admin-subtab{padding:6px 10px;font-size:.76em;flex:1;text-align:center}
+  #adminPanelContent{padding:0 14px 14px}
+  .admin-banner{padding:10px 12px;font-size:.82em;flex-direction:column;align-items:stretch;gap:8px}
+  .admin-banner .btn{width:100%}
+  .admin-panel-btn{display:none}
+}
+</style>
+
+<!-- ═══════════════════════════════════════════════════
+     模块 B/C/D/G 新增脚本（收藏/历史/预览/批量/阅读器/管理/通知/公告）
+     ═══════════════════════════════════════════════════ -->
+<script>
+/* ═══════════════════════════════════════════════════
+ * 通用工具 - 本地存储封装
+ * ═══════════════════════════════════════════════════ */
+const Store = {
+  get(k, def) { try { const v = localStorage.getItem(k); return v == null ? def : JSON.parse(v); } catch (e) { return def; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } },
+  del(k) { try { localStorage.removeItem(k); return true; } catch (e) { return false; } },
+};
+
+/* ═══════════════════════════════════════════════════
+ * B3 搜索历史
+ * ═══════════════════════════════════════════════════ */
+const SearchHistory = {
+  KEY: 'fanqie_search_history_v1',
+  MAX: 12,
+  list() { return Store.get(SearchHistory.KEY, []); },
+  add(q) {
+    if (!q || !q.trim()) return;
+    let list = SearchHistory.list().filter(x => x !== q);
+    list.unshift(q);
+    Store.set(SearchHistory.KEY, list.slice(0, SearchHistory.MAX));
+  },
+  clear() { Store.del(SearchHistory.KEY); },
+  remove(q) { Store.set(SearchHistory.KEY, SearchHistory.list().filter(x => x !== q)); },
+  render(containerId, onPick) {
+    const list = SearchHistory.list();
+    const c = document.getElementById(containerId);
+    if (!c) return;
+    if (!list.length) { c.innerHTML = ''; c.style.display = 'none'; return; }
+    c.style.display = 'block';
+    c.innerHTML = `<div class="sh-title"><span>🔍 最近搜索</span><a style="cursor:pointer;color:var(--cyan2);font-size:.9em" onclick="SearchHistory.clear();SearchHistory.render('${containerId}',${onPick.name})">清空</a></div><div class="sh-list">${list.map(q => `<span class="sh-tag" onclick="(${onPick})('${eH(q).replace(/'/g, "\\'")}')">${eH(q)}</span>`).join('')}</div>`;
+  },
+};
+
+/* ═══════════════════════════════════════════════════
+ * G5 桌面通知
+ * ═══════════════════════════════════════════════════ */
+async function notify(title, body, icon) {
+  if (!('Notification' in window)) return;
+  if (Notification.permission === 'granted') {
+    new Notification(title, { body, icon: icon || '/favicon.ico' });
+  } else if (Notification.permission !== 'denied') {
+    const p = await Notification.requestPermission();
+    if (p === 'granted') new Notification(title, { body, icon: icon || '/favicon.ico' });
+  }
+}
+// 请求通知权限（用户首次进入后）
+setTimeout(() => {
+  if ('Notification' in window && Notification.permission === 'default') {
+    // 不主动弹，等用户点了"启用通知"再请求
+  }
+}, 3000);
+
+/* ═══════════════════════════════════════════════════
+ * C5 公告/通知系统（管理员写 localStorage，普通用户读）
+ * 渲染为顶部横幅（不弹窗），与首登引导独立
+ * ═══════════════════════════════════════════════════ */
+const Announce = {
+  KEY: 'fanqie_announcement_v1',
+  DISMISSED: 'fanqie_ann_dismissed_v1',
+  get() { return Store.get(Announce.KEY, null); },
+  set(d) { Store.set(Announce.KEY, d); Store.del(Announce.DISMISSED); },
+  clear() { Store.del(Announce.KEY); },
+  isDismissed() { return !!Store.get(Announce.DISMISSED, false); },
+  dismiss() { Store.set(Announce.DISMISSED, true); },
+  render() {
+    const old = document.getElementById('globalAnnounce');
+    if (old) old.remove();
+    const data = Announce.get();
+    if (!data || Announce.isDismissed()) return;
+    const el = document.createElement('div');
+    el.id = 'globalAnnounce';
+    el.className = 'announce show';
+    el.innerHTML = `<button class="ann-close" onclick="Announce.dismiss();this.parentElement.remove()">✕</button>
+      <div class="ann-title">${eH(data.title || '系统公告')}</div>
+      <div class="ann-body">${eH(data.body || '')}</div>`;
+    // 插入到 app 顶部
+    const app = document.getElementById('app');
+    if (app && app.firstChild) app.insertBefore(el, app.firstChild);
+  },
+};
+// 启动后渲染公告（如果有）
+setTimeout(() => Announce.render(), 800);
+
+/* ═══════════════════════════════════════════════════
+ * F2 首登引导弹窗（每用户/每浏览器只弹一次）
+ *  - 关闭后保留「指南」tab 红点，直到用户真正点开指南
+ *  - 「去看指南」按钮：仅关闭弹窗，红点继续存在
+ *  - 「我知道了」按钮：关闭弹窗 + 标记指南已读
+ * ═══════════════════════════════════════════════════ */
+const FirstLoginWelcome = {
+  SEEN_KEY: 'fanqie_welcome_seen_v1',  // 弹窗是否被看过
+  GUIDE_READ_KEY: 'fanqie_guide_read_v1',  // 指南 tab 是否被点过
+  shouldShow() {
+    // 仅在用户已登录、未看过弹窗时显示
+    if (!U) return false;
+    return !Store.get(FirstLoginWelcome.SEEN_KEY, false);
+  },
+  isGuideRead() {
+    return !!Store.get(FirstLoginWelcome.GUIDE_READ_KEY, false);
+  },
+  show() {
+    if (!FirstLoginWelcome.shouldShow()) return;
+    // 防止重复弹
+    if (document.getElementById('welcomeMask')) return;
+    const username = (U && U.username) ? U.username : '读者';
+    const isAdmin = U && U.is_admin;
+    const mask = document.createElement('div');
+    mask.id = 'welcomeMask';
+    mask.className = 'welcome-mask';
+    mask.innerHTML = `
+      <div class="welcome-box" role="dialog" aria-modal="true">
+        <div class="welcome-bg"></div>
+        <div class="welcome-content">
+          <div class="welcome-head">
+            <div class="welcome-icon">👋</div>
+            <div>
+              <span class="welcome-badge">🎉 欢迎回来</span>
+              <h2 class="welcome-title">欢迎，${eH(username)}！</h2>
+            </div>
+          </div>
+          <p class="welcome-body">
+            这是你的<b>番茄 · 七猫小说下载器</b>。<br>
+            支持<b>链接下载</b>、<b>搜索下载</b>、<b>文件分割</b>、<b>收藏管理</b>和<b>在线阅读</b>。
+          </p>
+          <div class="welcome-tip">
+            💡 <b>新手提示：</b>第一次使用？强烈建议花 3 分钟阅读 <b>「指南」</b> 标签页，了解下载次数、批量导入、文件分割等核心玩法，能少走很多弯路喵～
+          </div>
+          <div class="welcome-actions">
+            <button class="welcome-btn welcome-btn-ghost" id="welcomeGotIt">我知道了</button>
+            <button class="welcome-btn welcome-btn-primary" id="welcomeViewGuide">📖 去看看指南</button>
+          </div>
+          <div class="welcome-footnote">${isAdmin ? '管理员模式已激活 · 你拥有所有用户管理权限' : '每下载一本小说消耗 1 次下载次数 · 次数不足请联系管理员'}</div>
+        </div>
+      </div>`;
+    document.body.appendChild(mask);
+
+    // 关闭弹窗（仅关闭，不标记指南已读 → 保留红点）
+    function close(alsoMarkGuideRead) {
+      Store.set(FirstLoginWelcome.SEEN_KEY, true);
+      if (alsoMarkGuideRead) Store.set(FirstLoginWelcome.GUIDE_READ_KEY, true);
+      const m = document.getElementById('welcomeMask');
+      if (m) {
+        m.style.animation = 'welcome-fade .2s ease forwards';
+        const box = m.querySelector('.welcome-box');
+        if (box) box.style.animation = 'welcome-pop .2s cubic-bezier(.4,0,.6,1) reverse forwards';
+        setTimeout(() => m.remove(), 220);
+      }
+      // 关闭后刷新红点（如果还没点过指南，应保留红点）
+      FirstLoginWelcome.refreshBadge();
+    }
+
+    // 「我知道了」：关闭弹窗 + 标记指南已读（红点消失）
+    document.getElementById('welcomeGotIt').onclick = () => close(true);
+    // 「去看看指南」：关闭弹窗但保留红点
+    document.getElementById('welcomeViewGuide').onclick = () => close(false);
+    // 点遮罩关闭 = 等同于「我知道了」
+    mask.addEventListener('click', (e) => { if (e.target === mask) close(true); });
+    // ESC 关闭 = 等同于「我知道了」
+    const escHandler = (e) => {
+      if (e.key === 'Escape') {
+        document.removeEventListener('keydown', escHandler);
+        close(true);
+      }
+    };
+    document.addEventListener('keydown', escHandler);
+  },
+  // 渲染/移除指南 tab 的红点 + 高亮徽章
+  refreshBadge() {
+    const guideBtn = document.getElementById('guideNavBtn');
+    if (!guideBtn) return;
+    // 红点（小红圆点）
+    const oldDot = guideBtn.querySelector('.nav-badge');
+    if (oldDot) oldDot.remove();
+    // 「新」字徽章（更醒目）
+    const oldText = guideBtn.querySelector('.nav-badge-text');
+    if (!FirstLoginWelcome.isGuideRead()) {
+      if (oldText) oldText.style.display = '';
+      if (!oldText) {
+        // 已在模板里写了 span，这里只补红点
+        const dot = document.createElement('span');
+        dot.className = 'nav-badge';
+        dot.title = '新手必看';
+        guideBtn.appendChild(dot);
+      }
+      // 给指南 tab 加 pulse 呼吸效果（高亮）
+      guideBtn.classList.add('guide-nav-pulse');
+      // 同步刷新主屏引导横条
+      FirstLoginWelcome.refreshStrip();
+    } else {
+      if (oldText) oldText.style.display = 'none';
+      guideBtn.classList.remove('guide-nav-pulse');
+      // 已读：隐藏主屏引导横条
+      const strip = document.getElementById('guideCtaStrip');
+      if (strip) strip.style.display = 'none';
+    }
+  },
+  // 主屏引导横条：未读且用户已登录且未主动关闭过 → 显示
+  refreshStrip() {
+    const strip = document.getElementById('guideCtaStrip');
+    if (!strip) return;
+    if (!U || FirstLoginWelcome.isGuideRead() || FirstLoginWelcome._stripDismissed()) {
+      strip.style.display = 'none';
+      return;
+    }
+    strip.style.display = '';
+  },
+  STRIP_DISMISS_KEY: 'fanqie_guide_strip_dismissed_v1',
+  _stripDismissed() {
+    return !!Store.get(FirstLoginWelcome.STRIP_DISMISS_KEY, false);
+  },
+  // 持久化关闭横条（不再打扰）
+  dismissStrip() {
+    Store.set(FirstLoginWelcome.STRIP_DISMISS_KEY, true);
+    const strip = document.getElementById('guideCtaStrip');
+    if (strip) strip.style.display = 'none';
+  },
+  // 用户点击了指南 tab
+  markGuideRead() {
+    Store.set(FirstLoginWelcome.GUIDE_READ_KEY, true);
+    FirstLoginWelcome.refreshBadge();
+  },
+};
+
+/* ═══════════════════════════════════════════════════
+ * A3 主题切换（写入 Store + 应用 CSS 变量）
+ * ═══════════════════════════════════════════════════ */
+const Theme = {
+  KEY: 'fanqie_theme_v1',
+  cur: Store.get('fanqie_theme_v1', 'dark'),
+  apply(t) {
+    this.cur = t;
+    Store.set(this.KEY, t);
+    const r = document.documentElement.style;
+    if (t === 'light') {
+      r.setProperty('--bg', '#f4f5f8');
+      r.setProperty('--bg-grad', 'linear-gradient(135deg,#e8eef7 0%,#dde6f1 100%)');
+      r.setProperty('--surface', 'rgba(255,255,255,0.7)');
+      r.setProperty('--surface-hover', 'rgba(255,255,255,0.85)');
+      r.setProperty('--border', 'rgba(0,0,0,0.10)');
+      r.setProperty('--text', '#1a1a1a');
+      r.setProperty('--text2', '#3a3a3a');
+      r.setProperty('--text3', '#888');
+      r.setProperty('--card-bg', 'rgba(255,255,255,0.85)');
+    } else {
+      r.setProperty('--bg', '#0a0e1a');
+      r.setProperty('--bg-grad', 'linear-gradient(135deg,#0a0e1a 0%,#0f1629 50%,#1a1530 100%)');
+      r.setProperty('--surface', 'rgba(255,255,255,0.04)');
+      r.setProperty('--surface-hover', 'rgba(255,255,255,0.07)');
+      r.setProperty('--border', 'rgba(255,255,255,0.08)');
+      r.setProperty('--text', '#fff');
+      r.setProperty('--text2', 'rgba(255,255,255,0.7)');
+      r.setProperty('--text3', 'rgba(255,255,255,0.4)');
+      r.setProperty('--card-bg', 'rgba(255,255,255,0.04)');
+    }
+    document.body.classList.add('theme-transitioning');
+    setTimeout(() => document.body.classList.remove('theme-transitioning'), 400);
+  },
+  toggle() { this.apply(this.cur === 'dark' ? 'light' : 'dark'); toast.info(`已切换到${this.cur === 'dark' ? '日间' : '夜间'}模式`); },
+  inject() {
+    if (document.getElementById('themeBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'themeBtn';
+    btn.className = 'theme-toggle';
+    btn.title = '切换主题';
+    btn.innerHTML = '🌓';
+    btn.onclick = () => Theme.toggle();
+    document.body.appendChild(btn);
+  },
+};
+// 启动时应用
+Theme.apply(Theme.cur);
+setTimeout(() => Theme.inject(), 1000);
+
+/* ═══════════════════════════════════════════════════
+ * 管理员公告编辑（U.is_admin 时注入入口）
+ * ═════════════════════════════════════════════════== */
+function adminAnnounceEdit() {
+  const cur = Announce.get() || { title: '', body: '' };
+  const mask = document.createElement('div');
+  mask.className = 'preview-mask show';
+  mask.onclick = (e) => { if (e.target === mask) mask.remove(); };
+  mask.innerHTML = `<div class="preview-box" onclick="event.stopPropagation()" style="max-width:520px">
+    <div class="preview-head"><span style="font-size:1.1em">📢</span><span class="pv-title">编辑公告</span><button class="btn-xs btn-ghost" onclick="this.closest('.preview-mask').remove()">关闭</button></div>
+    <div style="padding:18px">
+      <input class="inp" id="annTitle" placeholder="公告标题" value="${eH(cur.title)}" style="margin-bottom:10px">
+      <textarea class="inp url-area" id="annBody" rows="6" placeholder="公告内容...">${eH(cur.body)}</textarea>
+      <div style="display:flex;gap:8px;margin-top:12px;justify-content:flex-end">
+        <button class="btn btn-red btn-sm" onclick="Announce.clear();this.closest('.preview-mask').remove();toast.info('公告已删除')">删除公告</button>
+        <button class="btn btn-go btn-sm" onclick="Announce.set({title:document.getElementById('annTitle').value,body:document.getElementById('annBody').value,at:Date.now()});Announce.render();this.closest('.preview-mask').remove();toast.success('公告已发布')">发布</button>
+      </div>
+    </div>
+  </div>`;
+  document.body.appendChild(mask);
+}
+
+/* ═══════════════════════════════════════════════════
+ * D1 管理员仪表盘（用户数据）
+ * ═════════════════════════════════════════════════== */
+async function renderAdminDashboard() {
+  let users = [], files = [];
+  try { const r = await api('/api/admin/users?page=1&per_page=1000'); const d = await r.json(); users = d.users || []; } catch (e) {}
+  try { const r = await api('/api/files?page=1&per_page=1000'); const d = await r.json(); files = d.files || []; } catch (e) {}
+
+  const totalUsers = users.length;
+  const activeUsers = users.filter(u => (u.download_count || 0) > 0).length;
+  const disabledUsers = users.filter(u => u.is_disabled).length;
+  const totalDownloads = files.length;
+  const totalSize = files.reduce((s, f) => s + (parseInt(f.size) || 0), 0);
+  const fmtSize = b => b > 1048576 ? (b / 1048576).toFixed(2) + ' MB' : (b / 1024).toFixed(1) + ' KB';
+
+  // 在线用户近似（最近 5 分钟活跃）
+  // 简化：直接展示总下载数等
+  document.getElementById('adminDashBody').innerHTML = `
+<div class="dash-grid">
+  <div class="dash-tile"><div class="dt-icon">👥</div><div class="dt-num count-up" data-v="${totalUsers}">${totalUsers}</div><div class="dt-label">总用户数</div></div>
+  <div class="dash-tile green"><div class="dt-icon">✅</div><div class="dt-num">${activeUsers}</div><div class="dt-label">活跃用户</div></div>
+  <div class="dash-tile red"><div class="dt-icon">🚫</div><div class="dt-num">${disabledUsers}</div><div class="dt-label">已禁用</div></div>
+  <div class="dash-tile purple"><div class="dt-icon">📚</div><div class="dt-num">${totalDownloads}</div><div class="dt-label">总下载数</div></div>
+  <div class="dash-tile amber"><div class="dt-icon">💾</div><div class="dt-num">${fmtSize(totalSize)}</div><div class="dt-label">累计体积</div></div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px">
+  <div class="card">
+    <div class="card-header">📊 用户下载排行 Top 10</div>
+    <div class="bar-chart">${
+      users.filter(u => !u.is_admin).sort((a, b) => (b.download_count || 0) - (a.download_count || 0)).slice(0, 10).map(u => {
+        const v = u.download_count || 0;
+        const max = Math.max(...users.map(x => x.download_count || 0), 1);
+        return `<div class="bar-row"><span class="bar-name" title="${eH(u.username)}">${eH(u.username).slice(0, 8)}</span><div class="bar-track"><div class="bar-fill" style="width:${(v / max * 100)}%"></div></div><span class="bar-val">${v}</span></div>`;
+      }).join('') || '<div style="color:var(--text3);text-align:center;padding:20px">暂无数据</div>'
+    }</div>
+  </div>
+  <div class="card">
+    <div class="card-header">📈 最近 7 天下载</div>
+    <div class="trend-chart">${
+      (() => {
+        const today = new Date(); today.setHours(0, 0, 0, 0);
+        const days = [];
+        for (let i = 6; i >= 0; i--) days.push({ d: new Date(today.getTime() - i * 86400000), count: 0, label: (new Date(today.getTime() - i * 86400000).getMonth() + 1) + '/' + new Date(today.getTime() - i * 86400000).getDate() });
+        files.forEach(f => {
+          if (!f.mtime) return;
+          let dt = null;
+          if (typeof f.mtime === 'number') dt = new Date(f.mtime * 1000);
+          else if (typeof f.mtime === 'string') { const n = f.mtime.replace(/-/g, '/'); dt = new Date(n); }
+          if (!dt || isNaN(dt.getTime())) return;
+          dt.setHours(0, 0, 0, 0);
+          const day = days.find(x => x.d.getTime() === dt.getTime());
+          if (day) day.count++;
+        });
+        const max = Math.max(1, ...days.map(d => d.count));
+        return days.map(d => `<div class="trend-bar"><div class="tr"><div class="tr-fill" style="height:${(d.count / max * 100)}%" data-v="${d.count}"></div></div><div class="tr-label">${d.label}</div></div>`).join('');
+      })()
+    }</div>
+  </div>
+</div>
+<div class="card" style="margin-top:14px">
+  <div class="card-header">⚙️ 快捷操作</div>
+  <div style="display:flex;flex-wrap:wrap;gap:8px">
+    <button class="btn btn-cyan btn-sm" onclick="adminAnnounceEdit()">📢 发布/编辑公告</button>
+    <button class="btn btn-sm" onclick="if(confirm('确定要导出数据库快照？')){window.open('/api/admin/backup','_blank')};return false">💾 导出数据库</button>
+    <button class="btn btn-sm" onclick="renderAdmin()">👥 用户管理</button>
+    <button class="btn btn-sm" onclick="renderAdminDashboard()">🔄 刷新数据</button>
+  </div>
+</div>`;
+  // 数字 count-up
+  document.querySelectorAll('.count-up').forEach(el => {
+    const v = parseInt(el.dataset.v) || 0;
+    if (typeof countUp === 'function') countUp(el, v, 1000);
+  });
+}
+
+/* ═══════════════════════════════════════════════════
+ * 扩展 admin render - 增加仪表盘
+ * ═════════════════════════════════════════════════== */
+const _origRenderAdmin = renderAdmin;
+// 不直接覆盖，而是让管理员页面顶部多一个仪表盘 tab
+// 这里通过在 renderAdmin 完成后追加一个新卡片实现
+// (renderAdmin 会被多次调用，避免重复添加)
+</script>
+</body>
+</html>

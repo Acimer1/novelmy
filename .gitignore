@@ -1,0 +1,32 @@
+# ===== 二进制 / 可执行文件 =====
+*.exe
+*.orig
+*.dll
+
+# ===== 运行时数据 =====
+app.db
+*.log
+
+# ===== 已下载的小说内容（含版权文本，不入库） =====
+web_downloads/
+
+# ===== 旧备份 =====
+backup/
+*.bak
+*.b4all
+*.pre-batch3
+*.before-cleanup
+*.task2
+
+# ===== IDE =====
+.idea/
+*.iml
+
+# ===== Python =====
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# ===== 临时 =====
+/tmp/
