@@ -2490,6 +2490,7 @@ function initGuideSteps(){
 /* ========================= FILES TAB ========================= */
 async function renderFiles(){
   const s=document.getElementById('section-files');if(!s)return;
+  // 常驻警示卡片：放在文件列表容器之外，刷新列表时不会被覆盖
   s.innerHTML=`
 <div class="browser-warn">
   <div class="bw-icon">⚠️</div>
@@ -2499,12 +2500,13 @@ async function renderFiles(){
     <button class="bw-copy btn btn-sm btn-go" onclick="copyPageUrl(this)">📋 复制页面链接</button>
   </div>
 </div>
-<div class="card"><div class="empty-state"><div class="icon">📂</div><p>加载中...</p></div></div>`;
+<div id="filesListSlot"><div class="card"><div class="empty-state"><div class="icon">📂</div><p>加载中...</p></div></div></div>`;
   try{
     const r=await api(`/api/files?page=${PAG.filePage}&per_page=${PAG.filePer}`);const d=await r.json();const files=d.files||[];
     PAG.fileTotal=d.total||files.length;
-    if(!PAG.fileTotal){s.innerHTML='<div class="card"><div class="empty-state"><div class="icon">📭</div><p>暂无下载记录</p><p style="font-size:.78em">去番茄或七猫下载小说吧~</p></div></div>';return}
-    s.innerHTML=`<div class="card"><div class="stagger-list">`+files.map(f=>{
+    const slot=document.getElementById('filesListSlot');
+    if(!PAG.fileTotal){slot.innerHTML='<div class="card"><div class="empty-state"><div class="icon">📭</div><p>暂无下载记录</p><p style="font-size:.78em">去番茄或七猫下载小说吧~</p></div></div>';return}
+    slot.innerHTML=`<div class="card"><div class="stagger-list">`+files.map(f=>{
       const isQ=f.source==='qimao';
       const dlUrl=isQ?`/api/qimao/file/${encodeURIComponent(f.book_name)}`:`/api/file/${encodeURIComponent(f.book_name)}`;
       const sz=f.size?(f.size>1048576?(f.size/1048576).toFixed(1)+'MB':(f.size/1024).toFixed(1)+'KB'):'未知';
@@ -2554,7 +2556,7 @@ async function renderFiles(){
 </div>`;
     }).join('')+'</div><div id="filePager" style="margin-top:12px"></div></div>';
     renderPagination(document.getElementById('filePager'),{total:PAG.fileTotal,page:PAG.filePage,per_page:PAG.filePer,onPage:p=>{PAG.filePage=p;renderFiles()}});
-  }catch(e){s.innerHTML='<div class="card"><div class="empty-state"><p style="color:var(--red)">加载失败</p></div></div>'}
+  }catch(e){const slot=document.getElementById('filesListSlot');if(slot)slot.innerHTML='<div class="card"><div class="empty-state"><p style="color:var(--red)">加载失败</p></div></div>'}
 }
 
 /* ========================= ADMIN ========================= */
