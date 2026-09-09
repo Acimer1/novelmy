@@ -598,6 +598,14 @@ body::after{
   .app-logo{font-size:1.2em}
   .card:hover{transform:none}
   .btn:hover::after{transform:none}
+  /* ── 移动端性能优化：提升打开与滚动流畅度 ── */
+  /* background-attachment:fixed 在移动端滚动时会整屏重绘，改成 scroll */
+  body{background-attachment:scroll}
+  /* 关闭全屏星空层的常驻透明度动画（静态星点仍在，视觉不变） */
+  body::before{animation:none}
+  /* 卡片/导航毛玻璃模糊半径是移动端最大开销之一，适当降低以省 GPU */
+  .card{-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+  .nav-bar{-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 }
 
 /* ── 轻量特效（仅 transform/opacity，GPU 合成，不消耗资源） ── */
@@ -869,6 +877,15 @@ body::before{animation:starBreath 9s ease-in-out infinite alternate}
 @keyframes toast-out { to { opacity: 0; transform: translateX(40px) scale(0.95); } }
 @keyframes toast-progress { from { width: 100%; } to { width: 0%; } }
 
+/* toast 操作按钮（用于下载完成弹窗的「查看已下载」） */
+.toast-action{ margin-top:10px; }
+.toast-action-btn{
+  display:block;width:100%;padding:8px 12px;border-radius:10px;border:1px solid rgba(34,197,94,.4);
+  background:linear-gradient(135deg, rgba(34,197,94,.2), rgba(16,185,129,.12));
+  color:#4ade80;font-size:.86em;font-weight:600;cursor:pointer;transition:.2s;
+}
+.toast-action-btn:hover{ background:linear-gradient(135deg, rgba(34,197,94,.35), rgba(16,185,129,.2)); color:#fff; }
+
 @media (max-width: 640px) {
   .toast-container { top: 12px; right: 12px; left: 12px; }
   .toast { min-width: 0; max-width: 100%; }
@@ -894,7 +911,15 @@ body::before{animation:starBreath 9s ease-in-out infinite alternate}
 .confirm-box::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); }
 .confirm-title { font-size: 1.05em; font-weight: 600; margin: 0 0 10px; color: #fff; display: flex; align-items: center; gap: 8px; }
 .confirm-title .confirm-icon { width: 24px; height: 24px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 0.9em; background: linear-gradient(135deg, var(--orange, #ff6b35), #ff8555); color: #fff; box-shadow: 0 0 12px rgba(255, 107, 53, 0.4); }
-.confirm-message { font-size: 0.92em; color: rgba(255, 255, 255, 0.78); line-height: 1.6; margin: 0 0 18px; word-break: break-word; }
+.confirm-message { font-size: 0.92em; color: rgba(255, 255, 255, 0.78); line-height: 1.6; margin: 0 0 18px; word-break: break-word; white-space: pre-line; }
+/* 「已下载」徽章（搜索结果/详情页标记用户已下载过的书） */
+.dl-badge{
+  display:inline-block;padding:3px 8px;border-radius:999px;font-size:.68em;font-weight:700;
+  background:linear-gradient(135deg,rgba(34,197,94,.25),rgba(16,185,129,.18));
+  border:1px solid rgba(34,197,94,.45);color:#4ade80;
+  box-shadow:0 2px 8px rgba(34,197,94,.2);white-space:nowrap;
+  pointer-events:none;
+}
 .confirm-actions { display: flex; gap: 10px; justify-content: flex-end; }
 .confirm-btn { padding: 8px 20px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.12); background: rgba(255, 255, 255, 0.06); color: rgba(255, 255, 255, 0.85); font-size: 0.9em; font-weight: 500; cursor: pointer; transition: all 0.2s; }
 .confirm-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
@@ -1345,8 +1370,10 @@ body::before{animation:starBreath 9s ease-in-out infinite alternate}
     document.querySelectorAll('.tilt-card').forEach(attachTilt);
   }
 
-  // 定时扫描新增卡片
-  setInterval(scanTilt, 1000);
+  // 定时扫描新增卡片（触屏设备无 hover，跳过以免每秒空扫 DOM 拖累性能）
+  if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    setInterval(scanTilt, 1000);
+  }
 
   // ── 数字 count-up ──
   function countUp(el, target, duration) {
@@ -1567,6 +1594,30 @@ function parseTags(ptags){
 /* ====== STATE ====== */
 let U=null,am='login',pT=null,rT=null;
 let tab='fanqie';
+
+/* 已下载集合：用于给搜索/详情标记「已下载」并在重复下载时提醒 */
+let DL=null; // {byId:Set, byName:Set}
+async function refreshDownloadedSet(){
+  try{
+    const r=await api('/api/files?page=1&per_page=100');
+    const d=await r.json();const files=d.files||[];
+    const byId=new Set(),byName=new Set();
+    files.forEach(f=>{
+      if(f.book_id)byId.add(String(f.book_id));
+      if(f.book_name)byName.add(String(f.book_name).trim().toLowerCase());
+    });
+    DL={byId,byName};
+  }catch(e){ DL=DL||{byId:new Set(),byName:new Set()}; }
+}
+function isDownloaded(bookId,bookName){
+  if(!DL)return false;
+  if(bookId!==undefined&&bookId!==null&&DL.byId.has(String(bookId)))return true;
+  if(bookName){const n=String(bookName).trim().toLowerCase();if(DL.byName.has(n))return true;}
+  return false;
+}
+function dlBadge(bookId,bookName){
+  return isDownloaded(bookId,bookName)?'<span class="dl-badge">✓ 已下载</span>':'';
+}
 /* Fanqie state */
 let fsub='link';           // 'link'|'search'|'detail'
 let fBook=null,fFmt='txt';
@@ -1617,7 +1668,7 @@ async function doAuth(){
     const d=await r.json();
     if(!r.ok){m.textContent=d.error||'失败';m.classList.add('err')}
     else if(am==='register'){m.textContent='注册成功，自动登录中...';m.classList.add('ok');am='login';setTimeout(doAuth,400)}
-    else{U=d.user;if(window._hideParticles)window._hideParticles();render()}
+    else{U=d.user;if(window._hideParticles)window._hideParticles();refreshDownloadedSet();render()}
   }catch(e){m.textContent='网络错误';m.classList.add('err')}
 }
 async function doLogout(){
@@ -1857,6 +1908,7 @@ function fSearchHistoryPick(q) {
 }
 async function fSearch(){
   const q=document.getElementById('fSearchInput').value.trim();if(!q)return;
+  if(!DL)await refreshDownloadedSet();
   SearchHistory.add(q);
   if(q!==PAG.fLastQ){PAG.fPage=1;PAG.fLastQ=q}
   const btn=document.getElementById('fSearchBtn'),c=document.getElementById('fResults');
@@ -1874,7 +1926,7 @@ async function fSearch(){
     <div class="book-card-title">${eH(b.book_name||b.title||'未知')}</div>
     <div class="book-card-meta">${eH(b.author||'')}${b.word_count?' · '+(b.word_count>10000?(b.word_count/10000).toFixed(1)+'万字':b.word_count+'字'):''}</div>
   </div>
-  <div style="position:absolute;top:6px;right:6px;z-index:2"></div>
+  <div style="position:absolute;top:6px;right:6px;z-index:2">${dlBadge(b.book_id||b.id,b.book_name||b.title)}</div>
 </div>`).join('')+'</div><div id="fPager"></div>';
     renderPagination(document.getElementById('fPager'),{total:PAG.fTotal,page:PAG.fPage,per_page:PAG.fPer,onPage:p=>{PAG.fPage=p;fSearch()}});
   }catch(e){c.innerHTML='<div class="empty-state"><p style="color:var(--red)">搜索失败</p></div>'}
@@ -1931,6 +1983,7 @@ function renderFanqieDetail(){
   </div>
   <div class="pitch">${(b.description||b.abstract||'暂无简介').slice(0,500)}</div>
   <div class="dl-section">
+    ${isDownloaded(b.book_id||b.id,b.book_name||b.title)?'<div style="margin-bottom:8px"><span class="dl-badge">✓ 已下载</span><span style="font-size:.72em;color:var(--text3);margin-left:6px">你已下载过这本书，重新下载将占用次数</span></div>':''}
     <div style="font-size:.82em;color:var(--text3);margin-bottom:8px">选择下载格式</div>
     <div class="fmt-pick">
       <button class="fmt-opt ${fFmt==='txt'?'sel':''}" onclick="fFmt='txt';renderFanqieDetail()">📄 TXT</button>
@@ -2010,7 +2063,9 @@ async function fStartDownload(){
   if(!fBook)return;
   const _isAdmin = U && U.is_admin;
   if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
-  if(!await confirmDialog({title:'下载确认',message:`下载《${fBook.book_name||fBook.title||'未知'}》(${fFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`,okText:'开始下载'}))return;
+  const already=isDownloaded(fBook.book_id||fBook.id,fBook.book_name||fBook.title);
+  const msg=`下载《${fBook.book_name||fBook.title||'未知'}》(${fFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`+(already?'\n⚠ 你已下载过这本书，确定要重新下载吗？':'');
+  if(!await confirmDialog({title:already?'重复下载确认':'下载确认',message:msg,okText:already?'重新下载':'开始下载'}))return;
   await fDoDownload(fBook.book_id||fBook.id,null);
 }
 
@@ -2059,6 +2114,15 @@ async function fFinishDownload(){
   if(pT){clearInterval(pT);pT=null}
   if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}
   if(fPending){await fRecordDownload(fPending)}
+  refreshDownloadedSet();
+  if(fPending&&fPending.book_name){
+    toast.success({
+      title:'下载完成',
+      message:`《${fPending.book_name}》已保存到「文件」页`,
+      duration:8000,
+      action:{ text:'📂 查看已下载', onClick:()=>switchTab('files') }
+    });
+  }
   setTimeout(()=>{const p=document.getElementById('fProg');if(p)p.classList.remove('show');refreshQuota()},2000);
   fPending=null;
 }
@@ -2135,6 +2199,7 @@ async function qLinkDownload(){
 
 async function qSearch(){
   const q=document.getElementById('qSearchInp').value.trim();if(!q)return;
+  if(!DL)await refreshDownloadedSet();
   if(q!==PAG.qLastQ){PAG.qPage=1;PAG.qLastQ=q}
   const btn=document.getElementById('qSearchBtn'),c=document.getElementById('qResults');
   btn.disabled=true;btn.textContent='搜索中...';c.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>搜索中...</p></div>';
@@ -2151,6 +2216,7 @@ async function qSearch(){
     <div class="book-card-title">${eH(b.title||'未知')}</div>
     <div class="book-card-meta">${eH(b.author||'')}${b.words_num?' · '+(b.words_num>10000?(b.words_num/10000).toFixed(1)+'万字':b.words_num+'字'):''}</div>
   </div>
+  <div style="position:absolute;top:6px;right:6px;z-index:2">${dlBadge(b.id,b.title)}</div>
 </div>`).join('')+'</div><div id="qPager"></div>';
     renderPagination(document.getElementById('qPager'),{total:PAG.qTotal,page:PAG.qPage,per_page:PAG.qPer,onPage:p=>{PAG.qPage=p;qSearch()}});
   }catch(e){c.innerHTML='<div class="empty-state"><p style="color:var(--red)">搜索失败</p></div>'}
@@ -2192,6 +2258,7 @@ function renderQimaoDetail(){
   </div>
   <div class="pitch">${stripHtml(b.intro||'').slice(0,500)||'暂无简介'}</div>
   <div class="dl-section">
+    ${isDownloaded(b.id,b.title)?'<div style="margin-bottom:8px"><span class="dl-badge">✓ 已下载</span><span style="font-size:.72em;color:var(--text3);margin-left:6px">你已下载过这本书，重新下载将占用次数</span></div>':''}
     <div style="font-size:.82em;color:var(--text3);margin-bottom:8px">选择下载格式</div>
     <div class="fmt-pick">
       <button class="fmt-opt cyan-hover ${qFmt==='txt'?'sel-cyan':''}" onclick="qFmt='txt';renderQimaoDetail()">📄 TXT</button>
@@ -2210,7 +2277,9 @@ async function qDownload(){
   if(!qBook||qBusy)return;
   const _isAdmin = U && U.is_admin;
   if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
-  if(!await confirmDialog({title:'下载确认',message:`下载《${qBook.title||'未知'}》(${qFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`,okText:'开始下载'}))return;
+  const already=isDownloaded(qBook.id,qBook.title);
+  const msg=`下载《${qBook.title||'未知'}》(${qFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`+(already?'\n⚠ 你已下载过这本书，确定要重新下载吗？':'');
+  if(!await confirmDialog({title:already?'重复下载确认':'下载确认',message:msg,okText:already?'重新下载':'开始下载'}))return;
 
   qBusy=true;const b=qBook;
   const prog=document.getElementById('qProg'),fill=document.getElementById('qFill'),label=document.getElementById('qLabel'),btn=document.getElementById('qDlBtn');
@@ -2222,7 +2291,15 @@ async function qDownload(){
     const d=await r.json();
     if(d.error){label.textContent='✗ '+d.error;btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase();qBusy=false;return}
     fill.style.width='100%';label.textContent=`✓ 完成! ${d.file_name} (${(d.file_size/1024).toFixed(1)}KB)`;
-    U.download_quota=d.quota;updateQuotaUI();btn.textContent='下载完成 ✓';
+    U.download_quota=d.quota;updateQuotaUI();btn.textContent='下载完成 ✓';refreshDownloadedSet();
+    if(b.title){
+      toast.success({
+        title:'下载完成',
+        message:`《${b.title}》已保存到「文件」页`,
+        duration:8000,
+        action:{ text:'📂 查看已下载', onClick:()=>switchTab('files') }
+      });
+    }
   }catch(e){label.textContent='✗ 网络错误或超时';btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase()}
   finally{qBusy=false;setTimeout(()=>{prog.classList.remove('show');if(btn)btn.textContent='开始下载 '+qFmt.toUpperCase()},6000)}
 }
@@ -2573,7 +2650,9 @@ function closeAdminPanel(){
   const mask = document.getElementById('adminPanelMask');
   if(mask) mask.classList.remove('show');
 }
-/* 在弹窗内渲染管理面板内容（仪表盘/用户管理/公告/备份） */
+/* 在弹窗内渲染管理面板内容（仪表盘/用户管理/公告/备份）
+ * 注意：面板直接内嵌与旧 renderAdmin() 一致的标记（复用相同的 ID），
+ * 再调用 renderAdminDashboard() / aLoadUsers() 填充，避免依赖不存在的 adminDashBody/adminUserBody */
 function renderAdminPanel(){
   const box = document.getElementById('adminPanelContent');
   if(!box) return;
@@ -2584,39 +2663,58 @@ function renderAdminPanel(){
   <div class="admin-subtab" data-sub="announce">📢 公告</div>
   <div class="admin-subtab" data-sub="backup">💾 备份</div>
 </div>
-<div id="adminPanelDash"></div>
-<div id="adminPanelUsers" style="display:none"></div>
-<div id="adminPanelAnnounce" style="display:none"></div>
-<div id="adminPanelBackup" style="display:none"></div>`;
-  // 注入与原 renderAdmin 一致的内容
-  document.getElementById('adminPanelDash').innerHTML = document.getElementById('adminDashBody')
-    ? document.getElementById('adminDashBody').innerHTML
-    : '';
-  document.getElementById('adminPanelUsers').innerHTML = document.getElementById('adminUserBody')
-    ? document.getElementById('adminUserBody').innerHTML
-    : '';
-  // 公告与备份走原函数
-  document.getElementById('adminPanelAnnounce').innerHTML = `
+<div id="adminDashBody"></div>
+<div id="adminUserBody" style="display:none">
+<div class="card">
+  <div class="card-header">新增用户</div>
+  <div class="inp-row">
+    <input class="inp" id="auName" placeholder="用户名">
+    <input class="inp" id="auPass" placeholder="密码" type="text">
+    <input class="inp" id="auQuota" placeholder="次数" type="number" value="10" style="max-width:90px">
+    <button class="btn btn-cyan" onclick="aGenRandom()" title="随机生成账号和密码">🎲 随机</button>
+    <button class="btn btn-go" onclick="aAddUser()">创建</button>
+  </div>
+  <div id="aGenBox" style="display:none;margin-top:10px;padding:12px 14px;border-radius:var(--radius-sm);background:rgba(14,165,233,0.08);border:1px solid rgba(14,165,233,0.25);font-size:.86em">
+    <div id="aGenText" style="font-family:Consolas,monospace;line-height:1.8;color:var(--text)"></div>
+    <button class="btn btn-sm btn-cyan" onclick="aCopyCreds(this)" style="margin-top:8px">📋 一键复制账号密码</button>
+  </div>
+  <div style="color:var(--green);font-size:.82em;display:none" id="aMsg"></div>
+</div>
+<div class="card">
+  <div class="card-header">用户管理</div>
+  <div class="inp-row" style="margin-bottom:12px">
+    <input class="inp" id="aSearch" placeholder="🔍 搜索用户名..." autocomplete="off" oninput="aLoadUsers()" style="flex:1">
+    <span id="aSearchCount" style="font-size:.82em;color:var(--text3);white-space:nowrap"></span>
+  </div>
+  <div id="aUsers"></div>
+  <div id="aPager" style="margin-top:12px"></div>
+</div>
+</div>
+<div id="adminPanelAnnounce" style="display:none">
 <div class="card"><div class="card-header">📢 公告管理</div>
   <div style="font-size:.86em;color:var(--text2);margin-bottom:10px">在这里发布的公告会显示在所有用户的首页顶部</div>
   <button class="btn btn-go" onclick="adminAnnounceEdit()">✏ 编辑公告</button>
-</div>`;
-  document.getElementById('adminPanelBackup').innerHTML = `
+</div>
+</div>
+<div id="adminPanelBackup" style="display:none">
 <div class="card"><div class="card-header">💾 数据备份</div>
   <div style="font-size:.86em;color:var(--text2);margin-bottom:10px">下载完整数据库备份（包含所有用户、下载记录）</div>
   <button class="btn btn-go" onclick="window.open('/api/admin/backup','_blank')">⬇ 立即下载备份</button>
+</div>
 </div>`;
   // 子 tab 切换
+  const sections = {dash:'adminDashBody',users:'adminUserBody',announce:'adminPanelAnnounce',backup:'adminPanelBackup'};
   box.querySelectorAll('.admin-subtab').forEach(el=>{
     el.onclick = () => {
       box.querySelectorAll('.admin-subtab').forEach(x=>x.classList.remove('on'));
       el.classList.add('on');
       const sub = el.dataset.sub;
-      ['Dash','Users','Announce','Backup'].forEach(s=>{
-        const e = document.getElementById('adminPanel'+s);
-        if(e) e.style.display = (s.toLowerCase()===sub)?'block':'none';
+      Object.keys(sections).forEach(k=>{
+        const e = document.getElementById(sections[k]);
+        if(e) e.style.display = (k===sub)?'block':'none';
       });
-      // 切到用户管理时刷新一次
+      // 切到对应 tab 时刷新一次
+      if(sub==='dash' && typeof renderAdminDashboard==='function') renderAdminDashboard();
       if(sub==='users' && typeof aLoadUsers==='function') aLoadUsers();
     };
   });
@@ -2857,7 +2955,8 @@ async function aDel(uid,name){
     const variant = VARIANTS[type];
     const title = opts.title != null ? opts.title : variant.title;
     const message = opts.message != null ? opts.message : '';
-    const duration = opts.duration != null ? opts.duration : (type === 'error' ? 4500 : 3500);
+    const action = opts.action || null;
+    const duration = opts.duration != null ? opts.duration : (type === 'error' ? 4500 : (action ? 8000 : 3500));
     const closable = opts.closable !== false;
     const el = document.createElement('div');
     el.className = `toast toast-${type}`;
@@ -2867,6 +2966,7 @@ async function aDel(uid,name){
       <div class="toast-content">
         <div class="toast-title">${escapeHtml(title)}</div>
         ${message ? `<div class="toast-message">${escapeHtml(message)}</div>` : ''}
+        ${action ? `<div class="toast-action"><button class="toast-action-btn">${escapeHtml(action.text)}</button></div>` : ''}
       </div>
       ${closable ? '<button class="toast-close" aria-label="关闭">×</button>' : ''}
     `;
@@ -2876,6 +2976,7 @@ async function aDel(uid,name){
       el.classList.add('toast-leaving');
       setTimeout(() => el.remove(), 300);
     };
+    if (action) el.querySelector('.toast-action-btn').addEventListener('click', () => { try { if (action.onClick) action.onClick(); } catch (e) {} close(); });
     if (closable) el.querySelector('.toast-close').addEventListener('click', close);
     if (duration > 0) timer = setTimeout(close, duration);
     el.addEventListener('mouseenter', () => { if (timer) { clearTimeout(timer); timer = null; } });
@@ -3828,7 +3929,7 @@ button{min-height:36px}
   border:1px solid rgba(125,211,252,.25);
   border-radius:18px;
   box-shadow:0 28px 80px rgba(0,0,0,.6), 0 0 60px rgba(125,211,252,.12), inset 0 1px 0 rgba(255,255,255,.08);
-  position:relative;overflow:hidden;
+  position:relative;overflow-x:hidden;overflow-y:auto;
   animation:adminPanelIn .35s cubic-bezier(.2,.7,.3,1);
 }
 @keyframes adminPanelIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}

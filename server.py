@@ -419,14 +419,15 @@ def _file_row_dict(r):
         'file_name': r['file_name'],
         'size': r['file_size'],
         'source': r['source'] or 'fanqie',
-        'mtime': r['download_time']
+        'mtime': r['download_time'],
+        'book_id': r['book_id'] or ''
     }
 
 
 def get_file_list_for_user(user_id, page=None, per_page=20):
     """获取指定用户的文件列表；page=None 返回全量（兼容旧调用），page 给定返回 (files, total, page)"""
     db = get_db()
-    base_sql = ('SELECT book_name, author, file_name, file_size, source, download_time '
+    base_sql = ('SELECT book_name, author, file_name, file_size, source, download_time, book_id '
                 'FROM downloads WHERE user_id=? ORDER BY download_time DESC')
     if page is None:
         rows = db.execute(base_sql, (user_id,)).fetchall()
