@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>番茄小说下载器</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #fff;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { text-align: center; margin: 20px 0 30px; font-weight: 400; }
+
+        .card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        /* 标签切换 */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 24px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .tab.active {
+            background: rgba(255,107,53,0.2);
+            border-color: #ff6b35;
+            color: #ff8555;
+        }
+
+        /* 输入框 */
+        .input-group {
+            display: flex;
+            gap: 12px;
+        }
+        .input-group input {
+            flex: 1;
+            padding: 14px 18px;
+            background: rgba(0,0,0,0.3);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #ff6b35;
+            box-shadow: 0 0 15px rgba(255,107,53,0.3);
+        }
+        .input-group input::placeholder { color: #666; }
+
+        .input-group button {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #ff6b35, #ff8555);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+        .input-group button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255,107,53,0.4);
+        }
+        .input-group button:disabled {
+            background: #555;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 搜索结果 */
+        .search-results {
+            margin-top: 15px;
+            display: none;
+        }
+        .search-results.show { display: block; }
+        .search-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            gap: 14px;
+            transition: all 0.2s;
+        }
+        .search-item:hover {
+            background: rgba(0,0,0,0.3);
+            transform: translateX(5px);
+        }
+        .search-item img {
+            width: 60px;
+            height: 80px;
+            border-radius: 6px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        .search-info { flex: 1; min-width: 0; }
+        .search-info h3 {
+            font-size: 15px;
+            font-weight: 400;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .search-info p {
+            font-size: 12px;
+            color: #888;
+            line-height: 1.5;
+        }
+        .search-info .desc {
+            color: #555;
+            margin-top: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .search-item .dl-btn {
+            padding: 8px 18px;
+            background: linear-gradient(135deg, #ff6b35, #ff8555);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .search-item .dl-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+        }
+
+        /* 进度 */
+        .progress {
+            display: none;
+            margin-top: 20px;
+        }
+        .progress.show { display: block; }
+        .progress-bar {
+            height: 6px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b35, #ff8555);
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .progress-text {
+            font-size: 13px;
+            color: #888;
+        }
+
+        /* 状态 */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ff4444;
+            margin-right: 8px;
+            display: inline-block;
+        }
+        .status-dot.running { background: #44ff44; }
+        .status-dot.cdp { background: #44aaff; }
+
+        /* 文件列表 */
+        .file-list { margin-top: 10px; }
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            transition: all 0.2s;
+        }
+        .file-item:hover {
+            background: rgba(0,0,0,0.3);
+            transform: translateX(5px);
+        }
+        .file-info { flex: 1; min-width: 0; }
+        .file-info h3 {
+            font-size: 15px;
+            font-weight: 400;
+            margin-bottom: 4px;
+        }
+        .file-info p { font-size: 12px; color: #666; }
+        .file-item a {
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            transition: background 0.2s;
+            flex-shrink: 0;
+            margin-left: 14px;
+        }
+        .file-item a:hover { background: rgba(255,107,53,0.3); }
+
+        .empty {
+            text-align: center;
+            color: #555;
+            padding: 40px;
+        }
+
+        .sync-btn {
+            padding: 6px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 6px;
+            color: #aaa;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sync-btn:hover {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍅 番茄小说下载器</h1>
+
+        <div class="card">
+            <div class="status-bar">
+                <span>
+                    <span class="status-dot" id="status_dot"></span>
+                    <span id="status_text">检查中...</span>
+                    <span class="status-dot cdp" id="cdp_dot" style="margin-left:16px"></span>
+                    <span id="cdp_text">CDP...</span>
+                </span>
+                <span>
+                    <span id="file_count"></span>
+                    <button class="sync-btn" onclick="syncFiles()">同步</button>
+                </span>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('download')">链接下载</div>
+                <div class="tab" onclick="switchTab('search')">搜索下载</div>
+            </div>
+
+            <!-- 链接下载 -->
+            <div id="tab-download">
+                <div class="input-group">
+                    <input type="text" id="url" placeholder="粘贴小说链接，如：https://changdunovel.com/ug/pages/book-share?book_id=7296307184554478643">
+                    <button id="download_btn" onclick="startDownload()">开始下载</button>
+                </div>
+            </div>
+
+            <!-- 搜索下载 -->
+            <div id="tab-search" style="display:none">
+                <div class="input-group">
+                    <input type="text" id="search_input" placeholder="输入书名或作者搜索..." onkeypress="if(event.key==='Enter')doSearch()">
+                    <button id="search_btn" onclick="doSearch()">搜索</button>
+                </div>
+                <div class="search-results" id="search_results"></div>
+            </div>
+
+            <div class="progress" id="progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress_fill"></div>
+                </div>
+                <div class="progress-text" id="progress_text">正在下载...</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 style="margin-bottom:15px;font-weight:400">已下载的小说</h3>
+            <div class="file-list" id="list"></div>
+        </div>
+    </div>
+
+    <script>
+        let pollTimer = null;
+
+        // 切换标签
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-download').style.display = name === 'download' ? '' : 'none';
+            document.getElementById('tab-search').style.display = name === 'search' ? '' : 'none';
+        }
+
+        // 加载状态
+        async function loadStatus() {
+            try {
+                const res = await fetch('/api/info');
+                const data = await res.json();
+
+                document.getElementById('status_dot').className = 'status-dot' + (data.exe_running ? ' running' : '');
+                document.getElementById('status_text').textContent = data.exe_running ? 'exe运行中' : 'exe未运行';
+                document.getElementById('cdp_dot').className = 'status-dot cdp' + (data.cdp_connected ? ' running' : '');
+                document.getElementById('cdp_text').textContent = data.cdp_connected ? 'CDP已连接' : 'CDP未连接';
+                document.getElementById('file_count').textContent = `已下载 ${data.files} 本`;
+            } catch (e) {}
+        }
+
+        // 加载文件列表
+        async function loadFiles() {
+            try {
+                const res = await fetch('/api/files');
+                const data = await res.json();
+                const list = document.getElementById('list');
+
+                if (!data.files.length) {
+                    list.innerHTML = '<div class="empty">暂无下载记录</div>';
+                    return;
+                }
+
+                list.innerHTML = data.files.map(f => `
+                    <div class="file-item">
+                        <div class="file-info">
+                            <h3>${escapeHtml(f.book_name)}</h3>
+                            <p>${escapeHtml(f.author)} · ${(f.size/1024/1024).toFixed(1)}MB · ${f.mtime}</p>
+                        </div>
+                        <a href="/api/file/${encodeURIComponent(f.book_name)}" download>下载</a>
+                    </div>
+                `).join('');
+            } catch (e) {}
+        }
+
+        function escapeHtml(s) {
+            const d = document.createElement('div');
+            d.textContent = s;
+            return d.innerHTML;
+        }
+
+        // 同步文件
+        async function syncFiles() {
+            try {
+                await fetch('/api/sync', {method: 'POST'});
+                loadFiles();
+                loadStatus();
+            } catch (e) {}
+        }
+
+        // 搜索
+        async function doSearch() {
+            const q = document.getElementById('search_input').value.trim();
+            if (!q) return;
+            const btn = document.getElementById('search_btn');
+            const results = document.getElementById('search_results');
+
+            btn.disabled = true;
+            btn.textContent = '搜索中...';
+            results.classList.add('show');
+            results.innerHTML = '<div class="empty">搜索中...</div>';
+
+            try {
+                const res = await fetch('/api/search?q=' + encodeURIComponent(q));
+                const data = await res.json();
+
+                if (data.error) {
+                    results.innerHTML = '<div class="empty">' + data.error + '</div>';
+                    return;
+                }
+
+                const items = data.items || data.books || data.results || data;
+                if (!Array.isArray(items) || !items.length) {
+                    results.innerHTML = '<div class="empty">无搜索结果</div>';
+                    return;
+                }
+
+                results.innerHTML = items.map(b => `
+                    <div class="search-item">
+                        ${b.cover_url ? `<img src="${b.cover_url}" onerror="this.style.display='none'">` : ''}
+                        <div class="search-info">
+                            <h3>${escapeHtml(b.book_name || b.title || b.name || '')}</h3>
+                            <p>${escapeHtml(b.author || '')} ${b.word_count ? '· ' + b.word_count : ''} ${b.category ? '· ' + b.category : ''}</p>
+                            ${b.abstract || b.intro || b.description ? `<p class="desc">${escapeHtml(b.abstract || b.intro || b.description)}</p>` : ''}
+                        </div>
+                        <button class="dl-btn" onclick="downloadByBookId('${b.book_id || b.id}')">下载</button>
+                    </div>
+                `).join('');
+            } catch (e) {
+                results.innerHTML = '<div class="empty">搜索失败: ' + e.message + '</div>';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '搜索';
+            }
+        }
+
+        // 通过book_id下载（搜索结果点击）
+        async function downloadByBookId(bookId) {
+            document.getElementById('url').value = '';
+            await startDownload(bookId);
+        }
+
+        // 开始下载
+        async function startDownload(presetBookId) {
+            const url = document.getElementById('url').value.trim();
+            const bookIdArg = presetBookId || '';
+
+            if (!url && !bookIdArg) return alert('请输入小说链接');
+
+            const btn = document.getElementById('download_btn');
+            const progress = document.getElementById('progress');
+            const fill = document.getElementById('progress_fill');
+            const text = document.getElementById('progress_text');
+
+            btn.disabled = true;
+            btn.textContent = '下载中...';
+            progress.classList.add('show');
+            fill.style.width = '5%';
+            text.textContent = '正在创建下载任务...';
+
+            if (pollTimer) clearInterval(pollTimer);
+
+            try {
+                const res = await fetch('/api/download', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(bookIdArg ? {book_id: bookIdArg} : {url})
+                });
+                const data = await res.json();
+
+                if (data.error) {
+                    text.textContent = '✗ ' + data.error;
+                    btn.disabled = false;
+                    btn.textContent = '开始下载';
+                    return;
+                }
+
+                // 立即检查是否已完成
+                if (data.status === 'done') {
+                    fill.style.width = '100%';
+                    text.textContent = '✓ 已下载: ' + (data.book_name || '');
+                    btn.disabled = false;
+                    btn.textContent = '开始下载';
+                    setTimeout(() => {
+                        progress.classList.remove('show');
+                        loadFiles();
+                        loadStatus();
+                    }, 1500);
+                    return;
+                }
+
+                // 轮询任务状态
+                const jobId = data.job_id;
+                fill.style.width = '10%';
+                text.textContent = '下载中... ' + (data.book_name || '');
+
+                pollTimer = setInterval(async () => {
+                    try {
+                        const jr = await fetch('/api/jobs');
+                        const jd = await jr.json();
+                        const items = jd.items || [];
+                        // 找到对应任务
+                        const job = items.find(j => j.id === jobId) || items.find(j => j.book_id === (data.book_id || ''));
+
+                        if (!job) {
+                            // 任务可能已完成并被清除，尝试同步文件
+                            text.textContent = '✓ 下载完成: ' + (data.book_name || '');
+                            fill.style.width = '100%';
+                            clearInterval(pollTimer);
+                            pollTimer = null;
+                            btn.disabled = false;
+                            btn.textContent = '开始下载';
+                            await syncFiles();
+                            setTimeout(() => progress.classList.remove('show'), 1500);
+                            return;
+                        }
+
+                        if (job.status === 'done') {
+                            fill.style.width = '100%';
+                            text.textContent = '✓ 下载完成: ' + (job.book_name || data.book_name || '');
+                            clearInterval(pollTimer);
+                            pollTimer = null;
+                            btn.disabled = false;
+                            btn.textContent = '开始下载';
+                            await syncFiles();
+                            setTimeout(() => {
+                                progress.classList.remove('show');
+                                loadFiles();
+                                loadStatus();
+                            }, 1500);
+                        } else if (job.status === 'failed' || job.status === 'error') {
+                            text.textContent = '✗ ' + (job.message || '下载失败');
+                            clearInterval(pollTimer);
+                            pollTimer = null;
+                            btn.disabled = false;
+                            btn.textContent = '开始下载';
+                        } else {
+                            const pct = Math.floor(job.progress || 0);
+                            fill.style.width = pct + '%';
+                            text.textContent = `下载中... ${pct}% ${job.message || ''}`;
+                        }
+                    } catch (e) {}
+                }, 2000);
+
+                // 超时保护（10分钟）
+                setTimeout(() => {
+                    if (pollTimer) {
+                        clearInterval(pollTimer);
+                        pollTimer = null;
+                        btn.disabled = false;
+                        btn.textContent = '开始下载';
+                    }
+                }, 600000);
+
+            } catch (e) {
+                text.textContent = '✗ 网络错误: ' + e.message;
+                btn.disabled = false;
+                btn.textContent = '开始下载';
+            }
+        }
+
+        // 回车下载
+        document.getElementById('url').addEventListener('keypress', e => {
+            if (e.key === 'Enter') startDownload();
+        });
+
+        // 初始化
+        loadStatus();
+        loadFiles();
+
+        // 定时刷新
+        setInterval(() => {
+            loadStatus();
+            loadFiles();
+        }, 15000);
+    </script>
+</body>
+</html>

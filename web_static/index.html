@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>小说下载器</title>
+<style>
+:root{
+  --bg:#0f0f1a;
+  --surface:rgba(255,255,255,0.04);
+  --surface-hover:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.08);
+  --text:#e0e0e0;
+  --text2:#999;
+  --text3:#666;
+  --orange:#ff6b35;
+  --orange2:#ff8555;
+  --cyan:#0ea5e9;
+  --cyan2:#38bdf8;
+  --red:#ef4444;
+  --green:#22c55e;
+  --radius:14px;
+  --radius-sm:10px;
+  --radius-xs:6px;
+  --shadow:0 4px 24px rgba(0,0,0,0.4);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:16px}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100dvh;
+  line-height:1.5;
+  -webkit-tap-highlight-color:transparent;
+}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
+
+.container{max-width:1100px;margin:0 auto;padding:16px}
+.app-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;margin-bottom:16px;flex-wrap:wrap;gap:10px;
+}
+.app-logo{font-size:1.3em;font-weight:700;white-space:nowrap}
+.app-logo span{opacity:.5;font-weight:400;font-size:.8em;margin-left:6px}
+
+.user-bar{display:flex;align-items:center;gap:12px}
+.user-avatar{
+  width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--orange),var(--orange2));
+  display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700;
+}
+.user-name-text{font-size:.9em;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.quota-pill{
+  padding:4px 14px;border-radius:20px;font-size:.78em;font-weight:600;
+  background:linear-gradient(135deg,var(--cyan),#0284c7);color:#fff;white-space:nowrap;
+}
+.quota-pill.low{background:linear-gradient(135deg,var(--red),#dc2626)}
+.btn-ghost{
+  background:transparent;border:1px solid var(--border);color:var(--text2);
+  padding:6px 16px;border-radius:20px;cursor:pointer;font-size:.8em;transition:.2s;
+}
+.btn-ghost:hover{color:#fff;border-color:var(--text2)}
+
+.nav-bar{
+  display:flex;gap:2px;margin-bottom:18px;background:var(--surface);border-radius:var(--radius);
+  padding:4px;overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.nav-btn{
+  flex:1;min-width:80px;padding:10px 8px;border:none;background:transparent;
+  color:var(--text3);cursor:pointer;font-size:.88em;border-radius:11px;transition:.2s;
+  display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;
+}
+.nav-btn:hover{color:var(--text2)}
+.nav-btn.on{background:rgba(255,255,255,0.08);color:#fff;font-weight:600}
+.nav-btn .nav-icon{font-size:1.1em}
+
+.section{display:none}
+.section.active{display:block}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:var(--radius);padding:20px;margin-bottom:14px;transition:.15s;
+}
+.card-header{font-size:.95em;font-weight:600;margin-bottom:14px;color:var(--text)}
+
+.inp-row{display:flex;gap:10px;margin-bottom:10px}
+.inp{
+  flex:1;padding:11px 16px;border-radius:var(--radius-sm);border:1px solid var(--border);
+  background:rgba(0,0,0,0.35);color:#fff;font-size:.9em;outline:none;transition:.2s;
+  min-width:0;
+}
+.inp:focus{border-color:var(--orange);box-shadow:0 0 0 3px rgba(255,107,53,0.1)}
+.inp::placeholder{color:var(--text3)}
+
+.btn{
+  padding:10px 22px;border:none;border-radius:var(--radius-sm);cursor:pointer;
+  font-size:.9em;font-weight:600;transition:.2s;white-space:nowrap;
+}
+.btn-go{background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff}
+.btn-go:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-go:disabled{background:#444;color:#888;cursor:not-allowed;transform:none;filter:none}
+.btn-cyan{background:linear-gradient(135deg,var(--cyan),var(--cyan2));color:#fff}
+.btn-cyan:hover{filter:brightness(1.1)}
+.btn-cyan:disabled{background:#444;color:#888;cursor:not-allowed}
+.btn-sm{padding:7px 16px;font-size:.82em;border-radius:var(--radius-xs)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);color:var(--text2);padding:8px 18px;border-radius:var(--radius-sm);cursor:pointer;font-size:.85em;
+}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+
+.subtabs{display:flex;gap:0;margin-bottom:14px}
+.subtab{
+  padding:7px 18px;cursor:pointer;color:var(--text3);font-size:.82em;
+  border-bottom:2px solid transparent;transition:.2s;
+}
+.subtab.on{color:var(--orange);border-bottom-color:var(--orange)}
+
+.progress-wrap{display:none;margin-top:12px}
+.progress-wrap.show{display:block}
+.progress-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;overflow:hidden;margin:8px 0}
+.progress-bar .fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--orange2));border-radius:3px;transition:width .4s ease}
+.progress-bar .fill.cyan{background:linear-gradient(90deg,var(--cyan),var(--cyan2))}
+.progress-label{font-size:.82em;color:var(--text2);display:flex;justify-content:space-between}
+
+.book-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+.book-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  overflow:hidden;cursor:pointer;transition:.2s;
+}
+.book-card:hover{background:var(--surface-hover);transform:translateY(-2px);box-shadow:var(--shadow)}
+.book-card-img{
+  width:100%;aspect-ratio:2/3;object-fit:cover;background:rgba(0,0,0,0.3);
+  display:flex;align-items:center;justify-content:center;font-size:2em;color:var(--text3);
+}
+.book-card-body{padding:10px 12px}
+.book-card-title{font-size:.85em;font-weight:600;margin-bottom:3px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical}
+.book-card-meta{font-size:.72em;color:var(--text3)}
+
+/* Book detail */
+.book-hero{display:flex;gap:20px;margin-bottom:18px}
+.book-cover{width:120px;min-width:120px;border-radius:var(--radius);aspect-ratio:2/3;object-fit:cover;background:rgba(0,0,0,0.3)}
+.book-meta h3{font-size:1.15em;margin-bottom:6px}
+.book-meta .info-line{font-size:.82em;color:var(--text2);margin-bottom:4px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.tag{padding:3px 10px;border-radius:12px;font-size:.72em;font-weight:600}
+.tag-orange{background:rgba(255,107,53,0.15);color:var(--orange2)}
+.tag-cyan{background:rgba(14,165,233,0.15);color:var(--cyan2)}
+.tag-green{background:rgba(34,197,94,0.15);color:var(--green)}
+.pitch{font-size:.84em;color:var(--text3);line-height:1.7;margin-bottom:16px}
+.fmt-pick{display:flex;gap:8px;margin-bottom:14px}
+.fmt-opt{
+  padding:8px 20px;border-radius:var(--radius-xs);border:1px solid var(--border);
+  background:transparent;color:var(--text2);cursor:pointer;font-size:.84em;transition:.2s;
+}
+.fmt-opt:hover{border-color:var(--orange);color:var(--orange2)}
+.fmt-opt.sel{background:rgba(255,107,53,0.12);border-color:var(--orange);color:var(--orange2)}
+.fmt-opt.sel-cyan{background:rgba(14,165,233,0.12);border-color:var(--cyan);color:var(--cyan2)}
+.fmt-opt.cyan-hover:hover{border-color:var(--cyan);color:var(--cyan2)}
+
+.file-row{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 16px;
+  border-radius:var(--radius-sm);background:var(--surface);margin-bottom:8px;transition:.15s;
+}
+.file-row:hover{background:var(--surface-hover)}
+.file-row .info{flex:1;min-width:0}
+.file-row .info .name{font-size:.9em;font-weight:600;margin-bottom:3px}
+.file-row .info .meta{font-size:.78em;color:var(--text3)}
+.file-row .dl{
+  color:var(--orange);text-decoration:none;font-size:.82em;font-weight:600;
+  padding:8px 18px;border:1px solid rgba(255,107,53,0.3);border-radius:var(--radius-xs);transition:.2s;
+}
+.file-row .dl:hover{background:rgba(255,107,53,0.12)}
+.src-badge{
+  display:inline-block;padding:2px 8px;border-radius:8px;font-size:.68em;font-weight:700;margin-left:6px;
+}
+.src-fanqie{background:rgba(255,107,53,0.15);color:var(--orange)}
+.src-qimao{background:rgba(14,165,233,0.15);color:var(--cyan2)}
+
+.auth-box{max-width:400px;margin:40px auto}
+.auth-box h2{text-align:center;margin-bottom:24px;font-size:1.4em}
+.auth-switch{display:flex;margin-bottom:20px;background:var(--surface);border-radius:var(--radius-sm);padding:4px}
+.auth-switch-btn{flex:1;padding:10px;border:none;background:transparent;color:var(--text3);cursor:pointer;border-radius:9px;font-size:.9em;transition:.2s}
+.auth-switch-btn.on{background:rgba(255,255,255,0.08);color:#fff;font-weight:600}
+.auth-form{display:flex;flex-direction:column;gap:12px}
+.auth-form .btn-go{padding:12px}
+.auth-msg{font-size:.84em;text-align:center;min-height:20px}
+.auth-msg.err{color:var(--red)}
+.auth-msg.ok{color:var(--green)}
+
+.tbl{width:100%;border-collapse:collapse;font-size:.82em}
+.tbl th,.tbl td{padding:10px 8px;text-align:left;border-bottom:1px solid var(--border)}
+.tbl th{color:var(--text3);font-weight:500}
+.quota-inp{width:54px;padding:5px;border-radius:6px;border:1px solid var(--border);background:rgba(0,0,0,0.3);color:#fff;text-align:center;font-size:.82em}
+.btn-xs{padding:5px 12px;font-size:.74em;border-radius:6px;border:none;cursor:pointer;font-weight:600}
+.btn-red{background:var(--red);color:#fff}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--text3)}
+.empty-state .icon{font-size:3em;margin-bottom:12px;opacity:.5}
+.empty-state p{font-size:.9em}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal-box{background:#1a1a2e;border:1px solid var(--border);border-radius:var(--radius);max-width:500px;width:100%;max-height:80vh;overflow-y:auto;padding:24px}
+
+.back-row{display:none;margin-bottom:10px}
+
+/* Detail page download section */
+.dl-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
+
+@media (max-width:640px){
+  .container{padding:12px}
+  .app-header{font-size:.9em}
+  .app-logo{font-size:1.15em}
+  .nav-btn{font-size:.8em;padding:8px 6px}
+  .nav-btn .nav-icon{font-size:1em}
+  .book-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px}
+  .book-hero{flex-direction:column;align-items:center;text-align:center}
+  .book-cover{width:100px;min-width:100px}
+  .inp-row{flex-direction:column}
+  .btn{width:100%}
+  .btn-sm{width:auto}
+  .card{padding:14px}
+  .file-row{flex-direction:column;align-items:flex-start;gap:10px}
+  .file-row .dl{width:100%;text-align:center}
+  .tbl{font-size:.72em}
+  .back-row{display:block}
+  .hide-mobile{display:none!important}
+}
+@media (min-width:641px){
+  .show-mobile{display:none!important}
+}
+
+/* ===== 小说分割功能 ===== */
+.file-row{cursor:pointer;flex-wrap:wrap}
+.file-row .file-header{
+  display:flex;align-items:center;justify-content:space-between;width:100%;gap:10px;
+}
+.file-row .file-header .info{flex:1;min-width:0}
+.file-row .file-header .actions{display:flex;gap:8px;flex-shrink:0}
+.split-panel{
+  width:100%;margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+  display:none;
+}
+.file-row.open .split-panel{display:block}
+.split-settings{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;
+}
+.split-settings .split-item label{
+  display:block;font-size:.78em;color:var(--text3);margin-bottom:4px;
+}
+.split-settings .split-item select,
+.split-settings .split-item input{
+  width:100%;padding:8px 10px;border-radius:var(--radius-xs);
+  border:1px solid var(--border);background:rgba(0,0,0,0.3);
+  color:#fff;font-size:.82em;outline:none;
+}
+.split-settings .split-item select:focus,
+.split-settings .split-item input:focus{border-color:var(--orange)}
+.split-btn{
+  background:linear-gradient(135deg,var(--cyan),#0284c7);color:#fff;
+  border:none;padding:8px 16px;border-radius:var(--radius-xs);
+  font-size:.82em;font-weight:600;cursor:pointer;transition:.2s;
+}
+.split-btn:hover{filter:brightness(1.1)}
+.split-btn:disabled{opacity:.5;cursor:not-allowed}
+.split-progress-box{
+  margin-top:10px;padding:10px;background:rgba(0,0,0,0.3);
+  border-radius:var(--radius-xs);display:none;
+}
+.split-progress-box.active{display:block}
+.split-progress-bar{
+  width:100%;height:6px;background:rgba(255,255,255,0.1);
+  border-radius:3px;overflow:hidden;margin:6px 0;
+}
+.split-progress-fill{
+  height:100%;background:linear-gradient(90deg,var(--cyan),var(--orange));
+  width:0%;border-radius:3px;transition:width .3s;
+}
+.split-progress-text{font-size:.78em;color:var(--text3);display:flex;justify-content:space-between}
+.split-output-list{
+  margin-top:10px;max-height:200px;overflow-y:auto;
+}
+.split-output-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 10px;background:rgba(14,165,233,0.08);
+  border:1px solid rgba(14,165,233,0.2);border-radius:var(--radius-xs);
+  margin-bottom:6px;font-size:.8em;
+}
+.split-output-item .fname{font-family:monospace;font-size:.85em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:8px}
+.split-output-item .fsize{color:var(--text3);font-size:.78em;margin-right:8px;flex-shrink:0}
+.split-output-item .fdl{
+  color:var(--cyan2);text-decoration:none;font-size:.78em;font-weight:600;
+  padding:4px 10px;border:1px solid rgba(14,165,233,0.3);border-radius:4px;flex-shrink:0;
+}
+.split-output-item .fdl:hover{background:rgba(14,165,233,0.1)}
+.split-dl-all{
+  margin-top:8px;font-size:.78em;color:var(--cyan2);text-decoration:none;
+}
+@media (max-width:640px){
+  .split-settings{grid-template-columns:1fr 1fr}
+  .split-output-item .fname{font-size:.75em}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="app"></div>
+</div>
+
+<script>
+/* ====== UTILS ====== */
+const eH=s=>{const d=document.createElement('div');d.textContent=s;return d.innerHTML}
+const stripHtml=s=>{const d=document.createElement('div');d.innerHTML=s;return d.textContent||''}
+async function api(url,o={}){
+  o.credentials='same-origin';
+  if(o.body&&typeof o.body==='object'){o.headers={'Content-Type':'application/json',...o.headers};o.body=JSON.stringify(o.body)}
+  /* 冲突路由改写：admin用户管理走 /novel 前缀，由 rem-proxy 反代回本服务 */
+  if(typeof url==='string' && url.indexOf('/api/admin/users')===0){url='/novel'+url}
+  const r=await fetch(url,o);return r
+}
+function parseTags(ptags){
+  /* 兼容数组和逗号分隔字符串 */
+  if(!ptags)return[];
+  if(Array.isArray(ptags))return ptags.filter(Boolean);
+  if(typeof ptags==='string')return ptags.split(',').map(s=>s.trim()).filter(Boolean);
+  return[];
+}
+
+/* ====== STATE ====== */
+let U=null,am='login',pT=null,rT=null;
+let tab='fanqie';
+/* Fanqie state */
+let fsub='link';           // 'link'|'search'|'detail'
+let fBook=null,fFmt='txt';
+let fSearchResults=[];
+/* Qimao state */
+let qBook=null,qFmt='txt',qBusy=false;
+let qSearchResults=[];
+
+/* ====== BOOT ====== */
+(async function init(){
+  try{const r=await api('/api/auth/me');const d=await r.json();if(d.logged_in){U=d.user;render()}else renderAuth()}catch(e){renderAuth()}
+})();
+
+/* ========================= AUTH ========================= */
+function renderAuth(){
+  U=null;
+  document.getElementById('app').innerHTML=`
+<div class="auth-box card">
+  <h2>📚 小说下载器</h2>
+  <div class="auth-switch">
+    <button class="auth-switch-btn ${am==='login'?'on':''}" onclick="am='login';renderAuth()">登录</button>
+    <button class="auth-switch-btn ${am==='register'?'on':''}" onclick="am='register';renderAuth()">注册</button>
+  </div>
+  <div class="auth-form">
+    <input class="inp" id="aName" placeholder="用户名" autocomplete="off">
+    <input class="inp" id="aPass" type="password" placeholder="密码" autocomplete="new-password">
+    <button class="btn btn-go" onclick="doAuth()">${am==='login'?'登 录':'注 册'}</button>
+    <div class="auth-msg" id="authMsg"></div>
+    ${am==='register'?'<p style="font-size:.78em;color:var(--text3);text-align:center">新用户默认0次下载，联系管理员分配次数</p>':''}
+  </div>
+</div>`;
+}
+async function doAuth(){
+  const u=document.getElementById('aName').value.trim(),p=document.getElementById('aPass').value;
+  const m=document.getElementById('authMsg');m.className='auth-msg';
+  if(!u||!p){m.textContent='用户名和密码不能为空';m.classList.add('err');return}
+  try{
+    const r=await api(`/api/auth/${am==='login'?'login':'register'}`,{method:'POST',body:{username:u,password:p}});
+    const d=await r.json();
+    if(!r.ok){m.textContent=d.error||'失败';m.classList.add('err')}
+    else if(am==='register'){m.textContent='注册成功，自动登录中...';m.classList.add('ok');am='login';setTimeout(doAuth,400)}
+    else{U=d.user;render()}
+  }catch(e){m.textContent='网络错误';m.classList.add('err')}
+}
+async function doLogout(){
+  await api('/api/auth/logout',{method:'POST'});
+  U=null;tab='fanqie';fsub='link';fBook=null;qBook=null;if(rT){clearInterval(rT);rT=null}
+  renderAuth();
+}
+
+/* ========================= DISPATCH ========================= */
+function render(){
+  if(U.is_admin)renderAdmin();
+  else renderUser();
+}
+
+/* ========================= USER SHELL ========================= */
+function renderUser(){
+  if(rT)clearInterval(rT);
+  document.getElementById('app').innerHTML=`
+<div class="app-header">
+  <div class="app-logo">📚 小说下载器<span>番茄 + 灵猫</span></div>
+  <div class="user-bar">
+    <div class="user-avatar">${U.username[0].toUpperCase()}</div>
+    <span class="user-name-text hide-mobile">${eH(U.username)}</span>
+    <span class="quota-pill" id="qPill">${U.download_quota} 次</span>
+    <button class="btn-ghost" onclick="window.location.href='/'">💙 蕾姆</button>
+    <button class="btn-ghost" onclick="doLogout()">退出</button>
+  </div>
+</div>
+
+<div class="nav-bar">
+  <button class="nav-btn ${tab==='fanqie'?'on':''}" onclick="switchTab('fanqie')"><span class="nav-icon">🍅</span>番茄</button>
+  <button class="nav-btn ${tab==='qimao'?'on':''}" onclick="switchTab('qimao')"><span class="nav-icon">🐱</span>灵猫</button>
+  <button class="nav-btn ${tab==='files'?'on':''}" onclick="switchTab('files')"><span class="nav-icon">📂</span>文件</button>
+</div>
+
+<div id="section-fanqie" class="section ${tab==='fanqie'?'active':''}"></div>
+<div id="section-qimao" class="section ${tab==='qimao'?'active':''}"></div>
+<div id="section-files" class="section ${tab==='files'?'active':''}"></div>`;
+
+  switchTab(tab);
+  rT=setInterval(()=>{if(U&&!U.is_admin)refreshQuota()},20000);
+}
+
+function switchTab(t){
+  tab=t;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('on'));
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const btns=document.querySelectorAll('.nav-btn');
+  const idx={'fanqie':0,'qimao':1,'files':2}[t];
+  if(btns[idx])btns[idx].classList.add('on');
+  const sec=document.getElementById('section-'+t);
+  if(sec)sec.classList.add('active');
+  if(t==='fanqie')renderFanqie();
+  else if(t==='qimao')renderQimao();
+  else renderFiles();
+}
+
+async function refreshQuota(){
+  try{const r=await api('/api/info');const d=await r.json();if(U){U.download_quota=d.quota;updateQuotaUI()}}catch(e){}
+}
+function updateQuotaUI(){
+  const p=document.getElementById('qPill');
+  if(!p)return;
+  const q=U.download_quota;
+  p.textContent=`${q} 次`;
+  p.classList.toggle('low',q<=2);
+}
+
+/* ========================= FANQIE TAB ========================= */
+function renderFanqie(){
+  const s=document.getElementById('section-fanqie');
+  if(!s)return;
+
+  /* 详情页 */
+  if(fsub==='detail'&&fBook){renderFanqieDetail();return}
+
+  /* 搜索/链接 视图 */
+  s.innerHTML=`
+<div class="subtabs">
+  <div class="subtab ${fsub==='link'?'on':''}" onclick="fsub='link';fBook=null;renderFanqie()">🔗 链接下载</div>
+  <div class="subtab ${fsub==='search'?'on':''}" onclick="fsub='search';fBook=null;renderFanqie()">🔍 搜索下载</div>
+</div>
+${fsub==='link'?`
+<div class="card">
+  <div class="inp-row">
+    <input class="inp" id="fUrl" placeholder="粘贴番茄小说链接，支持短链接">
+    <button class="btn btn-go" id="fDlBtn" onclick="fLinkDownload()">开始下载</button>
+  </div>
+  <div class="progress-wrap" id="fProg">
+    <div class="progress-bar"><div class="fill" id="fFill" style="width:0%"></div></div>
+    <div class="progress-label"><span id="fLabel">准备中...</span></div>
+  </div>
+</div>`
+:`<div class="card">
+  <div class="inp-row">
+    <input class="inp" id="fSearchInput" placeholder="输入书名关键词" onkeydown="if(event.key==='Enter')fSearch()">
+    <button class="btn btn-go" id="fSearchBtn" onclick="fSearch()">搜索</button>
+  </div>
+  <div id="fResults"></div>
+</div>`}`;
+}
+
+/* -- Fanqie search -- */
+async function fSearch(){
+  const q=document.getElementById('fSearchInput').value.trim();if(!q)return;
+  const btn=document.getElementById('fSearchBtn'),c=document.getElementById('fResults');
+  btn.disabled=true;btn.textContent='搜索中...';c.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>搜索中...</p></div>';
+  try{
+    const r=await api('/api/search?q='+encodeURIComponent(q));const d=await r.json();
+    if(d.error){c.innerHTML=`<div class="empty-state"><p style="color:var(--red)">${eH(d.error)}</p></div>`;return}
+    fSearchResults=d.items||[];
+    if(!fSearchResults.length){c.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>无搜索结果</p></div>';return}
+    c.innerHTML='<div class="book-grid">'+fSearchResults.map((b,i)=>`
+<div class="book-card" onclick="fShowDetail(${i})">
+  ${b.cover_url?`<img class="book-card-img" src="${eH(b.cover_url)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="book-card-img">📖</div>`}
+  <div class="book-card-body">
+    <div class="book-card-title">${eH(b.book_name||b.title||'未知')}</div>
+    <div class="book-card-meta">${eH(b.author||'')}${b.word_count?' · '+(b.word_count>10000?(b.word_count/10000).toFixed(1)+'万字':b.word_count+'字'):''}</div>
+  </div>
+</div>`).join('')+'</div>';
+  }catch(e){c.innerHTML='<div class="empty-state"><p style="color:var(--red)">搜索失败</p></div>'}
+  finally{btn.disabled=false;btn.textContent='搜索'}
+}
+
+/* -- Fanqie show detail -- */
+async function fShowDetail(i){
+  const b=fSearchResults[i];if(!b)return;
+  const bookId=b.book_id||b.id;
+  /* 先显示loading */
+  const s=document.getElementById('section-fanqie');
+  s.innerHTML='<div class="card"><div class="empty-state"><div class="icon">⏳</div><p>加载书籍详情...</p></div></div>';
+  fsub='detail';
+
+  try{
+    const r=await api('/api/book_detail?book_id='+encodeURIComponent(bookId));
+    const d=await r.json();
+    if(d.error){s.innerHTML=`<div class="card"><div class="empty-state"><p style="color:var(--red)">${eH(d.error)}</p><button class="btn btn-outline" onclick="fBackToSearch()" style="margin-top:12px">← 返回</button></div></div>`;return}
+    fBook=d;fFmt='txt';
+    renderFanqieDetail();
+  }catch(e){
+    s.innerHTML='<div class="card"><div class="empty-state"><p style="color:var(--red)">获取详情失败</p><button class="btn btn-outline" onclick="fBackToSearch()" style="margin-top:12px">← 返回</button></div></div>';
+  }
+}
+
+function fBackToSearch(){
+  fBook=null;fsub='search';renderFanqie();
+}
+
+/* -- Fanqie detail page -- */
+function renderFanqieDetail(){
+  const s=document.getElementById('section-fanqie');
+  if(!s||!fBook)return;
+  const b=fBook;
+  const isOver=b.status&&(b.status.includes('完结')||b.status.includes('完本'));
+  const wc=b.word_count?(b.word_count>10000?(b.word_count/10000).toFixed(1)+'万字':b.word_count+'字'):'';
+  const chCount=b.chapter_count||'';
+  const cat=b.category||'';
+
+  s.innerHTML=`
+<div class="card">
+  <button class="back-row btn-ghost" onclick="fBackToSearch()">← 返回搜索结果</button>
+  <div class="book-hero">
+    ${b.cover_url?`<img class="book-cover" src="${eH(b.cover_url)}" onerror="this.style.display='none'">`:''}
+    <div class="book-meta">
+      <h3>${eH(b.book_name||b.title||'未知书名')}</h3>
+      <div class="info-line">作者: ${eH(b.author||'未知')}</div>
+      <div class="info-line">${wc}${chCount?' · '+chCount+'章':''}${cat?' · '+eH(cat):''}</div>
+      <div class="tags">
+        <span class="tag ${isOver?'tag-green':'tag-orange'}">${isOver?'已完结':'连载中'}</span>
+      </div>
+    </div>
+  </div>
+  <div class="pitch">${(b.description||b.abstract||'暂无简介').slice(0,500)}</div>
+  <div class="dl-section">
+    <div style="font-size:.82em;color:var(--text3);margin-bottom:8px">选择下载格式</div>
+    <div class="fmt-pick">
+      <button class="fmt-opt ${fFmt==='txt'?'sel':''}" onclick="fFmt='txt';renderFanqieDetail()">📄 TXT</button>
+      <button class="fmt-opt ${fFmt==='epub'?'sel':''}" onclick="fFmt='epub';renderFanqieDetail()">📗 EPUB</button>
+    </div>
+    <button class="btn btn-go" id="fDlBtn" onclick="fStartDownload()">开始下载 ${fFmt.toUpperCase()}</button>
+    <div class="progress-wrap" id="fProg">
+      <div class="progress-bar"><div class="fill" id="fFill" style="width:0%"></div></div>
+      <div class="progress-label"><span id="fLabel">准备中...</span></div>
+    </div>
+  </div>
+</div>`;
+}
+
+/* -- Fanqie download (from detail or link) -- */
+async function fLinkDownload(){
+  const urlEl=document.getElementById('fUrl');
+  const url=urlEl?urlEl.value.trim():'';
+  if(!url){alert('请输入小说链接');return}
+  await fDoDownload(null,url);
+}
+
+async function fStartDownload(){
+  if(!fBook)return;
+  if(!U.is_admin && U.download_quota<=0){alert('下载次数不足，请联系管理员');return}
+  const quotaMsg = U.is_admin ? '（管理员不消耗次数）' : '消耗1次下载次数';
+  if(!confirm(`下载《${fBook.book_name||fBook.title||'未知'}》(${fFmt.toUpperCase()})？${quotaMsg}`))return;
+  await fDoDownload(fBook.book_id||fBook.id,null);
+}
+
+let fPending=null;
+async function fDoDownload(bookId,url){
+  if(pT){clearInterval(pT);pT=null}
+  const btn=document.getElementById('fDlBtn');
+  const prog=document.getElementById('fProg'),fill=document.getElementById('fFill'),label=document.getElementById('fLabel');
+  prog.classList.add('show');fill.style.width='5%';label.textContent='创建下载任务...';
+  if(btn){btn.disabled=true;btn.textContent='下载中...'}
+  fPending=null;
+
+  try{
+    const body=bookId?{book_id:bookId,format:fFmt}:{url:url,format:fFmt};
+    const r=await api('/api/download',{method:'POST',body});const d=await r.json();
+    if(d.error){label.textContent='✗ '+d.error;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()};return}
+    if(d.quota!==undefined){U.download_quota=d.quota;updateQuotaUI()}
+    fPending={book_name:d.book_name,author:d.author,book_id:d.book_id,file_name:d.book_name+' - '+d.author+'.'+fFmt};
+    if(d.status==='done'){fFinishDownload();return}
+    const jid=d.job_id;fill.style.width='10%';label.textContent='下载中... 0%';
+    pT=setInterval(async()=>{
+      try{
+        const jr=await api('/api/jobs');const jd=await jr.json();const items=jd.items||[];
+        const job=items.find(j=>j.id===jid)||items.find(j=>j.book_id===d.book_id);
+        if(!job){fFinishDownload();return}
+        if(job.status==='done'){fFinishDownload();return}
+        if(job.status==='failed'||job.status==='error'){label.textContent='✗ '+(job.message||'下载失败');clearInterval(pT);pT=null;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()};return}
+        const pct=Math.floor(job.progress||0);fill.style.width=pct+'%';label.textContent='下载中... '+pct+'%';
+      }catch(e){}
+    },2000);
+    setTimeout(()=>{if(pT){clearInterval(pT);pT=null;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}}},600000);
+  }catch(e){label.textContent='✗ 网络错误';if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}}
+}
+
+async function fFinishDownload(){
+  const fill=document.getElementById('fFill'),label=document.getElementById('fLabel'),btn=document.getElementById('fDlBtn');
+  if(fill)fill.style.width='100%';
+  if(label)label.textContent='✓ 下载完成: '+ (fPending?fPending.book_name:'');
+  if(pT){clearInterval(pT);pT=null}
+  if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}
+  if(fPending){
+    try{await api('/api/finish_download',{method:'POST',body:{book_name:fPending.book_name,author:fPending.author,book_id:fPending.book_id,file_name:fPending.file_name}})}catch(e){}
+  }
+  setTimeout(()=>{const p=document.getElementById('fProg');if(p)p.classList.remove('show');refreshQuota()},2000);
+  fPending=null;
+}
+
+/* ========================= QIMAO TAB ========================= */
+function renderQimao(){
+  const s=document.getElementById('section-qimao');if(!s)return;
+  /* 详情页 */
+  if(qBook){renderQimaoDetail();return}
+  /* 搜索视图 */
+  s.innerHTML=`
+<div class="card">
+  <div class="inp-row">
+    <input class="inp" id="qSearchInp" placeholder="搜索七猫/灵猫小说..." onkeydown="if(event.key==='Enter')qSearch()">
+    <button class="btn btn-cyan" id="qSearchBtn" onclick="qSearch()">搜索</button>
+  </div>
+  <div id="qResults"></div>
+</div>`;
+}
+
+async function qSearch(){
+  const q=document.getElementById('qSearchInp').value.trim();if(!q)return;
+  const btn=document.getElementById('qSearchBtn'),c=document.getElementById('qResults');
+  btn.disabled=true;btn.textContent='搜索中...';c.innerHTML='<div class="empty-state"><div class="icon">🔍</div><p>搜索中...</p></div>';
+  try{
+    const r=await api('/api/qimao/search?q='+encodeURIComponent(q));const d=await r.json();
+    if(d.error){c.innerHTML=`<div class="empty-state"><p style="color:var(--red)">${eH(d.error)}</p></div>`;return}
+    qSearchResults=d.items||[];
+    if(!qSearchResults.length){c.innerHTML='<div class="empty-state"><div class="icon">📭</div><p>无搜索结果</p></div>';return}
+    c.innerHTML='<div class="book-grid">'+qSearchResults.map((b,i)=>`
+<div class="book-card" onclick="qShowDetail(${i})">
+  ${b.image_link?`<img class="book-card-img" src="${eH(b.image_link)}" loading="lazy" onerror="this.style.display='none'">`:`<div class="book-card-img">📖</div>`}
+  <div class="book-card-body">
+    <div class="book-card-title">${eH(b.title||'未知')}</div>
+    <div class="book-card-meta">${eH(b.author||'')}${b.words_num?' · '+(b.words_num>10000?(b.words_num/10000).toFixed(1)+'万字':b.words_num+'字'):''}</div>
+  </div>
+</div>`).join('')+'</div>';
+  }catch(e){c.innerHTML='<div class="empty-state"><p style="color:var(--red)">搜索失败</p></div>'}
+  finally{btn.disabled=false;btn.textContent='搜索'}
+}
+
+function qShowDetail(i){
+  qBook=qSearchResults[i];if(!qBook)return;qFmt='txt';
+  renderQimaoDetail();
+}
+function qBack(){
+  qBook=null;renderQimao();
+}
+
+function renderQimaoDetail(){
+  const s=document.getElementById('section-qimao');if(!s)return;
+  if(!qBook){renderQimao();return}
+  const b=qBook;
+  const ptags=parseTags(b.ptags);
+  const tags=ptags.map(t=>`<span class="tag tag-cyan">${eH(t)}</span>`).join('');
+  const isOver=b.is_over==='1';
+  const wc=b.words_num?(b.words_num>10000?(b.words_num/10000).toFixed(1)+'万字':b.words_num+'字'):'';
+
+  s.innerHTML=`
+<div class="card">
+  <button class="back-row btn-ghost" onclick="qBack()">← 返回搜索结果</button>
+  <div class="book-hero">
+    ${b.image_link?`<img class="book-cover" src="${eH(b.image_link)}" onerror="this.style.display='none'">`:''}
+    <div class="book-meta">
+      <h3>${eH(b.title||'未知书名')}</h3>
+      <div class="info-line">作者: ${eH(b.author||'未知')} · ${wc}</div>
+      <div class="tags">
+        ${tags}
+        <span class="tag ${isOver?'tag-green':'tag-orange'}">${isOver?'已完结':'连载中'}</span>
+        ${b.score?`<span class="tag tag-orange">${eH(String(b.score))}分</span>`:''}
+      </div>
+      <div class="info-line hide-mobile">ID: ${b.id}</div>
+    </div>
+  </div>
+  <div class="pitch">${stripHtml(b.intro||'').slice(0,500)||'暂无简介'}</div>
+  <div class="dl-section">
+    <div style="font-size:.82em;color:var(--text3);margin-bottom:8px">选择下载格式</div>
+    <div class="fmt-pick">
+      <button class="fmt-opt cyan-hover ${qFmt==='txt'?'sel-cyan':''}" onclick="qFmt='txt';renderQimaoDetail()">📄 TXT</button>
+      <button class="fmt-opt cyan-hover ${qFmt==='epub'?'sel-cyan':''}" onclick="qFmt='epub';renderQimaoDetail()">📗 EPUB</button>
+    </div>
+    <button class="btn btn-cyan" id="qDlBtn" onclick="qDownload()">开始下载 ${qFmt.toUpperCase()}</button>
+    <div class="progress-wrap" id="qProg">
+      <div class="progress-bar"><div class="fill cyan" id="qFill" style="width:0%"></div></div>
+      <div class="progress-label"><span id="qLabel">准备中...</span></div>
+    </div>
+  </div>
+</div>`;
+}
+
+async function qDownload(){
+  if(!qBook||qBusy)return;
+  if(!U.is_admin && U.download_quota<=0){alert('下载次数不足，请联系管理员');return}
+  const quotaMsg = U.is_admin ? '（管理员不消耗次数）' : '消耗1次下载次数';
+  if(!confirm(`下载《${qBook.title||'未知'}》(${qFmt.toUpperCase()})？${quotaMsg}`))return;
+
+  qBusy=true;const b=qBook;
+  const prog=document.getElementById('qProg'),fill=document.getElementById('qFill'),label=document.getElementById('qLabel'),btn=document.getElementById('qDlBtn');
+  prog.classList.add('show');fill.style.width='2%';label.textContent='正在连接...';
+  btn.disabled=true;btn.textContent='下载中...';
+
+  try{
+    const r=await api('/api/qimao/download',{method:'POST',body:{book_id:b.id,book_name:b.title,author:b.author,format:qFmt}});
+    const d=await r.json();
+    if(d.error){label.textContent='✗ '+d.error;btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase();qBusy=false;return}
+    fill.style.width='100%';label.textContent=`✓ 完成! ${d.file_name} (${(d.file_size/1024).toFixed(1)}KB)`;
+    U.download_quota=d.quota;updateQuotaUI();btn.textContent='下载完成 ✓';
+  }catch(e){label.textContent='✗ 网络错误或超时';btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase()}
+  finally{qBusy=false;setTimeout(()=>{prog.classList.remove('show');if(btn)btn.textContent='开始下载 '+qFmt.toUpperCase()},6000)}
+}
+
+/* ========================= 小说分割功能 ========================= */
+// 分割任务状态（按文件名存储）
+const splitTasks={};
+// 主服务的 token（同源共享 localStorage）
+function _splitToken(){return localStorage.getItem('token')||''}
+
+// 调用主服务分割 API
+async function splitApi(url,opts={}){
+  const token=_splitToken();
+  const headers={'Content-Type':'application/json',...(opts.headers||{})};
+  if(token)headers['Authorization']='Bearer '+token;
+  const r=await fetch(url,{...opts,headers,body:opts.body?JSON.stringify(opts.body):undefined});
+  return r;
+}
+
+// 切换文件展开状态
+function toggleFileRow(bookName){
+  const row=document.getElementById('file-row-'+encodeURIComponent(bookName));
+  if(!row)return;
+  row.classList.toggle('open');
+}
+
+// 开始分割
+async function startSplit(bookName){
+  const sizeInput=document.getElementById('split-size-'+encodeURIComponent(bookName));
+  const encSelect=document.getElementById('split-enc-'+encodeURIComponent(bookName));
+  const btn=document.getElementById('split-btn-'+encodeURIComponent(bookName));
+  const progBox=document.getElementById('split-prog-'+encodeURIComponent(bookName));
+  const outList=document.getElementById('split-output-'+encodeURIComponent(bookName));
+  const progFill=document.getElementById('split-fill-'+encodeURIComponent(bookName));
+  const progText=document.getElementById('split-text-'+encodeURIComponent(bookName));
+
+  const chunkMB=parseFloat(sizeInput.value);
+  const encoding=encSelect.value;
+
+  if(!chunkMB||chunkMB<0.5||chunkMB>50){alert('请输入有效的分块大小（0.5~50 MB）');return}
+
+  btn.disabled=true;
+  btn.textContent='分割中...';
+  progBox.classList.add('active');
+  outList.innerHTML='';
+  progFill.style.width='0%';
+  progText.textContent='准备中...';
+
+  try{
+    const r=await splitApi('/api/novels/split',{
+      method:'POST',
+      body:{filename:bookName+'.txt',chunkSizeMB:chunkMB,outputEncoding:encoding}
+    });
+    if(!r.ok){const e=await r.json();throw new Error(e.error||'启动失败')}
+    const d=await r.json();
+    splitTasks[bookName]=d.taskId;
+    _pollSplit(bookName);
+  }catch(e){
+    progText.textContent='❌ '+e.message;
+    btn.disabled=false;
+    btn.textContent='✂ 开始分割';
+  }
+}
+
+// 轮询分割进度
+function _pollSplit(bookName){
+  const taskId=splitTasks[bookName];
+  if(!taskId)return;
+  const outList=document.getElementById('split-output-'+encodeURIComponent(bookName));
+  const progFill=document.getElementById('split-fill-'+encodeURIComponent(bookName));
+  const progText=document.getElementById('split-text-'+encodeURIComponent(bookName));
+  const btn=document.getElementById('split-btn-'+encodeURIComponent(bookName));
+
+  const bookNameForUrl=bookName; // 不含.txt
+
+  const poll=async ()=>{
+    try{
+      const r=await splitApi('/api/novels/split/'+taskId);
+      if(!r.ok)return;
+      const d=await r.json();
+      progFill.style.width=d.progress+'%';
+
+      if(d.status==='running'){
+        progText.textContent=`分割中... 已生成 ${d.chunkCount} 块`;
+      }else if(d.status==='done'){
+        progText.textContent=`✅ 完成！共 ${d.outputFiles.length} 个文件`;
+        btn.disabled=false;
+        btn.textContent='✂ 重新分割';
+        // 输出文件列表
+        if(d.outputFiles&&d.outputFiles.length){
+          outList.innerHTML=d.outputFiles.map(f=>`
+            <div class="split-output-item">
+              <span class="fname">${eH(f.name)}</span>
+              <span class="fsize">${f.sizeText}</span>
+              <a class="fdl" href="/api/novels/download/${encodeURIComponent(bookNameForUrl)}/${encodeURIComponent(f.name)}?token=${encodeURIComponent(_splitToken())}" download>下载</a>
+            </div>
+          `).join('');
+        }
+        return; // 停止轮询
+      }else if(d.status==='error'){
+        progText.textContent='❌ '+d.error;
+        btn.disabled=false;
+        btn.textContent='✂ 重新分割';
+        return;
+      }
+      setTimeout(poll,800);
+    }catch(e){
+      progText.textContent='❌ '+e.message;
+      btn.disabled=false;
+      btn.textContent='✂ 重新分割';
+    }
+  };
+  poll();
+}
+
+/* ========================= FILES TAB ========================= */
+async function renderFiles(){
+  const s=document.getElementById('section-files');if(!s)return;
+  s.innerHTML='<div class="card"><div class="empty-state"><div class="icon">📂</div><p>加载中...</p></div></div>';
+  try{
+    const r=await api('/api/files');const d=await r.json();const files=d.files||[];
+    if(!files.length){s.innerHTML='<div class="card"><div class="empty-state"><div class="icon">📭</div><p>暂无下载记录</p><p style="font-size:.78em">去番茄或灵猫下载小说吧~</p></div></div>';return}
+    s.innerHTML='<div class="card">'+files.map(f=>{
+      const isQ=f.source==='qimao';
+      const dlUrl=isQ?`/api/qimao/file/${encodeURIComponent(f.book_name)}`:`/api/file/${encodeURIComponent(f.book_name)}`;
+      const sz=f.size?(f.size>1048576?(f.size/1048576).toFixed(1)+'MB':(f.size/1024).toFixed(1)+'KB'):'未知';
+      const bn=f.book_name;const bnEnc=encodeURIComponent(bn);
+      return`
+<div class="file-row" id="file-row-${bnEnc}">
+  <div class="file-header" onclick="toggleFileRow('${eH(bn)}')">
+    <div class="info">
+      <div class="name">${eH(bn)} <span class="src-badge ${isQ?'src-qimao':'src-fanqie'}">${isQ?'灵猫':'番茄'}</span></div>
+      <div class="meta">${eH(f.author||'')} · ${sz} · ${f.mtime||''}</div>
+    </div>
+    <div class="actions">
+      <a class="dl" href="${dlUrl}" download onclick="event.stopPropagation()">⬇ 下载</a>
+    </div>
+  </div>
+  <div class="split-panel">
+    <div class="split-settings">
+      <div class="split-item">
+        <label>每块大小（MB）</label>
+        <select id="split-size-${bnEnc}">
+          <option value="0.5">0.5 MB</option>
+          <option value="1">1 MB</option>
+          <option value="2">2 MB</option>
+          <option value="3" selected>3 MB</option>
+          <option value="5">5 MB</option>
+          <option value="10">10 MB</option>
+          <option value="20">20 MB</option>
+        </select>
+      </div>
+      <div class="split-item">
+        <label>输出编码</label>
+        <select id="split-enc-${bnEnc}">
+          <option value="gbk" selected>GBK（老设备通用）</option>
+          <option value="utf-8">UTF-8（保持原编码）</option>
+        </select>
+      </div>
+    </div>
+    <button class="split-btn" id="split-btn-${bnEnc}" onclick="event.stopPropagation();startSplit('${eH(bn)}')">✂ 开始分割</button>
+    <div style="font-size:.72em;color:var(--text3);margin-top:8px;line-height:1.5">
+      💡 大小按源文件 UTF-8 计算；转 GBK 后实际体积约为原来的 2/3
+    </div>
+    <div class="split-progress-box" id="split-prog-${bnEnc}">
+      <div class="split-progress-text">
+        <span id="split-text-${bnEnc}">准备中...</span>
+        <span id="split-percent-${bnEnc}">0%</span>
+      </div>
+      <div class="split-progress-bar">
+        <div class="split-progress-fill" id="split-fill-${bnEnc}"></div>
+      </div>
+      <div class="split-output-list" id="split-output-${bnEnc}"></div>
+    </div>
+  </div>
+</div>`;
+    }).join('')+'</div>';
+  }catch(e){s.innerHTML='<div class="card"><div class="empty-state"><p style="color:var(--red)">加载失败</p></div></div>'}
+}
+
+/* ========================= ADMIN ========================= */
+function renderAdmin(){
+  document.getElementById('app').innerHTML=`
+<div class="app-header">
+  <div class="app-logo">📚 小说下载器<span>管理面板</span></div>
+  <div class="user-bar">
+    <span>👑 ${eH(U.username)}</span>
+    <button class="btn-ghost" onclick="window.location.href='/'">💙 蕾姆</button>
+    <button class="btn-ghost" onclick="doLogout()">退出</button>
+  </div>
+</div>
+<div class="card">
+  <div class="card-header">新增用户</div>
+  <div class="inp-row">
+    <input class="inp" id="auName" placeholder="用户名">
+    <input class="inp" id="auPass" placeholder="密码" type="password">
+    <input class="inp" id="auQuota" placeholder="次数" type="number" value="10" style="max-width:90px">
+    <button class="btn btn-go" onclick="aAddUser()">创建</button>
+  </div>
+  <div style="color:var(--green);font-size:.82em;display:none" id="aMsg"></div>
+</div>
+<div class="card">
+  <div class="card-header">用户管理</div>
+  <div id="aUsers"></div>
+</div>`;
+  aLoadUsers();
+}
+async function aLoadUsers(){
+  try{
+    const r=await api('/api/admin/users');const d=await r.json();
+    document.getElementById('aUsers').innerHTML=`
+<div style="overflow-x:auto">
+<table class="tbl">
+<thead><tr><th>用户名</th><th>角色</th><th>状态</th><th>次数</th><th>已下载</th><th>操作</th></tr></thead>
+<tbody>${d.users.map(u=>`<tr>
+  <td>${eH(u.username)}</td>
+  <td><span class="tag ${u.is_admin?'tag-orange':'tag-cyan'}">${u.is_admin?'管理员':'用户'}</span></td>
+  <td><span class="tag ${u.is_disabled?'tag-orange':'tag-green'}">${u.is_disabled?'已禁用':'正常'}</span></td>
+  <td>${u.is_admin?'∞':u.download_quota}</td>
+  <td>${u.download_count||0}</td>
+  <td style="white-space:nowrap">${u.is_admin?'—':`
+    <input class="quota-inp" type="number" value="5" id="qD${u.id}">
+    <button class="btn-xs btn-go" onclick="aQuota(${u.id})">+</button>
+    <button class="btn-xs" style="background:#555" onclick="aQuota(${u.id},1)">-</button>
+    <button class="btn-xs ${u.is_disabled?'btn-go':'btn-red'}" onclick="aToggle(${u.id},${u.is_disabled?'0':'1'})">${u.is_disabled?'启用':'禁用'}</button>
+    <button class="btn-xs btn-red" onclick="aDel(${u.id},'${eH(u.username)}')">删除</button>
+  `}</td>
+</tr>`).join('')}</tbody></table></div>`;
+  }catch(e){}
+}
+async function aAddUser(){
+  const n=document.getElementById('auName').value.trim(),p=document.getElementById('auPass').value,q=parseInt(document.getElementById('auQuota').value)||10;
+  if(!n||!p)return;
+  try{const r=await api('/api/admin/users',{method:'POST',body:{username:n,password:p,quota:q}});if(!r.ok){const d=await r.json();alert(d.error);return}
+    document.getElementById('aMsg').style.display='block';document.getElementById('aMsg').textContent='创建成功!';
+    document.getElementById('auName').value='';document.getElementById('auPass').value='';aLoadUsers();
+    setTimeout(()=>{document.getElementById('aMsg').style.display='none'},2000);
+  }catch(e){}
+}
+async function aQuota(uid,neg){
+  const el=document.getElementById('qD'+uid);let d=parseInt(el.value)||5;if(neg)d=-d;
+  try{await api('/api/admin/users/'+uid+'/quota',{method:'POST',body:{delta:d}});aLoadUsers()}catch(e){}
+}
+async function aToggle(uid,dis){
+  try{await api(`/api/admin/users/${uid}/${dis?'disable':'enable'}`,{method:'POST'});aLoadUsers()}catch(e){}
+}
+async function aDel(uid,name){
+  if(!confirm(`确认删除用户 ${name}？所有下载记录将一并删除`))return;
+  try{await api('/api/admin/users/'+uid,{method:'DELETE'});aLoadUsers()}catch(e){}
+}
+</script>
+</body>
+</html>
