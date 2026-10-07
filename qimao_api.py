@@ -99,6 +99,8 @@ class QimaoApiClient:
         for b in books:
             if 'title' in b:
                 b['title'] = _strip_html_tags(b['title'])
+            if 'author' in b:
+                b['author'] = _strip_html_tags(b['author'])
             if 'intro' in b:
                 b['intro'] = _strip_html_tags(b['intro'])
         return books

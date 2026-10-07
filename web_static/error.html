@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>出错了 · 番茄小说下载器</title>
+<style>
+:root{
+  --bg:#0f0f1a;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.08);
+  --text:#e0e0e0;
+  --text2:#999;
+  --text3:#666;
+  --orange:#ff6b35;
+  --orange2:#ff8555;
+  --cyan:#0ea5e9;
+  --red:#ef4444;
+  --green:#22c55e;
+  --radius:14px;
+  --radius-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;width:100%}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
+  background:
+    radial-gradient(1100px 520px at 12% -10%, rgba(255,107,53,0.10), transparent 60%),
+    radial-gradient(900px 480px at 88% -5%, rgba(14,165,233,0.10), transparent 60%),
+    linear-gradient(180deg,#0d0d1c 0%,#0b0b16 45%,#090913 100%);
+  color:var(--text);
+  min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  -webkit-tap-highlight-color:transparent;
+  overflow:hidden;
+}
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(1.4px 1.4px at 12% 22%, rgba(255,255,255,.55), transparent 100%),
+    radial-gradient(1px 1px at 28% 64%, rgba(255,255,255,.4), transparent 100%),
+    radial-gradient(1.6px 1.6px at 42% 12%, rgba(255,214,180,.5), transparent 100%),
+    radial-gradient(1px 1px at 58% 40%, rgba(255,255,255,.35), transparent 100%),
+    radial-gradient(1.3px 1.3px at 72% 74%, rgba(125,211,252,.5), transparent 100%),
+    radial-gradient(1px 1px at 86% 26%, rgba(255,255,255,.42), transparent 100%);
+  background-size:320px 320px;
+  -webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,.9), transparent 75%);
+  mask-image:linear-gradient(180deg, rgba(0,0,0,.9), transparent 75%);
+}
+.wrap{
+  position:relative;z-index:1;
+  max-width:520px;width:100%;text-align:center;
+  background:linear-gradient(165deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:18px;
+  padding:48px 32px;
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  box-shadow:0 24px 70px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08);
+  animation:fadeUp .5s cubic-bezier(.2,.7,.3,1);
+}
+.wrap::before{
+  content:'';position:absolute;top:0;left:8%;right:8%;height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+}
+.err-code{
+  font-size:6em;font-weight:900;line-height:1;
+  background:linear-gradient(135deg, #ff6b35 0%, #ff8555 50%, #0ea5e9 100%);
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:transparent;
+  filter:drop-shadow(0 6px 30px rgba(255,107,53,.4));
+  margin-bottom:6px;
+  letter-spacing:2px;
+}
+.err-icon{
+  font-size:3em;margin-bottom:18px;
+  animation:floaty 3s ease-in-out infinite;
+}
+@keyframes floaty{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-8px)}
+}
+h1{
+  font-size:1.4em;margin-bottom:10px;font-weight:700;
+  color:#fff;
+}
+p{color:var(--text2);font-size:.94em;line-height:1.7;margin-bottom:24px}
+p .hl-orange{color:var(--orange2);font-weight:600}
+p .hl-cyan{color:var(--cyan);font-weight:600}
+.actions{
+  display:flex;gap:10px;justify-content:center;flex-wrap:wrap;
+}
+.btn{
+  padding:10px 22px;border:none;border-radius:10px;cursor:pointer;
+  font-size:.92em;font-weight:600;transition:.2s;
+  text-decoration:none;display:inline-flex;align-items:center;gap:6px;
+}
+.btn-go{
+  background:linear-gradient(135deg,var(--orange),var(--orange2));
+  color:#fff;box-shadow:0 6px 20px rgba(255,107,53,.35);
+}
+.btn-go:hover{filter:brightness(1.08);transform:translateY(-1px);box-shadow:0 8px 26px rgba(255,107,53,.5)}
+.btn-outline{
+  background:transparent;border:1px solid var(--border);color:var(--text2);
+}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.tips{
+  margin-top:28px;padding-top:20px;border-top:1px solid var(--border);
+  font-size:.8em;color:var(--text3);
+}
+.tips code{
+  background:rgba(0,0,0,0.4);border:1px solid var(--border);
+  padding:1px 7px;border-radius:5px;color:#ffb08f;
+  font-size:.95em;
+}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(20px)}
+  to{opacity:1;transform:none}
+}
+@media (max-width:480px){
+  .err-code{font-size:4.5em}
+  .wrap{padding:36px 22px}
+  h1{font-size:1.2em}
+}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+  <div class="err-code" id="errCode">404</div>
+  <div class="err-icon" id="errIcon">🔍</div>
+  <h1 id="errTitle">页面走丢了</h1>
+  <p id="errDesc">你访问的页面不存在，可能链接已失效或地址输入错误。<br>先回到首页继续你的下载之旅吧～</p>
+  <div class="actions">
+    <a class="btn btn-go" href="/">🏠 返回首页</a>
+    <a class="btn btn-outline" href="javascript:history.back()">← 返回上页</a>
+  </div>
+  <div class="tips" id="errTips">
+    💡 如问题持续，联系管理员：<code>QQ 3637438435</code>
+  </div>
+</div>
+
+<script>
+// 根据 URL 参数 ?code=404/500/403 动态调整文案
+(function(){
+  const code = (new URLSearchParams(location.search).get('code') || '404').toUpperCase();
+  const map = {
+    '404': {icon:'🔍', title:'页面走丢了', desc:'你访问的页面不存在，可能链接已失效或地址输入错误。<br>先回到首页继续你的下载之旅吧～'},
+    '500': {icon:'💥', title:'服务器开了个小差', desc:'服务器内部出了点问题，我们已经记录。<br>请稍后再试，或回到首页继续操作。'},
+    '403': {icon:'🔒', title:'无权访问', desc:'你没有权限访问这个资源。<br>如需使用，请联系管理员分配权限。'},
+    '401': {icon:'🔑', title:'请先登录', desc:'登录会话已过期或未登录。<br>返回首页重新登录后即可使用。'},
+  };
+  const info = map[code] || map['404'];
+  document.getElementById('errCode').textContent = code;
+  document.getElementById('errIcon').textContent = info.icon;
+  document.getElementById('errTitle').textContent = info.title;
+  document.getElementById('errDesc').innerHTML = info.desc;
+  document.title = code + ' · ' + info.title + ' · 番茄小说下载器';
+})();
+</script>
+</body>
+</html>

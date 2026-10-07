@@ -1,0 +1,374 @@
+/* ═══════════════════════════════════════════════════
+ * toast.css - Toast 通知组件（融入深空玻璃拟态风格）
+ * 用法：在 <head> 引入 <link rel="stylesheet" href="/toast.css">
+ *      在 <body> 末尾引入 <script src="/toast.js"></script>
+ *      调用 window.toast.success('...') / .error / .warning / .info
+ * ═══════════════════════════════════════════════════ */
+
+.toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+  max-width: calc(100vw - 40px);
+}
+
+.toast {
+  pointer-events: auto;
+  min-width: 280px;
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-size: 0.88em;
+  line-height: 1.5;
+  color: #fff;
+  background: linear-gradient(165deg, rgba(30, 30, 50, 0.92), rgba(20, 20, 35, 0.92));
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: toast-in 0.35s cubic-bezier(0.2, 0.7, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.toast.toast-leaving {
+  animation: toast-out 0.3s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95em;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+.toast-content {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+.toast-title {
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: #fff;
+}
+
+.toast-message {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.95em;
+}
+
+.toast-close {
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1em;
+  line-height: 1;
+  transition: all 0.2s;
+}
+
+.toast-close:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ── 变体：成功（青绿） ── */
+.toast.toast-success {
+  border-color: rgba(34, 197, 94, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(34, 197, 94, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.toast.toast-success .toast-icon {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(34, 197, 94, 0.5);
+}
+
+.toast.toast-success::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #22c55e, #16a34a);
+  animation: toast-progress 3s linear forwards;
+}
+
+/* ── 变体：错误（红色） ── */
+.toast.toast-error {
+  border-color: rgba(239, 68, 68, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(239, 68, 68, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.toast.toast-error .toast-icon {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.5);
+}
+
+.toast.toast-error::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #ef4444, #dc2626);
+  animation: toast-progress 4.5s linear forwards;
+}
+
+/* ── 变体：警告（橙黄） ── */
+.toast.toast-warning {
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(245, 158, 11, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.toast.toast-warning .toast-icon {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(245, 158, 11, 0.5);
+}
+
+.toast.toast-warning::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #f59e0b, #d97706);
+  animation: toast-progress 4s linear forwards;
+}
+
+/* ── 变体：信息（蓝色） ── */
+.toast.toast-info {
+  border-color: rgba(14, 165, 233, 0.35);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(14, 165, 233, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.toast.toast-info .toast-icon {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7);
+  color: #fff;
+  box-shadow: 0 0 14px rgba(14, 165, 233, 0.5);
+}
+
+.toast.toast-info::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #0ea5e9, #0284c7);
+  animation: toast-progress 3.5s linear forwards;
+}
+
+/* ── 入场出场动画 ── */
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toast-out {
+  to {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+  }
+}
+
+@keyframes toast-progress {
+  from {
+    width: 100%;
+  }
+  to {
+    width: 0%;
+  }
+}
+
+/* ── 移动端适配 ── */
+@media (max-width: 640px) {
+  .toast-container {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+  }
+  .toast {
+    min-width: 0;
+    max-width: 100%;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+ * confirm-dialog.css - 确认弹窗组件（替代 window.confirm）
+ * 用法：调用 window.confirmDialog('标题', '内容', () => { ... })
+ * ═══════════════════════════════════════════════════ */
+
+.confirm-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.65);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+  animation: confirm-fade 0.2s ease;
+}
+
+.confirm-box {
+  width: min(420px, 90vw);
+  background: linear-gradient(170deg, #1c1c33, #15152a);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 22px 24px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: confirm-pop 0.25s cubic-bezier(0.2, 0.7, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.confirm-box::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+}
+
+.confirm-title {
+  font-size: 1.05em;
+  font-weight: 600;
+  margin: 0 0 10px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confirm-title .confirm-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9em;
+  background: linear-gradient(135deg, var(--orange, #ff6b35), #ff8555);
+  color: #fff;
+  box-shadow: 0 0 12px rgba(255, 107, 53, 0.4);
+}
+
+.confirm-message {
+  font-size: 0.92em;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.6;
+  margin: 0 0 18px;
+  word-break: break-word;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.confirm-btn {
+  padding: 8px 20px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.9em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.confirm-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.confirm-btn-primary {
+  background: linear-gradient(135deg, #ff6b35, #ff8555);
+  border-color: rgba(255, 107, 53, 0.4);
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(255, 107, 53, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.confirm-btn-primary:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 22px rgba(255, 107, 53, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.confirm-btn-primary:active {
+  transform: scale(0.97);
+}
+
+@keyframes confirm-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes confirm-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}

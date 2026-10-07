@@ -87,4 +87,51 @@ def invoke_tauri(action, payload=None):
 
 - 以上参数是 `server.py` **写入环境变量**的方式，但当前 2026-07-30 版 exe 的 wry **强制传参**，导致外部环境变量里的 `--remote-debugging-port` 实际不生效 → CDP 打不开。
 - 修复方向：在 `tauri.conf.json` 的窗口配置加 `"additionalBrowserArgs": "--remote-debugging-port=9222 --remote-allow-origins=*"` 后重新构建 exe；或换旧版 exe；或换到 CDP 曾经成功的机器。
-- 本机（宿主机）Web 服务可正常启动，灵猫（七猫）下载可用，番茄标签页因 CDP 未连接暂不可用。
+- 本机（宿主机）Web 服务可正常启动，灵猫（七猫）下载可用。
+
+## 六、2026-08-30 已修复：二进制 Patch 方案
+
+### 问题根因（已确认）
+
+exe 内硬编码了 wry 0.55.1 的默认附加浏览器参数：
+
+```
+--disable-features=msWebOOUI,msPdfOOUI,msSmartScreenProtection --autoplay-policy=no-user-gesture-required --proxy-server=http:// --proxy-server=socks5://
+```
+
+wry 总是把这个**非空**字符串传给 `CreateCoreWebView2EnvironmentWithOptions`，因此
+优先级更高的 `additionalBrowserArguments` 覆盖了：
+- 环境变量 `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` ❌
+- 注册表键 `HKCU\Software\Microsoft\Edge\WebView2\WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS` ❌
+
+（微软文档优先级：additionalBrowserArguments > 注册表键 > 环境变量）
+
+### 修复操作（无需重新构建 exe）
+
+直接**二进制 Patch** exe 中的硬编码参数字符串：
+
+| 项 | 值 |
+|----|-----|
+| 字符串偏移 | `11930880`（ASCII，UTF-8 存储） |
+| 原始长度 | `153` 字节 |
+| 替换为 | `--remote-debugging-port=9222 --remote-allow-origins=*`（53 字节 + 100 字节 0x00 填充） |
+
+替换后 WebView2 实际收到的附加参数即调试参数，CDP 9222 端口正常打开。
+
+### 验证结果（2026-08-30）
+
+- ✅ `GET http://127.0.0.1:9222/json/list` → 200，返回 target（title=番茄小说下载器）
+- ✅ `/api/info` → `cdp_connected: true`
+- ✅ `/api/search?q=仙逆` → 正常返回书籍列表（Tauri 命令调用成功）
+- ✅ `/api/book_detail` → 106ms 返回书籍详情
+
+### 备份与还原
+
+- 修改前备份：`fanqie-desktop.exe.orig`（16734208 字节，与项目目录同位置）
+- 还原方法：停止 exe → 用 `fanqie-desktop.exe.orig` 覆盖回 `fanqie-desktop.exe`
+
+### 注意事项
+
+- exe 无数字签名（NotSigned），Patch 不影响运行。
+- 若以后更换/更新 exe，需重新执行 Patch（偏移可能变化，需重新定位字符串）。
+- 该 Patch 使 exe 自身携带调试参数，即使被 `server.py` 杀进程后以任意方式重启，CDP 依然会打开（比环境变量方式更健壮）。

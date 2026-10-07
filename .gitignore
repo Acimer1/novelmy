@@ -1,0 +1,33 @@
+# ===== 敏感配置（含 SMTP 授权码 / GitHub Token，绝不入库）=====
+config_backup.json
+token.txt
+
+# ===== 数据库与日志 =====
+app.db
+*.log
+
+# ===== Python =====
+__pycache__/
+*.pyc
+
+# ===== IDE =====
+.idea/
+
+# ===== 小说下载缓存（体积巨大，不适合 git）=====
+web_downloads/
+
+# ===== 旧版本备份 =====
+backup/
+
+# ===== 临时测试文件 =====
+_jstest/
+
+# ===== 可执行文件 =====
+*.exe
+
+# ===== 本地笔记 / 交付包 =====
+git地址.txt
+*.zip
+
+# ===== 合并前备份 =====
+*.before_merge
