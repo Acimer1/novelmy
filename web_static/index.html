@@ -25,7 +25,7 @@
   --shadow:0 4px 24px rgba(0,0,0,0.4);
 }
 *{margin:0;padding:0;box-sizing:border-box}
-html{font-size:16px}
+html{font-size:16px;height:100%}
 body{
   font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;
   background:
@@ -33,15 +33,17 @@ body{
     radial-gradient(900px 480px at 88% -5%, rgba(14,165,233,0.10), transparent 60%),
     linear-gradient(180deg,#0d0d1c 0%,#0b0b16 45%,#090913 100%);
   color:var(--text);
+  min-height:100vh;
   min-height:100dvh;
   line-height:1.5;
   -webkit-tap-highlight-color:transparent;
+  overflow-x:hidden;
 }
 ::-webkit-scrollbar{width:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
 
-.container{max-width:1100px;margin:0 auto;padding:16px}
+.container{max-width:1100px;margin:0 auto;padding:16px 16px 100px}
 .app-header{
   display:flex;align-items:center;justify-content:space-between;
   padding:14px 0;margin-bottom:16px;flex-wrap:wrap;gap:10px;
@@ -269,7 +271,7 @@ body{
 .dl-section{margin-top:16px;padding-top:16px;border-top:1px solid var(--border)}
 
 @media (max-width:640px){
-  .container{padding:12px}
+  .container{padding:12px 12px 120px}
   .app-header{font-size:.9em}
   .app-logo{font-size:1.15em}
   .nav-btn{font-size:.8em;padding:8px 6px}
@@ -1585,14 +1587,33 @@ const PAG={
 
 /* ====== BOOT ====== */
 (async function init(){
-  try{const r=await api('/api/auth/me');const d=await r.json();if(d.logged_in){U=d.user;if(window._hideParticles)window._hideParticles();render()}else renderAuth()}catch(e){renderAuth()}
+  try{const r=await api('/api/auth/me');const d=await r.json();if(d.logged_in){U=d.user;if(window._hideParticles)window._hideParticles();render()}else{
+    // 未登录：尝试用记住的账号密码自动登录
+    try{
+      const saved = JSON.parse(localStorage.getItem('remembered_auth') || '{}');
+      const expired = (Date.now() - (saved.ts||0)) > 7*24*60*60*1000; // 7天过期
+      if(saved.remember && saved.username && saved.password && !expired){
+        const ar = await api('/api/auth/login',{method:'POST',body:{username:saved.username,password:saved.password}});
+        const ad = await ar.json();
+        if(ar.ok && ad.user){U=ad.user;if(window._hideParticles)window._hideParticles();render();return}
+      }
+    }catch(e){}
+    renderAuth();
+  }}catch(e){renderAuth()}
 })();
 
 /* ========================= AUTH ========================= */
 function renderAuth(){
   U=null;
   if(window._showParticles)window._showParticles();
+  // 读取已保存的账号密码
+  let savedName='', savedPass='', remembered=false;
+  try{
+    const saved = JSON.parse(localStorage.getItem('remembered_auth') || '{}');
+    if(saved.username){ savedName = saved.username; savedPass = saved.password||''; remembered = !!saved.remember; }
+  }catch(e){}
   document.getElementById('app').innerHTML=`
+<form autocomplete="off" onsubmit="return false">
 <div class="auth-box card stagger-in">
   <h2 class="shine-text">👋 欢迎使用</h2>
   <div class="auth-switch">
@@ -1600,13 +1621,18 @@ function renderAuth(){
     <button class="auth-switch-btn ${am==='register'?'on':''}" onclick="am='register';renderAuth()">注册</button>
   </div>
   <div class="auth-form">
-    <input class="inp" id="aName" placeholder="用户名" autocomplete="off">
-    <input class="inp" id="aPass" type="password" placeholder="密码" autocomplete="new-password">
+    <input class="inp" id="aName" placeholder="用户名" autocomplete="off" value="${savedName}">
+    <input class="inp" id="aPass" type="password" placeholder="密码" autocomplete="new-password" value="${savedPass}">
+    ${am==='login'?`<label style="display:flex;align-items:center;gap:8px;margin:8px 0 12px;font-size:.84em;color:var(--text2);cursor:pointer">
+      <input type="checkbox" id="aRemember" ${remembered?'checked':''} style="width:16px;height:16px;cursor:pointer">
+      记住账号密码（7天内自动登录）
+    </label>`:''}
     <button class="btn btn-go" onclick="doAuth()">${am==='login'?'登 录':'注 册'}</button>
     <div class="auth-msg" id="authMsg"></div>
     ${am==='register'?'<p style="font-size:.78em;color:var(--text3);text-align:center">新用户默认0次下载，联系管理员分配次数</p>':''}
   </div>
-</div>`;
+</div>
+</form>`;
 }
 async function doAuth(){
   const u=document.getElementById('aName').value.trim(),p=document.getElementById('aPass').value;
@@ -1617,7 +1643,16 @@ async function doAuth(){
     const d=await r.json();
     if(!r.ok){m.textContent=d.error||'失败';m.classList.add('err')}
     else if(am==='register'){m.textContent='注册成功，自动登录中...';m.classList.add('ok');am='login';setTimeout(doAuth,400)}
-    else{U=d.user;if(window._hideParticles)window._hideParticles();render()}
+    else{
+      // 记住账号密码
+      const rem = document.getElementById('aRemember');
+      if(am==='login' && rem && rem.checked){
+        localStorage.setItem('remembered_auth', JSON.stringify({username:u, password:p, remember:true, ts:Date.now()}));
+      }else{
+        localStorage.removeItem('remembered_auth');
+      }
+      U=d.user;if(window._hideParticles)window._hideParticles();render()
+    }
   }catch(e){m.textContent='网络错误';m.classList.add('err')}
 }
 async function doLogout(){
@@ -1983,7 +2018,11 @@ async function fLinkDownload(){
     try{
       const r=await api('/api/download',{method:'POST',body:{url:url,format:fFmt}});
       const d=await r.json();
-      if(d.error){fail++;if(!firstErr)firstErr=d.error;label.textContent=`✗ (${i+1}/${links.length}) ${d.error}`}
+      if(d.error){
+        // 已下载过的书不算失败，跳过即可
+        if(d.already_downloaded){ok++;label.textContent=`✓ (${i+1}/${links.length}) 已跳过（已下载过）`}
+        else{fail++;if(!firstErr)firstErr=d.error;label.textContent=`✗ (${i+1}/${links.length}) ${d.error}`}
+      }
       else{
         if(d.quota!==undefined){U.download_quota=d.quota;updateQuotaUI()}
         let resOk=false;
@@ -2026,7 +2065,14 @@ async function fDoDownload(bookId,url){
   try{
     const body=bookId?{book_id:bookId,format:fFmt}:{url:url,format:fFmt};
     const r=await api('/api/download',{method:'POST',body});const d=await r.json();
-    if(d.error){label.textContent='✗ '+d.error;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()};return}
+    if(d.error){
+      label.textContent='✗ '+d.error;
+      // 已下载过 / 正在下载 → 按钮永久置灰，不再可点
+      if(d.already_downloaded){if(btn){btn.disabled=true;btn.textContent='✓ 已下载'}}
+      else if(d.in_progress){if(btn){btn.disabled=true;btn.textContent='⏳ 下载中'}}
+      else{if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}}
+      return;
+    }
     if(d.quota!==undefined){U.download_quota=d.quota;updateQuotaUI()}
     fPending={book_name:d.book_name,author:d.author,book_id:d.book_id,file_name:d.book_name+' - '+d.author+'.'+fFmt};
     if(d.status==='done'){fFinishDownload();return}
@@ -2057,7 +2103,8 @@ async function fFinishDownload(){
   if(fill)fill.style.width='100%';
   if(label)label.textContent='✓ 下载完成: '+ (fPending?fPending.book_name:'');
   if(pT){clearInterval(pT);pT=null}
-  if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()}
+  // 下载完成后按钮置灰，防止同一本书重复点击
+  if(btn){btn.disabled=true;btn.textContent='✓ 已下载'}
   if(fPending){await fRecordDownload(fPending)}
   setTimeout(()=>{const p=document.getElementById('fProg');if(p)p.classList.remove('show');refreshQuota()},2000);
   fPending=null;
@@ -2220,11 +2267,18 @@ async function qDownload(){
   try{
     const r=await api('/api/qimao/download',{method:'POST',body:{book_id:b.id,book_name:b.title,author:b.author,format:qFmt}});
     const d=await r.json();
-    if(d.error){label.textContent='✗ '+d.error;btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase();qBusy=false;return}
+    if(d.error){
+      label.textContent='✗ '+d.error;
+      // 已下载过 → 按钮置灰
+      if(d.already_downloaded){btn.disabled=true;btn.textContent='✓ 已下载'}
+      else if(d.in_progress){btn.disabled=true;btn.textContent='⏳ 下载中'}
+      else{btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase()}
+      qBusy=false;return;
+    }
     fill.style.width='100%';label.textContent=`✓ 完成! ${d.file_name} (${(d.file_size/1024).toFixed(1)}KB)`;
-    U.download_quota=d.quota;updateQuotaUI();btn.textContent='下载完成 ✓';
+    U.download_quota=d.quota;updateQuotaUI();btn.disabled=true;btn.textContent='✓ 已下载';
   }catch(e){label.textContent='✗ 网络错误或超时';btn.disabled=false;btn.textContent='开始下载 '+qFmt.toUpperCase()}
-  finally{qBusy=false;setTimeout(()=>{prog.classList.remove('show');if(btn)btn.textContent='开始下载 '+qFmt.toUpperCase()},6000)}
+  finally{qBusy=false;setTimeout(()=>{prog.classList.remove('show')},6000)}
 }
 
 /* ========================= 小说分割功能 ========================= */
@@ -3842,13 +3896,14 @@ button{min-height:36px}
 }
 .admin-panel-mask.show{display:flex}
 .admin-panel-box{
-  width:min(960px,96vw);max-height:88vh;overflow-y:auto;
+  width:min(960px,96vw);max-height:88vh;overflow-y:auto;overflow-x:hidden;
   background:linear-gradient(170deg,#1c1c33,#15152a);
   border:1px solid rgba(125,211,252,.25);
   border-radius:18px;
   box-shadow:0 28px 80px rgba(0,0,0,.6), 0 0 60px rgba(125,211,252,.12), inset 0 1px 0 rgba(255,255,255,.08);
-  position:relative;overflow:hidden;
+  position:relative;
   animation:adminPanelIn .35s cubic-bezier(.2,.7,.3,1);
+  -webkit-overflow-scrolling:touch;
 }
 @keyframes adminPanelIn{from{opacity:0;transform:scale(.95) translateY(10px)}to{opacity:1;transform:none}}
 .admin-panel-box::before{

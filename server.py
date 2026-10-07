@@ -744,16 +744,57 @@ def api_book_detail():
     return jsonify(detail)
 
 
+def _check_user_download_state(user_id, book_id):
+    """
+    检查用户对某本书的下载状态，防止重复下载。
+    返回 dict:
+      - {'state': 'completed', 'file_name': ..., 'book_name': ...}  已下载完成
+      - {'state': 'in_progress'}                                  正在下载中
+      - {'state': 'placeholder', 'id': ...}                       上次占位(未完成)
+      - {'state': 'free'}                                          可下载
+    """
+    db = get_db()
+    # 1) 数据库里是否有已完成的下载记录（file_size>0）
+    row = db.execute(
+        "SELECT id, file_name, book_name FROM downloads "
+        "WHERE user_id=? AND book_id=? AND file_size>0 LIMIT 1",
+        (user_id, book_id)
+    ).fetchone()
+    if row:
+        return {'state': 'completed',
+                'file_name': row['file_name'],
+                'book_name': row['book_name']}
+
+    # 2) 数据库里是否有占位记录（上次任务留下的 file_size=0）
+    ph = db.execute(
+        "SELECT id FROM downloads WHERE user_id=? AND book_id=? AND file_size<=0 LIMIT 1",
+        (user_id, book_id)
+    ).fetchone()
+
+    # 3) 是否有 exe 正在跑的同名任务
+    try:
+        jobs = invoke_tauri('list_jobs', {}) or {}
+        for j in (jobs.get('jobs') or jobs if isinstance(jobs, list) else []):
+            if not isinstance(j, dict):
+                continue
+            if str(j.get('book_id', '')) == str(book_id):
+                st = (j.get('status') or '').lower()
+                if st not in ('failed', 'error', 'completed', 'canceled', 'cancelled', 'done'):
+                    return {'state': 'in_progress'}
+    except Exception:
+        pass  # exe 连不上就跳过这层检查
+
+    if ph:
+        return {'state': 'placeholder', 'id': ph['id']}
+    return {'state': 'free'}
+
+
 @app.route('/api/download', methods=['POST'])
 @login_required
 def api_download():
     """下载小说"""
-    # 管理员不下载
-    if g.user['is_admin']:
-        return jsonify({'error': '管理员账号不支持下载'}), 403
-
-    # 检查次数
-    if g.user['download_quota'] <= 0:
+    # 管理员不扣 quota，但仍可下载
+    if not g.user['is_admin'] and g.user['download_quota'] <= 0:
         return jsonify({'error': '下载次数不足，请联系管理员'}), 403
 
     data = request.get_json() or {}
@@ -793,6 +834,22 @@ def api_download():
     if not book_id:
         return jsonify({'error': '无法识别书籍ID，请检查链接或短链接解析失败'}), 400
 
+    # ===== 重复下载防护：检查用户是否已下载 / 正在下载这本书 =====
+    state = _check_user_download_state(g.user['id'], book_id)
+    if state['state'] == 'completed':
+        return jsonify({
+            'error': f"《{state.get('book_name') or '该书'}》你已经下载过了，无需重复下载",
+            'already_downloaded': True,
+            'book_id': book_id,
+            'file_name': state.get('file_name'),
+        }), 409
+    if state['state'] == 'in_progress':
+        return jsonify({
+            'error': '这本书正在下载中，请稍候再试',
+            'in_progress': True,
+            'book_id': book_id,
+        }), 409
+
     # 获取书籍信息
     detail = invoke_tauri('book_detail', {'book_id': book_id})
     if 'error' in detail:
@@ -820,10 +877,26 @@ def api_download():
 
     # 下载任务创建成功，扣减次数 + 占位写库（前端 finish_download 兜底，防列表缺失）
     db = get_db()
-    new_quota = g.user['download_quota'] - 1
-    db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, g.user['id']))
-    record_download_for_user(g.user['id'], book_name, author, book_id,
-                             f"{book_name} - {author}.{fmt}", file_size=0)
+    is_admin = g.user['is_admin']
+    # 占位状态：上次任务留下 file_size=0 的记录，本次不重复扣 quota
+    reuse_placeholder = (state['state'] == 'placeholder')
+    if reuse_placeholder:
+        new_quota = g.user['download_quota']
+        db.execute(
+            'UPDATE downloads SET book_name=?, author=?, file_name=?, source=?, download_time=CURRENT_TIMESTAMP '
+            'WHERE id=?',
+            (book_name, author, f"{book_name} - {author}.{fmt}", 'fanqie', state['id'])
+        )
+    elif is_admin:
+        # 管理员不扣 quota
+        new_quota = g.user['download_quota']
+        record_download_for_user(g.user['id'], book_name, author, book_id,
+                                 f"{book_name} - {author}.{fmt}", file_size=0)
+    else:
+        new_quota = g.user['download_quota'] - 1
+        db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, g.user['id']))
+        record_download_for_user(g.user['id'], book_name, author, book_id,
+                                 f"{book_name} - {author}.{fmt}", file_size=0)
     db.commit()
 
     return jsonify({
@@ -833,7 +906,8 @@ def api_download():
         'author': author,
         'book_id': book_id,
         'status': result.get('status', 'queued'),
-        'quota': new_quota
+        'quota': new_quota,
+        'reused_placeholder': reuse_placeholder
     })
 
 
@@ -1023,9 +1097,7 @@ def qimao_chapters():
 @login_required
 def qimao_download_start():
     """下载七猫小说"""
-    if g.user['is_admin']:
-        return jsonify({'error': '管理员账号不支持下载'}), 403
-    if g.user['download_quota'] <= 0:
+    if not g.user['is_admin'] and g.user['download_quota'] <= 0:
         return jsonify({'error': '下载次数不足，请联系管理员'}), 403
 
     data = request.get_json() or {}
@@ -1053,6 +1125,16 @@ def qimao_download_start():
     if not book_id:
         return jsonify({'error': '无法识别书籍ID，请检查链接或短链接解析失败'}), 400
 
+    # ===== 重复下载防护：七猫同样检查 =====
+    state = _check_user_download_state(g.user['id'], book_id)
+    if state['state'] == 'completed':
+        return jsonify({
+            'error': f"《{state.get('book_name') or '该书'}》你已经下载过了，无需重复下载",
+            'already_downloaded': True,
+            'book_id': book_id,
+        }), 409
+    # 七猫是同步阻塞下载，并发检测较弱，主要靠"已下载"判断
+
     try:
         # 获取书籍信息和章节
         info = qimao_api.fetch_book_info(book_id)
@@ -1075,17 +1157,31 @@ def qimao_download_start():
         file_path = WEB_DIR / safe_name
         file_path.write_bytes(file_data)
 
-        # 扣减次数
+        # 扣减次数（占位状态复用上次记录，不重复扣）
         db = get_db()
-        new_quota = g.user['download_quota'] - 1
-        db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, g.user['id']))
+        is_admin = g.user['is_admin']
+        if state['state'] == 'placeholder':
+            new_quota = g.user['download_quota']
+            db.execute(
+                'UPDATE downloads SET book_name=?, author=?, file_name=?, file_size=?, source=?, download_time=CURRENT_TIMESTAMP '
+                'WHERE id=?',
+                (book_name, author, safe_name, len(file_data), 'qimao', state['id'])
+            )
+        elif is_admin:
+            # 管理员不扣 quota
+            new_quota = g.user['download_quota']
+            record_download_for_user(
+                g.user['id'], book_name, author, book_id,
+                safe_name, len(file_data), source='qimao'
+            )
+        else:
+            new_quota = g.user['download_quota'] - 1
+            db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, g.user['id']))
+            record_download_for_user(
+                g.user['id'], book_name, author, book_id,
+                safe_name, len(file_data), source='qimao'
+            )
         db.commit()
-
-        # 记录下载
-        record_download_for_user(
-            g.user['id'], book_name, author, book_id,
-            safe_name, len(file_data), source='qimao'
-        )
 
         return jsonify({
             'success': True,
