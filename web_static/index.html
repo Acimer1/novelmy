@@ -103,6 +103,20 @@ body{
   padding:6px 16px;border-radius:20px;cursor:pointer;font-size:.8em;transition:.2s;
 }
 .btn-ghost:hover{color:#fff;border-color:var(--text2)}
+/* 增加次数按钮 */
+.btn-card{
+  padding:6px 14px;border-radius:20px;font-size:.78em;font-weight:600;cursor:pointer;
+  background:linear-gradient(135deg,var(--orange),var(--orange2));color:#fff;
+  border:none;white-space:nowrap;transition:.2s;box-shadow:0 4px 14px rgba(255,107,53,.35);
+}
+.btn-card:hover{filter:brightness(1.1)}
+/* 卡密兑换弹窗 */
+.redeem-mask{position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(3px)}
+.redeem-mask.show{display:flex}
+.redeem-box{width:min(420px,90vw);background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.redeem-box h3{margin:0 0 14px;font-size:1.05em}
+.redeem-box .inp{width:100%;box-sizing:border-box;margin-bottom:8px;font-size:16px}
+.redeem-tip{font-size:.78em;color:var(--text3);margin:0 0 14px}
 
 .nav-bar{
   display:flex;gap:2px;margin-bottom:18px;background:rgba(255,255,255,0.04);
@@ -1678,6 +1692,7 @@ function renderUser(){
     <div class="user-avatar">${U.username[0].toUpperCase()}</div>
     <span class="user-name-text hide-mobile">${eH(U.username)}</span>
     <span class="quota-pill ${isAdmin?'admin-infinity':''}" id="qPill" title="${isAdmin?'管理员无限次':'剩余下载次数'}">${isAdmin?'∞ 无限':U.download_quota+' 次'}</span>
+    ${isAdmin?'':'<button class="btn-card" onclick="showRedeem()" title="兑换卡密增加下载次数">➕ 增加次数</button>'}
     ${isAdmin?'<button class="btn-ghost admin-panel-btn" onclick="openAdminPanel()" title="打开管理面板">👑 管理</button>':''}
     <button class="btn-ghost" onclick="doLogout()">退出</button>
   </div>
@@ -1732,6 +1747,17 @@ ${isAdmin?`
   </div>
 </div>
 
+<div class="redeem-mask" id="redeemMask" onclick="if(event.target===this)closeRedeem()">
+  <div class="redeem-box">
+    <h3>🎟️ 兑换卡密 · 增加下载次数</h3>
+    <input class="inp" id="redeemCode" placeholder="请输入卡密" autocomplete="off" />
+    <p class="redeem-tip">每个卡密仅可使用一次，兑换后自动累加下载次数</p>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" style="flex:1" onclick="closeRedeem()">取消</button>
+      <button class="btn btn-go" style="flex:1" onclick="doRedeem()">兑换</button>
+    </div>
+  </div>
+</div>
 <div class="contact-mask" id="contactMask" onclick="if(event.target===this)closeContact()">
   <div class="contact-box">
     <h3>👤 联系管理员</h3>
@@ -1762,6 +1788,22 @@ ${isAdmin?`
 
 /* 联系管理员弹窗 */
 function showContact(){document.getElementById('contactMask').classList.add('show')}
+
+/* 卡密兑换弹窗 */
+function showRedeem(){const el=document.getElementById('redeemCode');if(el){el.value='';setTimeout(()=>el.focus(),50)}document.getElementById('redeemMask').classList.add('show')}
+function closeRedeem(){document.getElementById('redeemMask').classList.remove('show')}
+async function doRedeem(){
+  const code=document.getElementById('redeemCode').value.trim();
+  if(!code){toast.warning('请输入卡密');return}
+  try{
+    const r=await api('/api/card/redeem',{method:'POST',body:{code}});
+    const d=await r.json();
+    if(!r.ok){toast.error(d.error||'兑换失败');return}
+    U.download_quota=d.quota;updateQuotaUI();
+    toast.success(`兑换成功，已增加 ${d.added} 次下载次数`);
+    closeRedeem();
+  }catch(e){toast.error('网络错误，请稍后重试')}
+}
 
 /* 新手引导横条：点 × 关闭（永久不再提示，但红点还在） */
 function dismissGuideStrip(e){
@@ -3549,6 +3591,11 @@ async function aDel(uid,name){
   .contact-box{padding:18px}
   .contact-box h3{font-size:1em;margin-bottom:12px}
   .contact-row{padding:10px 12px;font-size:.86em;gap:6px}
+
+  /* 卡密兑换弹窗 */
+  .redeem-box{padding:18px}
+  .redeem-box h3{font-size:1em;margin-bottom:12px}
+  .redeem-box .inp{font-size:16px;min-height:44px}
   .contact-row .contact-val{font-size:.84em;min-width:0;word-break:break-all}
   .contact-row .btn-xs{padding:6px 10px}
 

@@ -2,6 +2,10 @@
 config_backup.json
 token.txt
 
+# ===== 卡密文件（含密钥，绝不入库）=====
+card_keys_*.db
+card_keys_*.txt
+
 # ===== 数据库与日志 =====
 app.db
 *.log

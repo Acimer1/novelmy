@@ -92,6 +92,15 @@ def init_db():
             user_id INTEGER NOT NULL,
             created_at TEXT DEFAULT CURRENT_TIMESTAMP
         );
+        CREATE TABLE IF NOT EXISTS card_keys (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            code TEXT UNIQUE NOT NULL,
+            quota INTEGER NOT NULL DEFAULT 1,
+            used INTEGER DEFAULT 0,
+            used_by INTEGER,
+            used_at TEXT,
+            created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        );
     ''')
 
     # 创建admin账号（如不存在）
@@ -691,6 +700,32 @@ def admin_add_quota(uid):
     db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, uid))
     db.commit()
     return jsonify({'success': True, 'quota': new_quota})
+
+
+@app.route('/api/card/redeem', methods=['POST'])
+@login_required
+def card_redeem():
+    """用户兑换卡密，一次性核销并累加下载次数"""
+    data = request.get_json(silent=True) or {}
+    code = (data.get('code') or '').strip()
+    if not code:
+        return jsonify({'error': '请输入卡密'}), 400
+    db = get_db()
+    row = db.execute('SELECT * FROM card_keys WHERE code=?', (code,)).fetchone()
+    if not row:
+        return jsonify({'error': '卡密不存在'}), 404
+    if row['used']:
+        return jsonify({'error': '该卡密已被使用'}), 400
+    # 原子核销：仅当 used=0 时更新成功，防止并发重复使用
+    cur = db.execute(
+        'UPDATE card_keys SET used=1, used_by=?, used_at=CURRENT_TIMESTAMP WHERE id=? AND used=0',
+        (g.user['id'], row['id']))
+    if cur.rowcount == 0:
+        return jsonify({'error': '该卡密已被使用'}), 400
+    new_quota = g.user['download_quota'] + row['quota']
+    db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, g.user['id']))
+    db.commit()
+    return jsonify({'success': True, 'added': row['quota'], 'quota': new_quota})
 
 
 # ==================== 业务 API（需登录） ====================
