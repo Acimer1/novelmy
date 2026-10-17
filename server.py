@@ -294,13 +294,10 @@ def start_exe():
     if EXE_PATH.exists():
         env = os.environ.copy()
 
-        # 借道 Edge 的 WebView2 运行时（本机无独立 WebView2，EdgeCore 里有 msedgewebview2.exe）
-        EDGE_WEBVIEW = Path(os.environ.get('ProgramFiles(x86)', 'C:/Program Files (x86)')) / 'Microsoft' / 'EdgeCore'
-        if EDGE_WEBVIEW.exists():
-            vers = sorted(p.name for p in EDGE_WEBVIEW.iterdir() if (p / 'msedgewebview2.exe').exists())
-            if vers:
-                env.setdefault('WEBVIEW2_BROWSER_EXECUTABLE_FOLDER', str(EDGE_WEBVIEW / vers[-1]))
-
+        # 使用系统独立 WebView2 Runtime（本机已安装），不要借道 EdgeCore——
+        # Edge 自带的 msedgewebview2.exe 不响应 WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS，
+        # 会导致 --remote-debugging-port 参数失效、CDP 连不上。
+        # 去掉 BROWSER_EXECUTABLE_FOLDER 后，WebView2 会自动使用系统独立运行时。
         env['WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS'] = f'--remote-debugging-port={CDP_PORT} --remote-allow-origins=*'
         subprocess.Popen(str(EXE_PATH), env=env)
         time.sleep(5)
@@ -1328,12 +1325,7 @@ def _do_split(task_id):
 @app.route('/api/novels/split', methods=['POST'])
 @login_required
 def novels_split_start():
-    """启动分割任务：仅支持 TXT，最多10个文件，消耗1次下载次数"""
-    if g.user['is_admin']:
-        return jsonify({'error': '管理员账号不支持分割'}), 403
-    if g.user['download_quota'] <= 0:
-        return jsonify({'error': '下载次数不足，请联系管理员'}), 403
-
+    """启动分割任务：仅支持 TXT，最多10个文件，不消耗下载次数"""
     data = request.get_json() or {}
     filename = (data.get('filename') or '').strip()
     chunkMB = float(data.get('chunkSizeMB') or 5)
@@ -1359,12 +1351,6 @@ def novels_split_start():
     if count > SPLIT_MAX_FILES:
         return jsonify({'error': f'按当前大小将生成 {count} 个文件，超过上限 {SPLIT_MAX_FILES} 个，请调大分割大小'}), 400
 
-    # 扣减下载次数
-    db = get_db()
-    new_quota = g.user['download_quota'] - 1
-    db.execute('UPDATE users SET download_quota=? WHERE id=?', (new_quota, g.user['id']))
-    db.commit()
-
     task_id = secrets.token_hex(8)
     with _split_lock:
         _split_tasks[task_id] = {
@@ -1376,7 +1362,7 @@ def novels_split_start():
         }
     threading.Thread(target=_do_split, args=(task_id,), daemon=True).start()
 
-    return jsonify({'taskId': task_id, 'status': 'running', 'quota': new_quota})
+    return jsonify({'taskId': task_id, 'status': 'running'})
 
 
 @app.route('/api/novels/split/<task_id>')
@@ -1407,9 +1393,22 @@ def novels_download_file(book_name, file_name):
     # 防路径穿越
     if '/' in file_name or '\\' in file_name or '..' in file_name:
         return jsonify({'error': '非法文件名'}), 400
-    p = WEB_DIR / 'split' / book_name / file_name
+    split_root = WEB_DIR / 'split'
+    p = split_root / book_name / file_name
     if not p.exists():
-        return jsonify({'error': '文件不存在'}), 404
+        # 前端传来的 book_name 是「书名」，而产物目录是「书名 - 作者」。
+        # 用书名/文件名在 split 目录下模糊匹配子目录。
+        matched = None
+        if split_root.exists():
+            for d in split_root.iterdir():
+                if d.is_dir() and (book_name in d.name or file_name in d.name):
+                    cand = d / file_name
+                    if cand.exists():
+                        matched = cand
+                        break
+        if matched is None:
+            return jsonify({'error': '文件不存在'}), 404
+        p = matched
     return send_file(p, as_attachment=True, download_name=p.name)
 
 

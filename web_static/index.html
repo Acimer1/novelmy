@@ -79,6 +79,7 @@ body{
 }
 .quota-banner .banner-text{color:var(--text);display:flex;align-items:center;gap:8px}
 .quota-banner .banner-text .bell{font-size:1.05em}
+.quota-banner-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 /* 联系管理员弹窗 */
 .contact-mask{
   position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
@@ -117,6 +118,8 @@ body{
 .redeem-box h3{margin:0 0 14px;font-size:1.05em}
 .redeem-box .inp{width:100%;box-sizing:border-box;margin-bottom:8px;font-size:16px}
 .redeem-tip{font-size:.78em;color:var(--text3);margin:0 0 14px}
+.redeem-buy{display:block;text-align:center;text-decoration:none;margin:0 0 14px;padding:10px 14px;border-radius:9px;font-size:.88em;color:#fff;background:linear-gradient(135deg,#ff6b35,#f59e0b);box-shadow:0 4px 16px rgba(255,107,53,.3);transition:.2s}
+.redeem-buy:hover{filter:brightness(1.1)}
 
 .nav-bar{
   display:flex;gap:2px;margin-bottom:18px;background:rgba(255,255,255,0.04);
@@ -126,7 +129,7 @@ body{
 }
 .nav-btn{
   flex:1;min-width:80px;padding:10px 8px;border:none;background:transparent;
-  color:var(--text3);cursor:pointer;font-size:.88em;border-radius:11px;transition:.2s;
+  color:var(--text3);cursor:pointer;font-size:1.05em;border-radius:11px;transition:.2s;
   display:flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;
 }
 .nav-btn:hover{color:var(--text2)}
@@ -134,7 +137,7 @@ body{
   background:linear-gradient(135deg,rgba(255,107,53,0.20),rgba(255,107,53,0.10));
   color:#fff;font-weight:600;box-shadow:inset 0 0 0 1px rgba(255,107,53,0.28);
 }
-.nav-btn .nav-icon{font-size:1.1em}
+.nav-btn .nav-icon{font-size:1.35em}
 
 .section{display:none}
 .section.active{display:block}
@@ -462,7 +465,7 @@ body::after{
   border-radius:16px;padding:5px;
   box-shadow:0 10px 32px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
 }
-.nav-btn{font-size:.9em;border-radius:12px}
+.nav-btn{font-size:1.05em;border-radius:12px}
 .nav-btn.on{
   background:linear-gradient(135deg, rgba(255,107,53,.28), rgba(255,107,53,.12));
   box-shadow:0 4px 18px rgba(255,107,53,.28), inset 0 0 0 1px rgba(255,107,53,.4), inset 0 1px 0 rgba(255,255,255,.1);
@@ -1643,7 +1646,7 @@ function renderAuth(){
     </label>`:''}
     <button class="btn btn-go" onclick="doAuth()">${am==='login'?'登 录':'注 册'}</button>
     <div class="auth-msg" id="authMsg"></div>
-    ${am==='register'?'<p style="font-size:.78em;color:var(--text3);text-align:center">新用户默认0次下载，联系管理员分配次数</p>':''}
+    ${am==='register'?'<p style="font-size:.78em;color:var(--text3);text-align:center">新用户默认0次下载，兑换卡密即可增加下载次数</p>':''}
   </div>
 </div>
 </form>`;
@@ -1706,8 +1709,11 @@ ${isAdmin?`
 </div>
 `:`
 <div class="quota-banner">
-  <span class="banner-text"><span class="bell">📢</span> 下载次数不够用？增加次数请联系管理员</span>
-  <button class="btn btn-sm btn-go" onclick="showContact()">👤 联系管理员</button>
+  <span class="banner-text"><span class="bell">📢</span> 下载次数不够用？点击「➕ 增加次数」在线充值，秒到账</span>
+  <div class="quota-banner-actions">
+    <button class="btn btn-sm btn-go" onclick="showRedeem()">➕ 增加次数</button>
+    <button class="btn btn-sm" onclick="showContact()">👤 联系管理员</button>
+  </div>
 </div>
 `}
 
@@ -1752,6 +1758,7 @@ ${isAdmin?`
     <h3>🎟️ 兑换卡密 · 增加下载次数</h3>
     <input class="inp" id="redeemCode" placeholder="请输入卡密" autocomplete="off" />
     <p class="redeem-tip">每个卡密仅可使用一次，兑换后自动累加下载次数</p>
+    <a class="redeem-buy" href="https://wzyp.cn/shop/N0CQ5T2I" target="_blank" rel="noopener">🛒 还没有卡密？点这里购买卡密</a>
     <div style="display:flex;gap:10px">
       <button class="btn btn-ghost" style="flex:1" onclick="closeRedeem()">取消</button>
       <button class="btn btn-go" style="flex:1" onclick="doRedeem()">兑换</button>
@@ -2045,8 +2052,8 @@ async function fLinkDownload(){
   if(!text){toast.warning('请输入小说链接');return}
   const links=text.split('\n').map(s=>s.trim()).filter(Boolean);
   const _isAdmin = U && U.is_admin;
-  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
-  if(!_isAdmin && links.length>U.download_quota){toast.warning(`共 ${links.length} 条，但下载次数仅剩 ${U.download_quota} 次，请先联系管理员补充`);return}
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请点右上角「➕ 增加次数」充值');return}
+  if(!_isAdmin && links.length>U.download_quota){toast.warning(`共 ${links.length} 条，但下载次数仅剩 ${U.download_quota} 次，请点右上角「➕ 增加次数」充值`);return}
   const btn=document.getElementById('fDlBtn');
   const prog=document.getElementById('fProg'),fill=document.getElementById('fFill'),label=document.getElementById('fLabel');
   if(btn){btn.disabled=true;btn.textContent='批量下载中...'}
@@ -2090,8 +2097,8 @@ async function fLinkDownload(){
 async function fStartDownload(){
   if(!fBook)return;
   const _isAdmin = U && U.is_admin;
-  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
-  if(!await confirmDialog({title:'下载确认',message:`下载《${fBook.book_name||fBook.title||'未知'}》(${fFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`,okText:'开始下载'}))return;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请点右上角「➕ 增加次数」充值');return}
+  if(!await confirmDialog({title:'下载确认',message:`下载《${fBook.book_name||fBook.title||'未知'}》(${fFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数（次数不够可点右上角「➕ 增加次数」充值）'}`,okText:'开始下载'}))return;
   await fDoDownload(fBook.book_id||fBook.id,null);
 }
 
@@ -2196,8 +2203,8 @@ async function qLinkDownload(){
   const links=text.split('\n').map(s=>s.trim()).filter(Boolean);
   const _isAdmin = U && U.is_admin;
   if(qBusy)return;
-  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
-  if(!_isAdmin && links.length>U.download_quota){toast.warning(`共 ${links.length} 条，但下载次数仅剩 ${U.download_quota} 次，请先联系管理员补充`);return}
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请点右上角「➕ 增加次数」充值');return}
+  if(!_isAdmin && links.length>U.download_quota){toast.warning(`共 ${links.length} 条，但下载次数仅剩 ${U.download_quota} 次，请点右上角「➕ 增加次数」充值`);return}
   const btn=document.getElementById('qUrlBtn');
   const prog=document.getElementById('qUrlProg'),fill=document.getElementById('qUrlFill'),label=document.getElementById('qUrlLabel');
   qBusy=true;prog.classList.add('show');fill.style.width='2%';
@@ -2298,8 +2305,8 @@ function renderQimaoDetail(){
 async function qDownload(){
   if(!qBook||qBusy)return;
   const _isAdmin = U && U.is_admin;
-  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请联系管理员');return}
-  if(!await confirmDialog({title:'下载确认',message:`下载《${qBook.title||'未知'}》(${qFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数'}`,okText:'开始下载'}))return;
+  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，请点右上角「➕ 增加次数」充值');return}
+  if(!await confirmDialog({title:'下载确认',message:`下载《${qBook.title||'未知'}》(${qFmt.toUpperCase()})？${_isAdmin?'管理员模式不消耗次数':'消耗1次下载次数（次数不够可点右上角「➕ 增加次数」充值）'}`,okText:'开始下载'}))return;
 
   qBusy=true;const b=qBook;
   const prog=document.getElementById('qProg'),fill=document.getElementById('qFill'),label=document.getElementById('qLabel'),btn=document.getElementById('qDlBtn');
@@ -2357,9 +2364,7 @@ async function startSplit(bookName){
   const chunkMB=parseFloat(sizeInput.value);
 
   if(!chunkMB||chunkMB<0.5||chunkMB>50){toast.warning('请输入有效的分块大小（0.5~50 MB）');return}
-  const _isAdmin = U && U.is_admin;
-  if(!_isAdmin && U.download_quota<=0){toast.warning('下载次数不足，无法分割，请联系管理员');return}
-  if(!await confirmDialog({title:'分割确认',message:`分割《${bookName}》${_isAdmin?'(管理员模式不消耗次数)':'将消耗 1 次下载次数'}，是否继续？`,okText:'开始分割'}))return;
+  if(!await confirmDialog({title:'分割确认',message:`分割《${bookName}》？分割不消耗下载次数，是否继续？`,okText:'开始分割'}))return;
 
   btn.disabled=true;
   btn.textContent='分割中...';
@@ -2409,7 +2414,6 @@ function _pollSplit(bookName){
         progText.textContent=`✅ 完成！共 ${d.outputFiles.length} 个文件`;
         btn.disabled=false;
         btn.textContent='✂ 重新分割';
-        refreshQuota(); // 分割已消耗 1 次下载次数，刷新显示
         // 输出文件列表
         if(d.outputFiles&&d.outputFiles.length){
           outList.innerHTML=d.outputFiles.map(f=>`
@@ -2524,16 +2528,16 @@ function renderGuide(){
       <li>下载好的小说都在「文件」标签页，点击文件行可展开分割面板</li>
       <li>仅支持 <code>TXT 格式</code> 分割，每块大小可在 <code>0.5 ~ 50 MB</code> 之间自由调整</li>
       <li>一次分割最多生成 <b style="color:var(--amber)">10 个</b>文件；若超出会提示调大分割大小</li>
-      <li>每次分割消耗 <b style="color:var(--amber)">1 次</b>下载次数，分割前会二次确认</li>
+      <li>分割 <b style="color:var(--amber)">不消耗</b>下载次数，可放心随意分割</li>
       <li>分割完成后会列出各分片，点击「下载」逐个保存</li>
     </ul>
-    <div class="guide-note">💡 分割消耗下载次数后，若剩余次数不足 1 次将无法继续分割，请联系管理员补充。</div>
+    <div class="guide-note">💡 分割完全免费。若下载次数不够，点右上角「➕ 增加次数」即可在线充值。</div>
   </div>
 
   <div class="guide-card" id="sec-5" data-anchor="5">
     <h3><span class="g-ico">❓</span> 常见问题</h3>
     <ul>
-      <li><b>下载次数用完了？</b> 登录页注册的新用户默认为 0 次，请联系管理员分配下载次数</li>
+      <li><b>下载次数用完了？</b> 登录页注册的新用户默认为 0 次，兑换卡密即可在线充值，点右上角「➕ 增加次数」秒到账</li>
       <li><b>链接解析失败？</b> 确认链接来自番茄/七猫官网分享，纯数字可直接当作书籍 ID 使用</li>
       <li><b>找不到刚下载的文件？</b> 切到「文件」标签页即可看到全部下载记录，无需刷新页面</li>
     </ul>
@@ -2634,7 +2638,7 @@ async function renderFiles(){
     </div>
     <button class="split-btn" id="split-btn-${bnEnc}" onclick="event.stopPropagation();startSplit('${eH(bn)}')">✂ 开始分割</button>
     <div style="font-size:.72em;color:var(--text3);margin-top:8px;line-height:1.5">
-      ⚙ 仅支持 TXT 分割 · 每次分割消耗 <b style="color:var(--amber)">1 次</b>下载次数 · 最多生成 <b style="color:var(--amber)">10 个</b>文件，超出请调大分割大小
+      ⚙ 仅支持 TXT 分割 · 分割不消耗下载次数 · 最多生成 <b style="color:var(--amber)">10 个</b>文件，超出请调大分割大小
     </div>
     <div class="split-progress-box" id="split-prog-${bnEnc}">
       <div class="split-progress-text">
@@ -3586,6 +3590,7 @@ async function aDel(uid,name){
   .quota-banner{padding:10px 12px;font-size:.84em;gap:8px;flex-direction:column;align-items:stretch}
   .quota-banner .banner-text{font-size:.92em}
   .quota-banner .btn{width:100%}
+  .quota-banner-actions{flex-direction:column}
 
   /* 联系管理员弹窗 */
   .contact-box{padding:18px}
@@ -4146,7 +4151,7 @@ const FirstLoginWelcome = {
             <button class="welcome-btn welcome-btn-ghost" id="welcomeGotIt">我知道了</button>
             <button class="welcome-btn welcome-btn-primary" id="welcomeViewGuide">📖 去看看指南</button>
           </div>
-          <div class="welcome-footnote">${isAdmin ? '管理员模式已激活 · 你拥有所有用户管理权限' : '每下载一本小说消耗 1 次下载次数 · 次数不足请联系管理员'}</div>
+          <div class="welcome-footnote">${isAdmin ? '管理员模式已激活 · 你拥有所有用户管理权限' : '每下载一本小说消耗 1 次下载次数 · 次数不足点「➕ 增加次数」充值'}</div>
         </div>
       </div>`;
     document.body.appendChild(mask);
