@@ -474,6 +474,198 @@ def find_physical_file(file_name):
     return None
 
 
+# ==================== 下载结果校验与自动重试 ====================
+# 有的下载任务 CDP 已创建但 exe 没真正产出文件，也不会有完成回调。
+# 这里在任务创建 60 秒后检查物理文件 / 数据库 / 任务状态：
+#   - 文件已生成：补写用户下载记录，结束；
+#   - 任务仍在进行：不打扰，再等 60 秒；
+#   - 任务失败 / 消失 / 已结束但没有文件：重新触发下载（最多 MAX_DOWNLOAD_RETRIES 次）。
+VERIFY_DELAY = 60              # 每次校验间隔（秒）
+MAX_DOWNLOAD_RETRIES = 2       # 文件始终未生成时的最大自动重试次数
+VERIFY_STALL_ROUNDS = 3        # 进度连续 N 次（约 N 分钟）不变则判定卡住并重试
+_verify_timers = {}            # (user_id, book_id) -> threading.Timer
+_verify_watch = {}             # (user_id, book_id) -> (progress, 连续未变化次数)
+_verify_lock = threading.Lock()
+
+
+def _list_jobs():
+    """统一解析 exe 任务列表（兼容 list / {items:[...]} / {jobs:[...]}）"""
+    r = invoke_tauri('list_jobs', {})
+    if isinstance(r, list):
+        return r
+    if isinstance(r, dict):
+        for key in ('items', 'jobs'):
+            v = r.get(key)
+            if isinstance(v, list):
+                return v
+    return []
+
+
+def _find_download_file(book_name, author, fmt):
+    """在下载目录 / web 目录查找成品文件（容忍异体字，返回 Path 或 None）"""
+    if not book_name:
+        return None
+    names = [f"{book_name} - {author}.{fmt}"] if author else []
+    names.append(f"{book_name}.{fmt}")
+    for name in names:
+        for d in (DOWNLOAD_DIR, WEB_DIR):
+            p = d / name
+            try:
+                if p.exists() and p.stat().st_size > 1000:
+                    return p
+            except OSError:
+                pass
+    # 模糊匹配：取书名前几个字
+    key = book_name[:4] if len(book_name) >= 4 else book_name
+    for d in (DOWNLOAD_DIR, WEB_DIR):
+        if not d.exists():
+            continue
+        try:
+            for f in d.glob(f'*.{fmt}'):
+                if f.stat().st_size > 1000 and key and key in f.name:
+                    return f
+        except OSError:
+            pass
+    return None
+
+
+def _record_verified_file(user_id, book_id, book_name, author, path):
+    """校验成功：把物理文件补写/更新到用户下载记录（后台线程专用连接）"""
+    conn = sqlite3.connect(str(DB_PATH), timeout=10)
+    try:
+        row = conn.execute(
+            'SELECT id FROM downloads WHERE user_id=? AND book_id=? ORDER BY id LIMIT 1',
+            (user_id, str(book_id))
+        ).fetchone()
+        size = path.stat().st_size
+        if row:
+            conn.execute(
+                'UPDATE downloads SET book_name=?, author=?, file_name=?, file_size=?, '
+                'download_time=CURRENT_TIMESTAMP WHERE id=?',
+                (book_name, author, path.name, size, row[0])
+            )
+        else:
+            conn.execute(
+                'INSERT INTO downloads (user_id, book_name, author, book_id, file_name, file_size, source) '
+                'VALUES (?, ?, ?, ?, ?, ?, ?)',
+                (user_id, book_name, author, str(book_id), path.name, size, 'fanqie')
+            )
+        conn.commit()
+    finally:
+        conn.close()
+
+
+def _cancel_download_verify(user_id, book_id):
+    """取消该用户该书的待校验任务（下载已确认完成时调用）"""
+    key = (int(user_id), str(book_id))
+    with _verify_lock:
+        timer = _verify_timers.pop(key, None)
+        _verify_watch.pop(key, None)
+    if timer:
+        timer.cancel()
+
+
+def _schedule_download_verify(user_id, book_id, book_name, author, fmt, attempt=0):
+    """安排一次延时校验（同一用户同一本书只保留最新定时器）"""
+    key = (int(user_id), str(book_id))
+    timer = threading.Timer(
+        VERIFY_DELAY,
+        _verify_download_job,
+        args=(key, book_name, author, fmt, attempt),
+    )
+    timer.daemon = True
+    with _verify_lock:
+        old = _verify_timers.pop(key, None)
+        if old:
+            old.cancel()
+        _verify_timers[key] = timer
+        if attempt == 0:
+            _verify_watch.pop(key, None)   # 新的下载请求：重置卡住计数
+    timer.start()
+    print(f'[verify] 已排定 {VERIFY_DELAY}s 后校验: user={user_id} book={book_id} attempt={attempt}')
+
+
+def _verify_download_job(key, book_name, author, fmt, attempt):
+    """延时校验任务：确认文件真的下载好了，否则重新触发下载"""
+    user_id, book_id = key
+    try:
+        # 1) 物理文件是否已生成
+        try:
+            sync_files_to_web()
+        except Exception:
+            pass
+        path = _find_download_file(book_name, author, fmt)
+        if path:
+            _record_verified_file(user_id, book_id, book_name, author, path)
+            _verify_watch.pop(key, None)
+            print(f'[verify] 文件已确认: {path.name} ({path.stat().st_size} bytes)')
+            return
+
+        # 2) 数据库里是否已有完成记录
+        conn = sqlite3.connect(str(DB_PATH), timeout=10)
+        try:
+            done = conn.execute(
+                'SELECT 1 FROM downloads WHERE user_id=? AND book_id=? AND file_size>0 LIMIT 1',
+                (user_id, str(book_id))
+            ).fetchone()
+        finally:
+            conn.close()
+        if done:
+            _verify_watch.pop(key, None)
+            print(f'[verify] 数据库已有完成记录: user={user_id} book={book_id}')
+            return
+
+        # 3) exe 任务状态：仍在进行则继续等待，不重复触发
+        jobs = _list_jobs()
+        job = next((j for j in jobs if isinstance(j, dict)
+                    and str(j.get('book_id', '')) == str(book_id)), None)
+        if job is None:
+            job = next((j for j in jobs if isinstance(j, dict)
+                        and book_name and j.get('book_name') == book_name), None)
+        if job:
+            st = (job.get('status') or '').lower()
+            if st not in ('failed', 'error', 'canceled', 'cancelled', 'done', 'completed'):
+                # 进度卡住判定：状态一直是进行中，但进度连续几轮没变化
+                try:
+                    prog = float(job.get('progress') or 0)
+                except (TypeError, ValueError):
+                    prog = 0.0
+                prev = _verify_watch.get(key)
+                stalled = (prev[1] + 1) if (prev and prev[0] == prog) else 0
+                _verify_watch[key] = (prog, stalled)
+                if stalled < VERIFY_STALL_ROUNDS:
+                    _schedule_download_verify(user_id, book_id, book_name, author, fmt, attempt)
+                    print(f'[verify] 任务进行中({st}, {prog}%)，{VERIFY_DELAY}s 后再校验: {book_name}')
+                    return
+                print(f'[verify] 进度连续 {VERIFY_STALL_ROUNDS} 次未变化({prog}%)，判定卡住: {book_name}')
+                _verify_watch.pop(key, None)
+
+        # 4) 任务失败 / 结束 / 消失但没有成品文件 → 重新触发下载
+        if attempt >= MAX_DOWNLOAD_RETRIES:
+            print(f'[verify] 已达最大重试次数 {MAX_DOWNLOAD_RETRIES}，放弃: {book_name}')
+            return
+        print(f'[verify] 未检测到成品文件，重新触发下载（第 {attempt + 1} 次）: {book_name}')
+        result = invoke_tauri('create_download', {
+            'book_id': str(book_id),
+            'book_name': book_name,
+            'author': author,
+            'book_input': str(book_id),
+            'save_dir': str(DOWNLOAD_DIR).replace('\\', '/'),
+            'file_format': fmt,
+            'overwrite_existing': True,
+            'chapter_start': None,
+            'chapter_end': None,
+        })
+        if isinstance(result, dict) and result.get('error'):
+            print(f'[verify] 重新触发失败: {result["error"]}')
+        _verify_watch.pop(key, None)
+        _schedule_download_verify(user_id, book_id, book_name, author, fmt, attempt + 1)
+    except Exception as e:
+        print(f'[verify] 校验异常: {e}')
+        if attempt < MAX_DOWNLOAD_RETRIES:
+            _schedule_download_verify(user_id, book_id, book_name, author, fmt, attempt + 1)
+
+
 # ==================== 认证 API ====================
 
 @app.route('/api/auth/register', methods=['POST'])
@@ -805,8 +997,7 @@ def _check_user_download_state(user_id, book_id):
 
     # 3) 是否有 exe 正在跑的同名任务
     try:
-        jobs = invoke_tauri('list_jobs', {}) or {}
-        for j in (jobs.get('jobs') or jobs if isinstance(jobs, list) else []):
+        for j in _list_jobs():
             if not isinstance(j, dict):
                 continue
             if str(j.get('book_id', '')) == str(book_id):
@@ -931,6 +1122,9 @@ def api_download():
                                  f"{book_name} - {author}.{fmt}", file_size=0)
     db.commit()
 
+    # 60 秒后确认文件是否真的生成；没生成就重新触发下载（不重复扣配额）
+    _schedule_download_verify(g.user['id'], book_id, book_name, author, fmt)
+
     return jsonify({
         'success': True,
         'job_id': result.get('id', ''),
@@ -951,10 +1145,12 @@ def api_jobs():
 
 
 def _repair_placeholder_records(user_id):
-    """补全下载占位记录：file_size<=0 的记录按物理文件修正，无物理文件则删除（失败任务）"""
+    """补全下载占位记录：file_size<=0 的记录按物理文件修正，无物理文件则删除（失败任务）。
+    5 分钟内的占位记录先不动（下载可能仍在进行，避免刚扣费就被删掉）。"""
     db = get_db()
     rows = db.execute(
-        'SELECT id, file_name FROM downloads WHERE user_id=? AND file_size<=0',
+        "SELECT id, file_name FROM downloads WHERE user_id=? AND file_size<=0 "
+        "AND download_time <= datetime('now', '-5 minutes')",
         (user_id,)
     ).fetchall()
     for r in rows:
@@ -1020,7 +1216,15 @@ def api_finish_download():
         file_size = 0
 
     record_download_for_user(g.user['id'], book_name, author, book_id, actual_name, file_size)
-    return jsonify({'success': True, 'files': get_file_list_for_user(g.user['id'])})
+    # 只有确实找到物理文件才取消后台校验；否则保留，由 60 秒校验继续重试
+    if file_size > 0 and book_id:
+        _cancel_download_verify(g.user['id'], book_id)
+    return jsonify({
+        'success': True,
+        'file_found': file_size > 0,
+        'file_size': file_size,
+        'files': get_file_list_for_user(g.user['id'])
+    })
 
 
 @app.route('/api/file/<book_name>')

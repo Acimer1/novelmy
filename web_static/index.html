@@ -120,6 +120,8 @@ body{
 .redeem-tip{font-size:.78em;color:var(--text3);margin:0 0 14px}
 .redeem-buy{display:block;text-align:center;text-decoration:none;margin:0 0 14px;padding:10px 14px;border-radius:9px;font-size:.88em;color:#fff;background:linear-gradient(135deg,#ff6b35,#f59e0b);box-shadow:0 4px 16px rgba(255,107,53,.3);transition:.2s}
 .redeem-buy:hover{filter:brightness(1.1)}
+.redeem-query{background:rgba(255,255,255,.06);color:var(--text2);box-shadow:none;border:1px solid var(--border)}
+.redeem-query:hover{color:var(--text);border-color:var(--orange);filter:none}
 
 .nav-bar{
   display:flex;gap:2px;margin-bottom:18px;background:rgba(255,255,255,0.04);
@@ -1587,11 +1589,11 @@ function parseTags(ptags){
 let U=null,am='login',pT=null,rT=null;
 let tab='fanqie';
 /* Fanqie state */
-let fsub='link';           // 'link'|'search'|'detail'
+let fsub='search';         // 'link'|'search'|'detail'（搜索下载为默认）
 let fBook=null,fFmt='txt';
 let fSearchResults=[];
 /* Qimao state */
-let qsub='link';           // 'link'|'search'
+let qsub='search';         // 'link'|'search'（搜索下载为默认）
 let qBook=null,qFmt='txt',qBusy=false;
 let qSearchResults=[];
 /* Pagination state */
@@ -1674,7 +1676,7 @@ async function doAuth(){
 }
 async function doLogout(){
   await api('/api/auth/logout',{method:'POST'});
-  U=null;tab='fanqie';fsub='link';fBook=null;qBook=null;if(rT){clearInterval(rT);rT=null}
+  U=null;tab='fanqie';fsub='search';fBook=null;qBook=null;if(rT){clearInterval(rT);rT=null}
   renderAuth();
 }
 
@@ -1759,6 +1761,7 @@ ${isAdmin?`
     <input class="inp" id="redeemCode" placeholder="请输入卡密" autocomplete="off" />
     <p class="redeem-tip">每个卡密仅可使用一次，兑换后自动累加下载次数</p>
     <a class="redeem-buy" href="https://wzyp.cn/shop/N0CQ5T2I" target="_blank" rel="noopener">🛒 还没有卡密？点这里购买卡密</a>
+    <a class="redeem-buy redeem-query" href="https://www.ldxp.cn/order" target="_blank" rel="noopener">🔎 已经购买过？查询购买卡密记录</a>
     <div style="display:flex;gap:10px">
       <button class="btn btn-ghost" style="flex:1" onclick="closeRedeem()">取消</button>
       <button class="btn btn-go" style="flex:1" onclick="doRedeem()">兑换</button>
@@ -1908,8 +1911,8 @@ function renderFanqie(){
   <span class="tab-hint-arrow">›</span>
 </div>
 <div class="subtabs">
-  <div class="subtab ${fsub==='link'?'on':''}" onclick="fsub='link';fBook=null;renderFanqie()">🔗 链接下载</div>
   <div class="subtab ${fsub==='search'?'on':''}" onclick="fsub='search';fBook=null;renderFanqie()">🔍 搜索下载</div>
+  <div class="subtab ${fsub==='link'?'on':''}" onclick="fsub='link';fBook=null;renderFanqie()">🔗 链接下载</div>
 </div>
 ${fsub==='link'?`
 <div class="card">
@@ -2030,9 +2033,9 @@ function renderFanqieDetail(){
 }
 
 /* -- Fanqie download (from detail or link) -- */
-// 等待番茄下载任务完成（返回 'ok'|'fail'）
+// 等待番茄下载任务完成（返回 'ok'|'fail'|'timeout'）
 // 找不到 job 时继续轮询（避免任务刚创建还没进列表就被误判完成）；
-// 轮询超时仍未出现则视为完成（后端已占位写库兜底，不会丢记录）
+// 轮询超时返回 'timeout'，交给后端 60 秒校验 + 自动重试兜底。
 async function fWaitJob(jobId,bookName){
   for(let k=0;k<150;k++){
     await new Promise(r=>setTimeout(r,2000));
@@ -2043,7 +2046,7 @@ async function fWaitJob(jobId,bookName){
       if(job&&(job.status==='failed'||job.status==='error'))return 'fail';
     }catch(e){}
   }
-  return 'ok';
+  return 'timeout';
 }
 
 async function fLinkDownload(){
@@ -2074,15 +2077,21 @@ async function fLinkDownload(){
       }
       else{
         if(d.quota!==undefined){U.download_quota=d.quota;updateQuotaUI()}
-        let resOk=false;
+        let resOk=false,resPending=false;
         if(d.status==='done'||!d.job_id){resOk=true}
         else{
           const res=await fWaitJob(d.job_id,d.book_name);
           resOk=(res==='ok');
+          resPending=(res==='timeout');
         }
         if(resOk){
           await fRecordDownload(d);
           ok++;label.textContent=`✓ (${i+1}/${links.length}) ${d.book_name||'下载成功'}`
+        }
+        else if(resPending){
+          // 任务超时未见完成：先记占位，后端 60 秒校验会自动确认/重试
+          await fRecordDownload(d);
+          ok++;label.textContent=`… (${i+1}/${links.length}) ${d.book_name||''} 已提交，后台自动校验中`
         }
         else{fail++;if(!firstErr)firstErr='下载任务失败';label.textContent=`✗ (${i+1}/${links.length}) 任务失败`}
       }
@@ -2126,13 +2135,22 @@ async function fDoDownload(bookId,url){
     fPending={book_name:d.book_name,author:d.author,book_id:d.book_id,file_name:d.book_name+' - '+d.author+'.'+fFmt};
     if(d.status==='done'){fFinishDownload();return}
     const jid=d.job_id;fill.style.width='10%';label.textContent='下载中... 0%';
+    let missingPolls=0;
     pT=setInterval(async()=>{
       try{
         const jr=await api('/api/jobs');const jd=await jr.json();const items=jd.items||[];
         const job=items.find(j=>j.id===jid)||items.find(j=>j.book_id===d.book_id);
-        if(!job){fFinishDownload();return}
+        // 任务暂时不在列表里（刚创建未入列 / exe 重启丢失）不能误判为完成，
+        // 交给后端 60 秒校验兜底；这里继续轮询等待重试后的新任务。
+        if(!job){
+          missingPolls++;
+          if(missingPolls>=30){label.textContent='任务未找到，后台自动校验/重试中...';fill.style.width='50%'}
+          else{label.textContent='下载中... 等待任务创建'}
+          return;
+        }
+        missingPolls=0;
         if(job.status==='done'){fFinishDownload();return}
-        if(job.status==='failed'||job.status==='error'){label.textContent='✗ '+(job.message||'下载失败');clearInterval(pT);pT=null;if(btn){btn.disabled=false;btn.textContent='开始下载 '+fFmt.toUpperCase()};return}
+        if(job.status==='failed'||job.status==='error'){label.textContent='✗ '+(job.message||'下载失败')+'（后台自动重试中）';return}
         const pct=Math.floor(job.progress||0);fill.style.width=pct+'%';label.textContent='下载中... '+pct+'%';
       }catch(e){}
     },2000);
@@ -2141,20 +2159,25 @@ async function fDoDownload(bookId,url){
 }
 
 // 下载成功后写库（幂等；失败静默，后端 api_download 已占位写库兜底）
+// 返回后端结果，用于判断物理文件是否真的生成（file_found）
 async function fRecordDownload(d){
-  if(!d||!d.book_name)return;
+  if(!d||!d.book_name)return null;
   const fn=d.file_name||(d.book_name+(d.author?' - '+d.author:'')+'.'+fFmt);
-  try{await api('/api/finish_download',{method:'POST',body:{book_name:d.book_name,author:d.author||'',book_id:d.book_id||'',file_name:fn}})}catch(e){}
+  try{const r=await api('/api/finish_download',{method:'POST',body:{book_name:d.book_name,author:d.author||'',book_id:d.book_id||'',file_name:fn}});return await r.json()}catch(e){return null}
 }
 
 async function fFinishDownload(){
   const fill=document.getElementById('fFill'),label=document.getElementById('fLabel'),btn=document.getElementById('fDlBtn');
   if(fill)fill.style.width='100%';
-  if(label)label.textContent='✓ 下载完成: '+ (fPending?fPending.book_name:'');
   if(pT){clearInterval(pT);pT=null}
   // 下载完成后按钮置灰，防止同一本书重复点击
   if(btn){btn.disabled=true;btn.textContent='✓ 已下载'}
-  if(fPending){await fRecordDownload(fPending)}
+  let saved=true;
+  if(fPending){
+    const rec=await fRecordDownload(fPending);
+    if(rec&&rec.file_found===false)saved=false;
+  }
+  if(label)label.textContent=(saved?'✓ 下载完成: ':'✓ 已提交，文件生成中（后台自动校验/重试）')+(fPending?fPending.book_name:'');
   setTimeout(()=>{const p=document.getElementById('fProg');if(p)p.classList.remove('show');refreshQuota()},2000);
   fPending=null;
 }
@@ -2172,8 +2195,8 @@ function renderQimao(){
   <span class="tab-hint-arrow">›</span>
 </div>
 <div class="subtabs">
-  <div class="subtab ${qsub==='link'?'on':''}" onclick="qsub='link';renderQimao()">🔗 链接下载</div>
   <div class="subtab ${qsub==='search'?'on':''}" onclick="qsub='search';renderQimao()">🔍 搜索下载</div>
+  <div class="subtab ${qsub==='link'?'on':''}" onclick="qsub='link';renderQimao()">🔗 链接下载</div>
 </div>
 ${qsub==='link'?`
 <div class="card">
@@ -2497,8 +2520,8 @@ function renderGuide(){
   <div class="guide-card" id="sec-1" data-anchor="1">
     <h3><span class="g-ico">🍅</span> 番茄小说下载</h3>
     <ul>
-      <li>进入「番茄」标签页，选择 <code>🔗 链接下载</code>，粘贴小说链接（支持短链接，自动解析）后点击「开始下载」</li>
-      <li>不知道链接？切换到 <code>🔍 搜索下载</code>，输入书名关键词搜索，点击封面进入详情页再下载</li>
+      <li>进入「番茄」标签页，默认是 <code>🔍 搜索下载</code>：输入书名关键词搜索，点击封面进入详情页再下载</li>
+      <li>知道链接？切换到 <code>🔗 链接下载</code>，粘贴小说链接（支持短链接，自动解析）后点击「开始下载」</li>
       <li>支持 TXT / EPUB 两种格式，每下载一本书消耗 <b style="color:var(--amber)">1 次</b>下载次数</li>
     </ul>
   </div>
@@ -2506,9 +2529,9 @@ function renderGuide(){
   <div class="guide-card g-cyan" id="sec-2" data-anchor="2">
     <h3 class="g-cyan"><span class="g-ico">🐱</span> 七猫小说下载</h3>
     <ul>
-      <li>进入「七猫」标签页，选择 <code>🔗 链接下载</code>，粘贴七猫链接或 <code>书籍 ID</code>（纯数字）后点击「开始下载」</li>
+      <li>进入「七猫」标签页，默认是 <code>🔍 搜索下载</code>：输入书名关键词搜索下载</li>
+      <li>知道链接？切换到 <code>🔗 链接下载</code>，粘贴七猫链接或 <code>书籍 ID</code>（纯数字）后点击「开始下载」</li>
       <li>支持分享链接（如 <code>app-share.wtzw.com</code>）、<code>qimao.com</code> / <code>wtzw.com</code> 站内链接，短链接自动转长链接</li>
-      <li>不知道链接？切换到 <code>🔍 搜索下载</code>，输入书名关键词搜索下载</li>
       <li>支持 TXT / EPUB 两种格式，每下载一本书消耗 <b style="color:var(--amber)">1 次</b>下载次数</li>
     </ul>
   </div>
@@ -4012,6 +4035,17 @@ button{min-height:36px}
   .admin-banner{padding:10px 12px;font-size:.82em;flex-direction:column;align-items:stretch;gap:8px}
   .admin-banner .btn{width:100%}
   .admin-panel-btn{display:none}
+}
+
+/* ── 手机端：底部四栏目文字略放大，便于阅读 ── */
+@media (max-width:640px){
+  .nav-btn{font-size:.95em}
+  .nav-btn .nav-icon{font-size:1.15em}
+  .nav-btn span:not(.nav-icon){font-size:1em}
+}
+@media (max-width:360px){
+  .nav-btn{font-size:1em}
+  .nav-btn span:not(.nav-icon){font-size:1em}
 }
 </style>
 
