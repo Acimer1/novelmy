@@ -39,4 +39,4 @@ flowchart LR
 | 分卷进度或数量限制 | `novels_split_start()` → `_do_split()` → `novels_split_status()`；服务重启后内存中的任务 ID 失效 |
 | 页面交互或移动端样式 | 新版从 [Vue 页面](../frontend/src/pages/) 和 [样式](../frontend/src/styles/) 入手；改完后重新构建首页，不手改生成的 HTML |
 
-启动命令、端口和测试工具现状见 [AGENTS.md](../AGENTS.md#运行与验证)。
+启动命令和端口见[运行、构建与开发](../AGENTS.md#运行构建与开发)；单个测试、完整回归和测试账户用法见[测试与隔离联调](../AGENTS.md#测试与隔离联调)。
