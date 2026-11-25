@@ -1,0 +1,8 @@
+<script setup>
+import {ref,onMounted} from 'vue'
+import {api,read} from '../api/library.js'
+const emit=defineEmits(['login']);const saved=read('remembered_auth',{}),name=ref(saved.username||''),pass=ref(saved.password||''),remember=ref(!!saved.remember),register=ref(false),busy=ref(false),msg=ref('')
+async function submit(auto=false){if(busy.value)return;busy.value=true;msg.value='';try{const data={username:name.value.trim(),password:pass.value};if(register.value){await api('/auth/register',data);register.value=false}const {user}=await api('/auth/login',data);if(!auto){if(remember.value)localStorage.setItem('remembered_auth',JSON.stringify({...data,remember:true,ts:Date.now()}));else localStorage.removeItem('remembered_auth')}emit('login',user)}catch(e){msg.value=e.message}finally{busy.value=false}}
+const props=defineProps({allowAutoLogin:Boolean})
+onMounted(()=>{if(props.allowAutoLogin&&saved.remember&&saved.username&&saved.password&&Date.now()-saved.ts<604800000)submit(true)})
+</script><template><section class="auth"><div class="eyebrow">ACCOUNT / 在线账户</div><h1>{{register?'注册':'登录'}}<em>书架</em></h1><form class="panel stack" @submit.prevent="submit(false)"><label>用户名<input v-model="name" autocomplete="username" required></label><label>密码<input type="password" v-model="pass" :autocomplete="register?'new-password':'current-password'" required></label><label v-if="!register"><input type="checkbox" v-model="remember"> 记住账号密码，7 天内自动登录</label><button class="primary" :disabled="busy">{{register?'注册并登录':'登录'}}</button><button type="button" :disabled="busy" @click="register=!register">{{register?'已有账号，去登录':'创建新账号'}}</button><p role="status">{{msg}}</p></form></section></template>
