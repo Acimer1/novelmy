@@ -5,7 +5,7 @@
 ## 代码入口
 
 - [server.py](../server.py) 保留原启动命令；路由、配额和文件处理在 [backend/server.py](../backend/server.py)。
-- [frontend/src/pages/](../frontend/src/pages/) 放新版页面，[components/](../frontend/src/components/) 放复用组件，[api/](../frontend/src/api/) 管理请求，[styles/](../frontend/src/styles/) 放样式。旧首页仍在 [web_static/](../web_static/)。
+- [frontend/src/pages/](../frontend/src/pages/) 放新版页面，[components/](../frontend/src/components/) 放复用组件，[api/](../frontend/src/api/) 管理请求，[styles/](../frontend/src/styles/) 放样式。[web_static/](../web_static/) 是纯构建目录：Git 不保存它，`start.bat` 每次启动前由 Vite 重新生成，勿在其中存放手写资源。
 - [tests/](../tests/) 放隔离 Flask 服务、接口与浏览器联调；[frontend/test/](../frontend/test/) 放不依赖 Flask 的前端测试。
 
 ## 从页面到文件
@@ -24,7 +24,7 @@ flowchart LR
 
 ## 顺着一次番茄下载读源码
 
-1. 在 [web_static/index.html](../web_static/index.html) 搜 `/api/download`，从提交请求跟到 `/api/jobs` 的轮询。拿到 `job_id` 意味着桌面程序接受了任务，不代表已有文件可下载。
+1. 从 [SourceShelf.vue](../frontend/src/pages/SourceShelf.vue) 的下载确认进入 [library.js](../frontend/src/api/library.js) 的 `download()`，跟踪任务提交和 `/api/jobs` 的轮询。拿到 `job_id` 意味着桌面程序接受了任务，不代表已有文件可下载。
 2. 在 [backend/server.py](../backend/server.py) `api_download()` → `_check_user_download_state()`：前者查配额、创建任务；后者区分当前用户已有的完成记录、未完成占位和桌面端正在运行的任务。判断重复扣次的问题从这里开始。
 3. 文件未出现在列表时，分开查三处：桌面程序是否已写到 `%USERPROFILE%\Downloads\FanqieNovels`，`sync_files_to_web()` 是否已将文件复制到 Web 目录，当前用户的 `downloads` 记录是否仍为零字节占位。`_verify_download_job()` 是后端校验入口，`api_finish_download()` 是前端通知的接收端。
 4. 对照 `qimao_download_start()`：七猫处理函数等待 `QimaoBookDownloader.download_book()` 返回文件内容，写盘、更新数据库后才返回成功。排查七猫请求缓慢应看这一调用，而不是桌面任务队列。
@@ -37,6 +37,6 @@ flowchart LR
 | 登录、卡密或下载次数 | [backend/server.py](../backend/server.py) 的 `init_db()`、`current_user()`、`card_redeem()`，再看两条下载路径各自的扣次时机 |
 | 我的文件、下载链接 | `api_files()` 负责用户列表；前端根据 `source` 选择番茄或七猫的文件接口 |
 | 分卷进度或数量限制 | `novels_split_start()` → `_do_split()` → `novels_split_status()`；服务重启后内存中的任务 ID 失效 |
-| 页面交互或移动端样式 | 新版从 [Vue 页面](../frontend/src/pages/) 和 [样式](../frontend/src/styles/) 入手；只有维护旧首页时才改 [web_static/index.html](../web_static/index.html) |
+| 页面交互或移动端样式 | 新版从 [Vue 页面](../frontend/src/pages/) 和 [样式](../frontend/src/styles/) 入手；改完后重新构建首页，不手改生成的 HTML |
 
 启动命令、端口和测试工具现状见 [AGENTS.md](../AGENTS.md#运行与验证)。

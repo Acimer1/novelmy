@@ -42,4 +42,4 @@ git地址.txt
 .venv/
 .integration/
 frontend/node_modules/
-web_static/preview/
+/web_static/

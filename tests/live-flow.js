@@ -13,12 +13,13 @@ document.querySelector('iframe').onload = async function () {
       const reader=()=>[...d.querySelectorAll('article')].find(el=>el.querySelector('h3')?.textContent==='browser-reader')
       await wait(reader,'管理员用户列表')
       if(!buttons().find(b=>b.disabled&&b.textContent==='导出数据库'))throw Error('缺少禁用导出入口')
+      const overview=await wait(()=>[...d.querySelectorAll('summary')].find(s=>s.textContent.includes('管理概览')),'管理概览入口');overview.click();await wait(()=>d.body.innerText.includes('普通用户下载排行'),'排行已加载');
       win.prompt=()=> '3';win.confirm=()=>true
       const action=async text=>{(await wait(()=>[...reader().querySelectorAll('button')].find(b=>b.textContent===text&&!b.disabled),text)).click()}
       await action('调整次数');await wait(()=>reader().innerText.includes('剩余 4 次'),'管理员加次数')
       await action('停用');await wait(()=>reader().innerText.includes('已停用'),'已停用');await action('启用');await wait(()=>reader().innerText.includes('正常'),'已启用')
     }
-    else{await input('[aria-label="卡密"]','LOCAL-TEST');await click('兑换');await wait(()=>d.body.innerText.includes('已增加 4 次'),'兑换到账');
+    else{await click('指南');await wait(()=>d.querySelectorAll('.chapter').length===5,'五章指南');await click('导入七猫链接');await wait(()=>[...d.querySelectorAll('.qimao textarea')].some(visible),'指南跳转七猫链接输入');await click('找书');await account();await input('[aria-label="卡密"]','LOCAL-TEST');await click('兑换');await wait(()=>d.body.innerText.includes('已增加 4 次'),'兑换到账');
       for(const source of ['七猫','番茄']){await click(source);await input('input[type=search]','联调');await click('搜索');const card=await wait(()=>[...d.querySelectorAll('.book')].find(visible),'搜索结果');card.click();await click('开始下载');await click('确认下载');await wait(()=>d.body.innerText.includes('文件已生成'),'实体文件生成');await click('文件');await wait(()=>d.body.innerText.includes(source+'联调样书'),'文件记录')}
       const fanFile=await wait(()=>[...d.querySelectorAll('.file')].find(el=>el.querySelector('h3')?.textContent==='番茄联调样书'),'番茄文件')
       const original=await (await win.fetch(fanFile.querySelector('a[download]').href)).text()

@@ -1,6 +1,7 @@
 import { searchBooks } from './preview-api.js'
 
-export const live = new URLSearchParams(location.search).get('mode') === 'live'
+const mode = new URLSearchParams(location.search).get('mode')
+export const live = mode === 'live' || (mode !== 'demo' && !import.meta.env.DEV)
 export const label = { fanqie: '番茄', qimao: '七猫' }
 export const delay = ms => new Promise(resolve => setTimeout(resolve, ms))
 export function read(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) ?? fallback } catch { return fallback } }

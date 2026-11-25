@@ -20,7 +20,7 @@ class BrowserLive(unittest.TestCase):
             if role not in ('reader', 'admin'):
                 return '', 404
             return ('<!doctype html><meta charset="utf-8"><body data-role="'+role+'">'
-                    '<iframe style="width:100%;height:800px;border:0" src="/web_static/preview/index.html?mode=live"></iframe>'
+                    '<iframe style="width:100%;height:800px;border:0" src="/"></iframe>'
                     '<script>'+driver.read_text(encoding='utf-8')+'</script>')
 
         http = make_server('127.0.0.1', 0, s.app, threaded=True)
