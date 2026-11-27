@@ -933,7 +933,6 @@ def card_redeem():
 # ==================== 业务 API（需登录） ====================
 
 @app.route('/')
-@app.route('/web_static/preview/index.html')
 def index():
     return send_file('web_static/index.html')
 

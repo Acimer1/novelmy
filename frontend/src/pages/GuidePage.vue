@@ -10,14 +10,29 @@ const chapters = [
   {id:'faq', nav:'常见问题', title:'遇到问题时', icon:'guide'}
 ]
 const active=ref(0), sections=[]
-function position(){let index=0;for(let i=0;i<sections.length;i++){if(sections[i]?.getBoundingClientRect().top<=innerHeight*.34) index=i}if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)index=chapters.length-1;active.value=index}
-function jump(i){sections[i]?.focus({preventScroll:true});sections[i]?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}
+function position(){const edge=matchMedia('(max-width:719px)').matches?56:innerHeight*.34;let index=0;for(let i=0;i<sections.length;i++){if(sections[i]?.getBoundingClientRect().top<=edge)index=i}if(innerHeight+scrollY>=document.documentElement.scrollHeight-2)index=chapters.length-1;active.value=index}
+function jump(i){const target=sections[i];if(!target)return;active.value=i;target.focus({preventScroll:true});target.scrollIntoView({behavior:matchMedia('(max-width:719px), (prefers-reduced-motion: reduce)').matches?'instant':'smooth',block:'start'})}
 onMounted(()=>{position();window.addEventListener('scroll',position,{passive:true});window.addEventListener('resize',position)})
 onUnmounted(()=>{window.removeEventListener('scroll',position);window.removeEventListener('resize',position)})
 </script>
-<template><section class="guide appear"><div class="eyebrow">FIELD GUIDE / 使用指南</div><h1>3 分钟<em>快速上手</em></h1><p class="intro">从找到一本书，到把它存进手机。选一章开始，也可以直接前往书架。</p><div class="row"><button class="primary" @click="emit('go','fanqie')">开始找书 →</button><button @click="emit('go','files')">查看已下载</button></div>
-<div class="reading"><aside aria-label="章节目录"><small>阅读位置　{{active+1}} / 5</small><div class="rail"><button v-for="(c,i) in chapters" :key="c.id" :aria-current="active===i?'location':undefined" @click="jump(i)"><span>0{{i+1}}</span>{{c.nav}}</button></div></aside>
+<template><section class="guide appear"><h1>3 分钟<em>快速上手</em></h1><p class="intro">从找到一本书，到把它存进手机。选一章开始，也可以直接前往书架。</p><div class="row"><button class="primary" @click="emit('go','fanqie')">开始找书 →</button><button @click="emit('go','files')">查看已下载</button></div>
+<div class="reading"><aside aria-label="章节目录"><label class="mobile-position"><span>阅读位置</span><b>{{active+1}} / {{chapters.length}}</b><strong>{{chapters[active].nav}}</strong><span class="choose">目录 ﹀</span><select aria-label="选择指南章节" :value="active" @change="jump(Number($event.target.value))"><option v-for="(c,i) in chapters" :key="c.id" :value="i">第 {{i+1}} 章　{{c.nav}}</option></select></label><small class="desktop-position">阅读位置　{{active+1}} / {{chapters.length}}</small><div class="rail"><button v-for="(c,i) in chapters" :key="c.id" :aria-current="active===i?'location':undefined" @click="jump(i)"><span>0{{i+1}}</span>{{c.nav}}</button></div></aside>
 <div><section v-for="(c,i) in chapters" :key="c.id" :ref="el=>sections[i]=el" tabindex="-1" class="chapter"><div class="eyebrow"><Icon :name="c.icon"/> 0{{i+1}} / {{c.nav}}</div><h2>{{c.title}}</h2><ol v-if="c.steps"><li v-for="s in c.steps" :key="s">{{s}}</li></ol><template v-else><details open><summary>下载次数用完了？</summary><p>新注册的账户从 0 次开始。在「我的账户」兑换卡密，成功后可看到新的剩余次数。已付款但找不到卡密，请点「查询订单」。</p><button @click="emit('go','account')">去账户兑换</button></details><details><summary>链接解析失败？</summary><p>检查书源是否选对，重新从原书详情页复制分享链接。如果知道书籍 ID，可只填数字；也可以返回「找书」按书名搜索。</p></details><details><summary>找不到刚下载的书？</summary><p>进入「文件」刷新列表。任务已接受不等于文件已生成；看到校验提示时，不要重复提交。在微信内无法保存文件时，请复制页面链接，改用手机浏览器打开。</p></details></template><button v-if="c.action" class="quiet" @click="emit('go',c.id)">{{c.action}} →</button><div class="row" v-if="c.id==='batch'"><button @click="emit('go','fanqie','link')">导入番茄链接</button><button @click="emit('go','qimao','link')">导入七猫链接</button></div></section></div></div></section></template>
 <style scoped>
 .intro{color:var(--muted);max-width:36em}.reading{margin-top:32px;display:grid;gap:20px}.reading aside{align-self:start;position:sticky;top:0;z-index:2;background:var(--bg);padding:10px 0;border-block:1px solid var(--line)}.rail{display:flex;overflow-x:auto;gap:4px}.rail button{white-space:nowrap;border:0;background:none;color:var(--muted);padding:6px 10px}.rail span{margin-right:5px;font-variant-numeric:tabular-nums}.rail [aria-current]{background:var(--raised);color:var(--accent)}.chapter{scroll-margin:100px;padding:22px 0 26px;border-bottom:1px solid var(--line)}.chapter h2{margin:8px 0 14px;text-wrap:balance}.chapter .eyebrow{display:flex;align-items:center;gap:9px;color:var(--accent)}.chapter ol{padding-left:1.5em}.chapter li{padding:3px 0 6px 4px}.chapter li::marker{color:var(--muted)}.chapter .quiet{color:var(--accent)}@media(min-width:720px){.reading{grid-template-columns:155px 1fr;gap:42px}.reading aside{top:22px}.rail{flex-direction:column;align-items:stretch}.rail button{text-align:left}.chapter{scroll-margin:20px}.chapter:first-child{padding-top:6px}}
+.mobile-position{display:none}
+@media(max-width:719px){
+  .reading{grid-template-columns:minmax(0,1fr);margin-top:20px;gap:6px}
+  .reading>*{min-width:0}
+  .reading aside{padding:0}
+  .desktop-position,.rail{display:none}
+  .mobile-position{display:flex;align-items:center;gap:8px;position:relative;min-height:44px;color:var(--muted);font-size:12px}
+  .mobile-position b{font-variant-numeric:tabular-nums;color:var(--accent)}.mobile-position strong{font-size:14px;color:var(--text)}.mobile-position .choose{margin-left:auto;color:var(--accent)}
+  .mobile-position select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}.mobile-position:focus-within{outline:2px solid var(--accent);outline-offset:-2px}
+  .chapter{padding:16px 0;scroll-margin-top:55px;overflow-wrap:anywhere}
+  .chapter h2{margin:6px 0 8px;font-size:18px}
+  .chapter ol{margin:8px 0;padding-left:1.4em}
+  .chapter li{padding:2px 0 4px 2px}
+  .intro{margin:8px 0 12px}
+}
 </style>

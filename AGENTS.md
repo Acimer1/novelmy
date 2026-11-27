@@ -11,19 +11,19 @@
 | 一键启动 | `.\start.bat` | 创建或复用 `.venv`，补齐依赖，每次构建前端并校验首页引用的 JS/CSS，再启动 Flask。默认访问 `http://localhost:5000/`，服务监听 `0.0.0.0`。 |
 | 换端口 | `.\start.bat --port 5001` | 将端口参数传递给 [server.py](server.py)。 |
 | 只构建 | `.\start.bat --build` | 生成并校验前端，不启动 Flask，也不安装 Python 业务依赖。 |
-| Vue 热更新 | `npm --prefix frontend ci --include=dev`，然后 `npm --prefix frontend run dev` | Vite 默认使用演示数据；开发页面加 `?mode=live` 后，`/api` 代理到 `127.0.0.1:5000`，需要单独启动后端。 |
+| Vue 热更新 | `npm --prefix frontend ci --include=dev`，然后 `npm --prefix frontend run dev` | Vite 通过 `/api` 代理连接 `127.0.0.1:5000`，需要单独启动后端，没有模拟数据模式。 |
 | 只运行后端 | `.\.venv\Scripts\python.exe server.py` | 跳过前端构建，要求依赖已安装；不等于隔离模式。 |
 
-编辑 [frontend/src/](frontend/src/) 和 [frontend/public/](frontend/public/)，不要编辑 `web_static/`：它是 Git 忽略的纯产物，[Vite](frontend/vite.config.js) 每次生产构建都会清空并重建。生产首页 `/` 默认连接真实 API，`/?mode=demo` 使用演示数据；原 `/web_static/preview/index.html?mode=live` 是兼容 URL，不是另一个前端工程。
+编辑 [frontend/src/](frontend/src/) 和 [frontend/public/](frontend/public/)，不要编辑 `web_static/`：它是 Git 忽略的纯产物，[Vite](frontend/vite.config.js) 每次生产构建都会清空并重建。用户入口为 `/`，始终连接后端；不提供演示参数或旧预览入口。
 
-**不要用正式启动命令做无副作用的检查。** 根入口调用 [backend/server.py](backend/server.py) 的 `main()`：建表和迁移、同步文件，并启动或复用番茄桌面程序；已有进程不可连接时可能被重启。`flask run` 不执行这段初始化。只改页面时优先用 Vite 演示模式；需要真实 API 时用下面的隔离服务。
+**不要用正式启动命令做无副作用的检查。** 根入口调用 [backend/server.py](backend/server.py) 的 `main()`：建表和迁移、同步文件，并启动或复用番茄桌面程序；已有进程不可连接时可能被重启。`flask run` 不执行这段初始化。验证页面及 API 流程时使用下面的隔离服务。
 
 ## 测试与隔离联调
 
 ```powershell
 # 前端：Node 内置测试运行器；第二条只跑一条具名测试
 npm --prefix frontend test
-node --test --test-name-pattern="任务接受后只扣一次" frontend/test/preview.test.js
+node --test --test-name-pattern="搜索始终访问当前书源" frontend/test/library.test.js
 
 # Python：首次准备隔离环境（已有 .venv 和依赖时跳过这两条）
 python -m venv .venv
@@ -44,7 +44,7 @@ $env:CHROME_BIN = Get-ItemPropertyValue 'HKLM:\SOFTWARE\Microsoft\Windows\Curren
 
 ## 跨文件的业务边界
 
-- **页面与请求。** [App.vue](frontend/src/App.vue) 管理登录态、当前页、主题和配额；已访问的两个书源页切换时只隐藏不销毁，避免丢失正在进行的下载。[SourceShelf.vue](frontend/src/pages/SourceShelf.vue) 管理搜索、格式、确认及逐条批量提交；[library.js](frontend/src/api/library.js) 负责模式选择、书源字段归一化和番茄轮询。改下载协议时同时核对这两处和 Flask 路由。指南文案与跳转在 [GuidePage.vue](frontend/src/pages/GuidePage.vue)。
+- **页面与请求。** [App.vue](frontend/src/App.vue) 管理登录态、当前页、主题和配额；已访问的两个书源页切换时只隐藏不销毁，避免丢失正在进行的下载。[SourceShelf.vue](frontend/src/pages/SourceShelf.vue) 管理搜索、格式、确认及逐条批量提交；[library.js](frontend/src/api/library.js) 负责书源字段归一化和番茄轮询。改下载协议时同时核对这两处和 Flask 路由。指南文案与跳转在 [GuidePage.vue](frontend/src/pages/GuidePage.vue)。
 - **认证与归属。** Flask session 中的 `sid` 关联 SQLite 的 `sessions`、`users`；受保护路由通过 `g.user` 取得当前用户。`init_db()` 同时负责建表和兼容已有库，没有独立的迁移命令。`downloads` 记录文件归属和来源，物理文件共享存放；用户列表和取回接口不能用一次全目录扫描替代。
 - **番茄：接受任务不等于可取文件。** `/api/download` 委托根目录 `fanqie-desktop.exe`，普通用户在任务被接受时扣次，并写入 `file_size=0` 占位。前端轮询 `/api/jobs`，完成后调用 `/api/finish_download`；后端另有定时校验、文件同步和占位修复。修改重试时须保留复用占位不重复扣次、管理员不扣次的行为。桌面程序历史背景见[补丁记录](docs/exe参数设置.md)，当前行为以 `start_exe()` 为准。
 - **七猫：同一请求生成文件。** `/api/qimao/download` 使用 [QimaoApiClient](backend/qimao_api.py) 获取书籍和章节，由 [QimaoBookDownloader](backend/qimao_downloader.py) 生成 TXT/EPUB。写入文件后才更新配额和下载记录，不走番茄任务队列。
