@@ -8,6 +8,8 @@ card_keys_*.txt
 
 # ===== 数据库与日志 =====
 app.db
+/data/app.db-*
+/logs/
 *.log
 
 # ===== Python =====
@@ -18,10 +20,10 @@ __pycache__/
 .idea/
 
 # ===== 小说下载缓存（体积巨大，不适合 git）=====
-web_downloads/
+/data/novel_cache/
 
-# ===== 旧版本备份 =====
-backup/
+# 只忽略根目录的历史副本，script/backup/ 是维护脚本
+/backup/
 
 # ===== 临时测试文件 =====
 _jstest/
@@ -35,3 +37,9 @@ git地址.txt
 
 # ===== 合并前备份 =====
 *.before_merge
+
+# 前端依赖和本地预览构建
+.venv/
+.integration/
+frontend/node_modules/
+/web_static/

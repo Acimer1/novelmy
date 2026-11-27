@@ -1,0 +1,11 @@
+<script setup>
+import {ref,onMounted} from 'vue'
+import {api} from '../api/library.js'
+const data=ref(null), busy=ref(false), message=ref('')
+async function pages(path,key){const all=[];for(let page=1;;page++){const d=await api(`${path}?page=${page}&per_page=100`);all.push(...d[key]);if(all.length>=d.total||!d[key].length)return all}}
+async function refresh(){if(busy.value)return;busy.value=true;message.value='';try{const [users,files]=await Promise.all([pages('/admin/users','users'),pages('/files','files')]);const days=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-6+i);return {label:d.toLocaleDateString(),count:0}});for(const f of files){const date=new Date(String(f.mtime).replace(' ','T')+'Z');const day=days.find(x=>x.label===date.toLocaleDateString());if(day)day.count++}data.value={users:users.length,active:users.filter(u=>u.download_count>0).length,disabled:users.filter(u=>u.is_disabled).length,files:files.length,mib:(files.reduce((n,f)=>n+(Number(f.size)||0),0)/1048576).toFixed(1),rank:users.filter(u=>!u.is_admin).sort((a,b)=>b.download_count-a.download_count).slice(0,10),days}}catch(e){message.value=e.message}finally{busy.value=false}}
+onMounted(refresh)
+</script><template><section class="overview"><h2>使用统计</h2><button :disabled="busy" @click="refresh">{{busy?'读取中…':'刷新统计'}}</button><p v-if="message" role="status">{{message}}</p><template v-if="data"><p>共 {{data.users}} 位用户，{{data.active}} 位有下载记录，{{data.disabled}} 位已停用。</p><h3>普通用户下载排行</h3><ol><li v-for="u in data.rank" :key="u.id">{{u.username}}　{{u.download_count}} 本</li></ol><p>当前账户共 {{data.files}} 条文件记录，合计 {{data.mib}} MB。</p><h3>近七天 · 当前账户</h3><table><thead><tr><th>日期</th><th>文件记录</th></tr></thead><tbody><tr v-for="day in data.days" :key="day.label"><td>{{day.label}}</td><td>{{day.count}}</td></tr></tbody></table></template></section></template>
+<style scoped>
+.overview ol{padding-left:1.6em}.overview li,.overview td,.overview th{padding:5px 8px}.overview li::marker{color:var(--muted)}.overview table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.overview td,.overview th{text-align:left;border-bottom:1px solid var(--line)}.overview th:last-child,.overview td:last-child{text-align:right}
+</style>
